@@ -1,5 +1,12 @@
 # pulls datasets from Big Query Database
 
+sy <- silounloadr::calc_academic_year(ymd("2020-06-07"), format = "firstyear") # hard coded, fix
+
+ps_sy_termid <- 
+  silounloadr::calc_ps_termid(sy) %>%
+  str_extract("\\d{2}") %>%
+  as.integer()
+
 students <- 
   get_powerschool("students") %>%
   select(

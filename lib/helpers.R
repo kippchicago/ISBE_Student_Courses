@@ -56,7 +56,7 @@ get_y1_avgs <- . %>%
   select(-rc_field)
 
 # Function
-get_get_primary_grades_courses <- 
+get_primary_grades_courses <- 
   . %>%
   select(
     site_id,
