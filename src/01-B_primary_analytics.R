@@ -1,11 +1,8 @@
 library('ProjectTemplate')
 load.project()
 
-for (dataset in project.info$data)
-{
-  message(paste('Showing top 5 rows of', dataset))
-  print(head(get(dataset)))
-}
+# run munging script
+source(here::here("munge", "01-A.R"))
 
 # PRIMARY ANALYTICS ------------------------------------------------------
 
@@ -555,3 +552,13 @@ final_isbe_k_4 <-
     teacher_first_name = gsub("'|\\.", " ", teacher_first_name),
     teacher_last_name = gsub("'|\\.", " ", teacher_last_name)
   )
+
+
+# Write Final ISBE Report k-4  -----------------------------------------------------------
+
+# todays_date <- today()
+# 
+# file_name_k_4 <- sprintf("reports/isbe_k_4_%s.xlsx", todays_date)
+# 
+# write.xlsx(final_isbe_k_4, here::here(file_name_k_4))
+
