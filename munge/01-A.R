@@ -1,7 +1,5 @@
 # preprocessing script.
 
-# Enrolled Courses & Student/ School IDs ----------------------------------------------------
-
 # NOTE: Filters to Current Course enrollment
 # FOR ALL SCHOOLS
 course_enroll <- 
@@ -28,6 +26,82 @@ student_schools <-
               ),
             by = "schoolid"
   )
+
+# Note: Contains new (2019) alg and prealg isbe codes
+isbe_local_course_codes <- 
+  isbe_report_2017 %>%
+  select(
+    isbe_state_course_code,
+    local_course_id
+  ) %>%
+  unique() %>%
+  mutate(
+    local_course_id = if_else(grepl("kccp", local_course_id),
+                              gsub("kccp", "kac", local_course_id),
+                              local_course_id
+    ),
+    local_course_id = if_else(grepl("kaps", local_course_id),
+                              gsub("kaps", "kap", local_course_id),
+                              local_course_id
+    ),
+    subject = sub("^\\D*(\\d|k)", "", local_course_id),
+    grade_level = str_extract(local_course_id, "\\d"),
+    grade_level = if_else(is.na(grade_level), "K", grade_level)
+  ) %>%
+  add_row(isbe_state_course_code = "52051A000", 
+          local_course_id = "kbcp7prealg", 
+          subject = "prealg", 
+          grade_level = "7") %>%
+  add_row(isbe_state_course_code = "52051A000", 
+          local_course_id = "koa7prealg", 
+          subject = "prealg", 
+          grade_level = "7") %>%
+  add_row(isbe_state_course_code = "52052A000", 
+          local_course_id = "kbcp8alg", 
+          subject = "alg", 
+          grade_level = "8") %>%
+  add_row(isbe_state_course_code = "52052A000", 
+          local_course_id = "koa8alg", 
+          subject = "alg", 
+          grade_level = "8")
+
+# PRIMARY NEEDS -----------------------------------------------------------
+course_df <- 
+  course_enroll %>%
+  rename(ps_stud_id = student_id) %>%
+  left_join(courses,
+            by = "course_number"
+  ) %>%
+  mutate(
+    course_name = if_else(str_detect(course_name, "\\dth Math") &
+                            !grepl("Mathematics|Centers", course_name),
+                          str_replace(course_name, "Math", "Mathematics"),
+                          course_name
+    ),
+    course_name = if_else(grepl("ELA", course_name) &
+                            !grepl("KAP", course_name),
+                          str_replace(course_name, "ELA", "English Language Arts"),
+                          course_name
+    ),
+    course_name = if_else(grepl("Literacy Center", course_name) & !grepl("Centers", course_name),
+                          str_replace(course_name, "Center", "Centers"),
+                          course_name
+    )
+  )
+
+# PRIMARY NEEDS -----------------------------------------------------------
+# new state course codes (i.e. not in Michael's previous EOY submission)
+missing_st_code <- 
+  course_enroll %>%
+  ungroup() %>%
+  select(course_number) %>%
+  filter(!grepl("att", course_number)) %>%
+  unique() %>%
+  anti_join(
+    isbe_local_course_codes,
+    by = c("course_number" = "local_course_id")
+  ) %>%
+  filter(!grepl("ell|behav|hw|cread|swela|swmath", course_number))
 
 # Attendance --------------------------------------------------------------
 

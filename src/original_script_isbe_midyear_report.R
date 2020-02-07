@@ -314,7 +314,7 @@ ps_enrollment <-
   ) %>%
   collect()
 
- # Load Flat Files ---------------------------------------------------------
+# Load Flat Files ---------------------------------------------------------
 # go in GCS bucket. script will go in data folder
 teach_absent <- 
   read.xlsx(here::here("data", "190628_Days_Absent.xlsx")) %>%
@@ -393,20 +393,6 @@ grade_df_list_prim <-
 
 # Manual Inserted Tables --------------------------------------------------
 # load into data folder. 
-
-# creating tibble with CPS codes and RCDT codes
-external_codes <- 
-  tribble(
-  ~schoolid, ~abbr, ~cps_id, ~rcdts_code,
-  78102, "KAP", 400044, "15016299025282C",
-  7810, "KAMS", 400044, "15016299025282C",
-  400146, "KAC", 400146, "15016299025101C",
-  4001462, "KACP", 4001462, "15016299025101C",
-  4001632, "KBP", 400163, "15016299025103C",
-  400163, "KBCP", 400163, "15016299025103C",
-  4001802, "KOP", 400180, "15016299025245C",
-  400180, "KOA", 400180, "15016299025245C"
-)
 
 ## Manually look up missing codes
 codes_for_NAs <- tibble(
@@ -505,7 +491,21 @@ course_names_primary <-
         sep = "|"
   )
 
-# Enrolled Courses & Student/ School IDs ----------------------------------------------------
+# creating tibble with CPS codes and RCDT codes
+external_codes <- 
+  tribble(
+    ~schoolid, ~abbr, ~cps_id, ~rcdts_code,
+    78102, "KAP", 400044, "15016299025282C",
+    7810, "KAMS", 400044, "15016299025282C",
+    400146, "KAC", 400146, "15016299025101C",
+    4001462, "KACP", 4001462, "15016299025101C",
+    4001632, "KBP", 400163, "15016299025103C",
+    400163, "KBCP", 400163, "15016299025103C",
+    4001802, "KOP", 400180, "15016299025245C",
+    400180, "KOA", 400180, "15016299025245C"
+  )
+
+# MUNGING FILE  ----------------------------------------------------
 
 # NOTE: Filters to Current Course enrollment
 # FOR ALL SCHOOLS
@@ -533,6 +533,82 @@ student_schools <-
     ),
   by = "schoolid"
   )
+
+# Note: Contains new (2019) alg and prealg isbe codes
+isbe_local_course_codes <- 
+  isbe_report_2017 %>%
+  select(
+    isbe_state_course_code,
+    local_course_id
+  ) %>%
+  unique() %>%
+  mutate(
+    local_course_id = if_else(grepl("kccp", local_course_id),
+                              gsub("kccp", "kac", local_course_id),
+                              local_course_id
+    ),
+    local_course_id = if_else(grepl("kaps", local_course_id),
+                              gsub("kaps", "kap", local_course_id),
+                              local_course_id
+    ),
+    subject = sub("^\\D*(\\d|k)", "", local_course_id),
+    grade_level = str_extract(local_course_id, "\\d"),
+    grade_level = if_else(is.na(grade_level), "K", grade_level)
+  ) %>%
+  add_row(isbe_state_course_code = "52051A000", 
+          local_course_id = "kbcp7prealg", 
+          subject = "prealg", 
+          grade_level = "7") %>%
+  add_row(isbe_state_course_code = "52051A000", 
+          local_course_id = "koa7prealg", 
+          subject = "prealg", 
+          grade_level = "7") %>%
+  add_row(isbe_state_course_code = "52052A000", 
+          local_course_id = "kbcp8alg", 
+          subject = "alg", 
+          grade_level = "8") %>%
+  add_row(isbe_state_course_code = "52052A000", 
+          local_course_id = "koa8alg", 
+          subject = "alg", 
+          grade_level = "8")
+
+# PRIMARY NEEDS -----------------------------------------------------------
+course_df <- 
+  course_enroll %>%
+  rename(ps_stud_id = student_id) %>%
+  left_join(courses,
+            by = "course_number"
+  ) %>%
+  mutate(
+    course_name = if_else(str_detect(course_name, "\\dth Math") &
+                            !grepl("Mathematics|Centers", course_name),
+                          str_replace(course_name, "Math", "Mathematics"),
+                          course_name
+    ),
+    course_name = if_else(grepl("ELA", course_name) &
+                            !grepl("KAP", course_name),
+                          str_replace(course_name, "ELA", "English Language Arts"),
+                          course_name
+    ),
+    course_name = if_else(grepl("Literacy Center", course_name) & !grepl("Centers", course_name),
+                          str_replace(course_name, "Center", "Centers"),
+                          course_name
+    )
+  )
+
+# PRIMARY NEEDS -----------------------------------------------------------
+# new state course codes (i.e. not in Michael's previous EOY submission)
+missing_st_code <- 
+  course_enroll %>%
+  ungroup() %>%
+  select(course_number) %>%
+  filter(!grepl("att", course_number)) %>%
+  unique() %>%
+  anti_join(
+    isbe_local_course_codes,
+    by = c("course_number" = "local_course_id")
+  ) %>%
+  filter(!grepl("ell|behav|hw|cread|swela|swmath", course_number))
 
 # Attendance --------------------------------------------------------------
 
@@ -640,45 +716,6 @@ full_attendance <-
 
 # MIDDLE S. ANALYTICS -------------------------------------------------
 
-# Note: Contains new (2019) alg and prealg isbe codes
-# for middle school
-isbe_local_course_codes <- 
-  isbe_report_2017 %>%
-  select(
-    isbe_state_course_code,
-    local_course_id
-  ) %>%
-  unique() %>%
-  mutate(
-    local_course_id = if_else(grepl("kccp", local_course_id),
-      gsub("kccp", "kac", local_course_id),
-      local_course_id
-    ),
-    local_course_id = if_else(grepl("kaps", local_course_id),
-      gsub("kaps", "kap", local_course_id),
-      local_course_id
-    ),
-    subject = sub("^\\D*(\\d|k)", "", local_course_id),
-    grade_level = str_extract(local_course_id, "\\d"),
-    grade_level = if_else(is.na(grade_level), "K", grade_level)
-  ) %>%
-  add_row(isbe_state_course_code = "52051A000", 
-          local_course_id = "kbcp7prealg", 
-          subject = "prealg", 
-          grade_level = "7") %>%
-  add_row(isbe_state_course_code = "52051A000", 
-          local_course_id = "koa7prealg", 
-          subject = "prealg", 
-          grade_level = "7") %>%
-  add_row(isbe_state_course_code = "52052A000", 
-          local_course_id = "kbcp8alg", 
-          subject = "alg", 
-          grade_level = "8") %>%
-  add_row(isbe_state_course_code = "52052A000", 
-          local_course_id = "koa8alg", 
-          subject = "alg", 
-          grade_level = "8")
-
 unique_codes <- 
   isbe_local_course_codes %>%
   select(
@@ -688,18 +725,6 @@ unique_codes <-
   ) %>%
   unique()
 
-# new state course codes (i.e. not in Michael's previous EOY submission)
-missing_st_code <- 
-  course_enroll %>%
-  ungroup() %>%
-  select(course_number) %>%
-  filter(!grepl("att", course_number)) %>%
-  unique() %>%
-  anti_join(
-    isbe_local_course_codes,
-    by = c("course_number" = "local_course_id")
-  ) %>%
-  filter(!grepl("ell|behav|hw|cread|swela|swmath", course_number))
 
 # added state codes
 courses_4_8 <- 
@@ -725,6 +750,8 @@ courses_4_8 <-
   ) %>%
   rename(local_course_id = course_number)
 
+
+# PRIMARY NEEDS -----------------------------------------------------------
 st_courses_rev <- 
   isbe_local_course_codes %>%
   bind_rows(courses_4_8 %>%
@@ -749,6 +776,8 @@ addl_missing_codes <-
   courses_4_8 %>%
   filter(is.na(isbe_state_course_code))
 
+
+# PRIMARY NEEDS -----------------------------------------------------------
 st_courses_rev_2 <- 
   st_courses_rev %>%
   bind_rows(codes_for_NAs) %>%
@@ -894,29 +923,6 @@ all_students_2 <- students %>%
   ) # maybe remove same day exitdate
 
 # Combine Data ------------------------------------------------------------
-
-course_df <- 
-  course_enroll %>%
-  rename(ps_stud_id = student_id) %>%
-  left_join(courses,
-    by = "course_number"
-  ) %>%
-  mutate(
-    course_name = if_else(str_detect(course_name, "\\dth Math") &
-      !grepl("Mathematics|Centers", course_name),
-    str_replace(course_name, "Math", "Mathematics"),
-    course_name
-    ),
-    course_name = if_else(grepl("ELA", course_name) &
-      !grepl("KAP", course_name),
-    str_replace(course_name, "ELA", "English Language Arts"),
-    course_name
-    ),
-    course_name = if_else(grepl("Literacy Center", course_name) & !grepl("Centers", course_name),
-      str_replace(course_name, "Center", "Centers"),
-      course_name
-    )
-  )
 
 fin_grade_course_att <- 
   final_grades %>%
