@@ -2,9 +2,9 @@ version: 0.9.0
 data_loading: TRUE
 data_loading_header: TRUE
 data_ignore:
-cache_loading: TRUE
+cache_loading: FALSE
 recursive_loading: FALSE
-munging: FALSE
+munging: TRUE
 logging: FALSE
 logging_level: INFO
 load_libraries: TRUE

@@ -1,11 +1,11 @@
 library('ProjectTemplate')
 load.project()
 
-for (dataset in project.info$data)
-{
-  message(paste('Showing top 5 rows of', dataset))
-  print(head(get(dataset)))
-}
+# for (dataset in project.info$data)
+# {
+#   message(paste('Showing top 5 rows of', dataset))
+#   print(head(get(dataset)))
+# }
 
 # MIDDLE S. ANALYTICS -------------------------------------------------
 
@@ -56,6 +56,34 @@ unique_codes <-
     grade_level
   ) %>%
   unique()
+
+# additional missing codes
+addl_missing_codes <- 
+  courses_4_8 %>%
+  filter(is.na(isbe_state_course_code))
+
+## Manually look up missing codes
+codes_for_NAs <- tibble(
+  local_course_id = addl_missing_codes$local_course_id,
+  subject = addl_missing_codes$subject,
+  grade_level = addl_missing_codes$grade_level,
+  isbe_state_course_code = c(
+    "52996A000",
+    "53234A000",
+    "54436A000",
+    "55036A000",
+    "55185A000",
+    "55185A000",
+    "58037A000",
+    "53234A000",
+    "58038A000",
+    "54436A000",
+    "55184A000",
+    "58034A000", 
+    NA, 
+    NA
+  )
+)
 
 # new state course codes (i.e. not in Michael's previous EOY submission)
 missing_st_code <- 
@@ -113,10 +141,6 @@ st_courses_rev <-
     )
   ) 
 
-# additional missing codes
-addl_missing_codes <- 
-  courses_4_8 %>%
-  filter(is.na(isbe_state_course_code))
 
 st_courses_rev_2 <- 
   st_courses_rev %>%
@@ -552,8 +576,8 @@ final_ibse_rep_4_8 <-
 # Write Final ISBE Report 4-8 -------------------------------------------------------------
 
 # write.xlsx(final_ibse_rep_4_8, here("reports/isbe_4_8_180625.xlsx"))
-todays_date <- today()
-
-file_name_4_8 <- sprintf("reports/isbe_4_8_%s.xlsx", todays_date)
-
-write.xlsx(final_ibse_rep_4_8, here::here(file_name_4_8))
+# todays_date <- today()
+# 
+# file_name_4_8 <- sprintf("reports/isbe_4_8_%s.xlsx", todays_date)
+# 
+# write.xlsx(final_ibse_rep_4_8, here::here(file_name_4_8))

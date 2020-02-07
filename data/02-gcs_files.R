@@ -4,7 +4,11 @@
 library(googleCloudStorageR)
 library(tidyverse)
 library(janitor)
+
 gcs_global_bucket("raw_data_storage")
+
+
+# Pull Files from GCS Bucket ----------------------------------------------
 
 # pull middle school grades
 all_grade_files <- gcs_list_objects()
@@ -47,6 +51,7 @@ gcs_get_object("ISBE_Student_Courses/18-18_files/isbe_report_courses_2017.csv",
 
 
 # Read in Files to Environment -----------------------------------------------------------
+
 teach_absent <-
   read_csv(here::here("data", "flatfiles", "190628_Days_Absent.csv")) %>%
   janitor::clean_names() %>%

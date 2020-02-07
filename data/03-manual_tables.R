@@ -14,30 +14,6 @@ external_codes <-
     400180, "KOA", 400180, "15016299025245C"
   )
 
-## Manually look up missing codes
-codes_for_NAs <- 
-  tibble(
-  local_course_id = addl_missing_codes$local_course_id,
-  subject = addl_missing_codes$subject,
-  grade_level = addl_missing_codes$grade_level,
-  isbe_state_course_code = c(
-    "52996A000",
-    "53234A000",
-    "54436A000",
-    "55036A000",
-    "55185A000",
-    "55185A000",
-    "58037A000",
-    "53234A000",
-    "58038A000",
-    "54436A000",
-    "55184A000",
-    "58034A000", 
-    NA, 
-    NA
-  )
-)
-
 grade_percent_scale <- 
   tibble(
     grade = c(
