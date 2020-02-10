@@ -35,7 +35,7 @@ students_current <-
     enroll_status,
   )
 
-# Student Course Information  ----------------------------------------------------------------
+# Student Course Information ----------------------------------------------------------------
 
 # Section Number
 # Local Course ID
@@ -58,17 +58,48 @@ local_course_id_title_section_number <-
   rename(local_course_id = course_number, 
          local_course_title = course_name)
 
-# Teacher Information  -------------------------------------------------------------
+# Teacher Information Zenefits -------------------------------------------------------------
 
 # Teacher Last Name
 # Teacher First Name
 # Teacher Birth Date
-# Teacher Commitment (1.00 means 100% full time commitment to the course)
-# Reason for Exit
-# Teacher Course Start Date
-# Teacher Course End Date
 # Teacher IEIN  (Illinois Educator Identification Number)
 
+teacher_info <- 
+  cc %>%
 
-
+  # finds current courses for this school year
+  left_join(schoolstaff, 
+            by = c("teacherid" = "id")) %>%
   
+  # Join users to obtain teacher names and email addresses
+  left_join(users,
+            by = "users_dcid"
+            ) %>%
+  select (
+    teacherid, 
+    teacher_first_name, 
+    teacher_last_name, 
+    email_addr,
+    schoolid, 
+  ) %>%
+  
+  # Filter down to single row per teacher
+  distinct() %>%
+  left_join(zenefits_teacher_info, 
+             by = c("teacher_first_name" = "first_name", 
+                    "teacher_last_name" = "last_name")) %>%
+  
+  # Find currently "active" users in Zenefits (people still working for KIPP)
+  filter(status_active_terminated == "Active" & 
+           work_location != "Shared Services Center") %>%
+  select(
+    teacherid, 
+    teacher_first_name, 
+    teacher_last_name, 
+    date_of_birth, 
+    schoolid, 
+    work_location, 
+    work_email, 
+    licensure_iein_number,
+  )

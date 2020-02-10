@@ -106,4 +106,12 @@ ps_enrollment <-
   ) %>%
   collect()
 
+schoolstaff <- 
+  get_powerschool("schoolstaff") %>%
+  select(
+    users_dcid, 
+    id, 
+  ) %>%
+  collect()
+
 
