@@ -2,3 +2,4 @@
 2. Look through acquired Zenefits info and determine what information still needs to be gathered
 3. Identify things that need to be pulled separetly for primary and middle.
 figure out if State_studentnumber is the same as ISBE student id
+4. figure out what to do about all the missing state_student numbers (these are in the students table)

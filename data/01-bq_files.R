@@ -35,7 +35,7 @@ cc <-
     section_number,
     student_id = studentid,
     teacherid,
-    termid
+    termid, 
   ) %>%
   collect()
 
@@ -105,3 +105,5 @@ ps_enrollment <-
     exitdate
   ) %>%
   collect()
+
+
