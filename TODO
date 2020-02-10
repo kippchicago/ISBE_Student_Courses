@@ -1,3 +1,4 @@
 1. confirm the location of all required variables (excluding Zenefits)
 2. Look through acquired Zenefits info and determine what information still needs to be gathered
-3. Identify things that need to be pulled separetly for primary and middle. 
+3. Identify things that need to be pulled separetly for primary and middle.
+figure out if State_studentnumber is the same as ISBE student id
