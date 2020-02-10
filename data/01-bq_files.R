@@ -1,6 +1,5 @@
 # pulls datasets from Big Query Database
-
-sy <- silounloadr::calc_academic_year(ymd("2020-06-07"), format = "firstyear") # hard coded, fix
+sy <- silounloadr::calc_academic_year(ymd("2020-06-07"), format = "firstyear")
 
 ps_sy_termid <- 
   silounloadr::calc_ps_termid(sy) %>%
@@ -40,7 +39,7 @@ cc <-
   ) %>%
   collect()
 
-# course name
+# Course Names
 courses <- 
   get_powerschool("courses") %>%
   select(
@@ -74,7 +73,7 @@ schoolstaff <-
 
 # users info: full name, internal KIPP Chicago ID
 users <- 
-  get_powerschool("users") %>% # glimpse()
+  get_powerschool("users") %>%
   select(
     users_dcid = dcid,
     teacher_first_name = first_name,
@@ -83,21 +82,6 @@ users <-
     email_addr
   ) %>%
   collect()
-
-attendance <- 
-  get_powerschool("attendance") %>%
-  # filter(att_date >= lubridate::ymd("2017-08-21")) %>%
-  # filter(att_date >= lubridate::ymd("2018-01-16")) %>%
-  filter(att_date >= lubridate::ymd("2019-08-20")) %>% # hard coded, fix
-  collect() %>%
-  # janitor::clean_names() %>%
-  filter(att_mode_code == "ATT_ModeDaily")
-
-attendance_code <- 
-  get_powerschool("attendance_code") %>%
-  collect() %>%
-  # janitor::clean_names() %>%
-  mutate(att_code = if_else(att_code == "true", "T", att_code))
 
 membership <- 
   get_powerschool("ps_membership_reg") %>%
