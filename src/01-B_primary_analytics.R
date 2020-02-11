@@ -140,6 +140,55 @@ p_teachers_w_excel <-
             by = "users_dcid"
   )
 
+get_primary_grades_courses <- 
+  . %>%
+  select(
+    site_id,
+    student_id,
+    contains("q4")
+  ) %>% # need Q3 performing arts 1st, Q3 visual arts 2nd
+  tidyr::gather(rc_field, grade, -site_id:-student_id) %>% # View()
+  filter(
+    !grepl("tardy|absent|spanish", rc_field),
+    !is.na(grade)
+  ) %>%
+  mutate(rc_field = gsub("_", " ", rc_field)) %>%
+  filter(grepl(course_names_primary, rc_field)) %>%
+  mutate(
+    subject0 = gsub("(^.+ primary )(\\w+.\\w+)(\\s\\w.+)", "\\2", rc_field),
+    subject1 = if_else(grepl("kap|primary", subject0),
+                       gsub(" kap| primary", "", subject0),
+                       subject0
+    ),
+    subject2 = if_else(subject1 == "math", "math centers", subject1),
+    subject3 = if_else(subject2 == "we act", "explorations", subject2),
+    subject = if_else(subject2 == "math math", "math", subject3)
+  ) %>%
+  select(-c(subject0:subject3)) %>% # View()
+  left_join(primary_grade_codes,
+            by = c("grade" = "kc_grades")
+  ) %>%
+  mutate(school_grade = gsub("(^.+ rc )((kop|kap|kbp).+)( q.+)", "\\2", rc_field)) %>%
+  tidyr::separate(school_grade, into = c("school", "grade"), sep = " ") %>%
+  mutate(
+    grade0 = gsub("st|nd|rd|th", "", grade),
+    subject0 = gsub(" ", "", subject)
+  ) %>%
+  rowwise() %>%
+  mutate(
+    course_number = paste(school, grade0, subject0, sep = ""),
+    course_name = paste(grade, subject),
+    course_name = stringr::str_to_title(course_name)
+  ) %>% # View()
+  select(-c(
+    rc_field,
+    subject,
+    school,
+    grade,
+    grade0,
+    subject0
+  ))
+
 primary_grades <- 
   grade_df_list_prim %>%
   map_df(get_primary_grades_courses)

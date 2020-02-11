@@ -69,21 +69,22 @@ primary_grade_codes <-
     "NOT YET", 59, 30
   )
 
-# course names
-course_names_primary <- 
-  paste("art",
-        "dance",
-        "reading",
-        "math",
-        "musical theater",
-        "physical education",
-        "explorations",
-        "writing",
-        "visual arts",
-        "science",
-        "math centers",
-        "performing arts",
-        "music",
-        "ela",
-        sep = "|"
-  )
+#course names
+#probably don't need this because uploading course file
+# course_names_primary <-
+#   paste("art",
+#         "dance",
+#         "reading",
+#         "math",
+#         "musical theater",
+#         "physical education",
+#         "explorations",
+#         "writing",
+#         "visual arts",
+#         "science",
+#         "math centers",
+#         "performing arts",
+#         "music",
+#         "ela",
+#         sep = "|"
+#   )

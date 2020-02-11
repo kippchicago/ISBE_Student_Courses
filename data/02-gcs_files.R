@@ -49,6 +49,11 @@ gcs_get_object("ISBE_Student_Courses/18-18_files/isbe_report_courses_2017.csv",
                saveToDisk = "data/flatfiles/isbe_report_courses_2017.csv", 
                overwrite = TRUE)
 
+# added course number state ID file
+gcs_get_object("ISBE_Student_Courses/18-18_files/isbe_report_courses_2017.csv",
+               saveToDisk = "data/flatfiles/isbe_report_courses_2017.csv", 
+               overwrite = TRUE)
+
 
 # Read in Files to Environment -----------------------------------------------------------
 

@@ -65,7 +65,8 @@ isbe_local_course_codes <-
           subject = "alg", 
           grade_level = "8")
 
-# PRIMARY NEEDS -----------------------------------------------------------
+# Courses
+# One row per student per class they're enrolled in
 course_df <- 
   course_enroll %>%
   rename(ps_stud_id = student_id) %>%
