@@ -58,7 +58,7 @@ local_course_id_title_section_number <-
   rename(local_course_id = course_number, 
          local_course_title = course_name)
 
-# Teacher Information Zenefits -------------------------------------------------------------
+# Teacher Information  -------------------------------------------------------------
 
 # Teacher Last Name
 # Teacher First Name
@@ -102,4 +102,10 @@ teacher_info <-
     work_location, 
     work_email, 
     licensure_iein_number,
-  )
+  ) %>%
+  
+  # Add RCDTS Code for Teacher Location 
+  left_join(
+    cps_school_rcdts_ids, 
+    by = "schoolid"
+    )
