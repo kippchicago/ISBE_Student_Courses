@@ -15,6 +15,7 @@ gcs_get_object("ISBE_Student_Courses/19-20_files/course_local_number_state_ids.c
 local_number_isbe_state_course_ids <-
   read_csv(here::here("data", "flatfiles", "course_local_number_state_ids.csv")) %>%
   janitor::clean_names()
+# created by hand. Primary based on report card fields and hard coded Excellence teachers
 
 # ISBE Teacher Info
 gcs_get_object("ISBE_Student_Courses/19-20_files/zenefits_teacher_data_isbe_midyear_reporting.csv", 

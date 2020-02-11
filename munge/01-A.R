@@ -58,7 +58,11 @@ students_local_course_id_title_section_number <-
   left_join(courses, 
             by = "course_number") %>%
   rename(local_course_id = course_number, 
-         local_course_title = course_name)
+         local_course_title = course_name) %>%
+  
+  # remove Attendance (homeroom) and ELL (used for sorting but not an actual course) sections
+  filter(!grepl("Attendance| ELL", local_course_title))
+
 
 # Teacher Information  -------------------------------------------------------------
 
@@ -143,4 +147,7 @@ student_enrollment_info <-
     schoolid
   ) %>%
   distinct()
+
+
+
   
