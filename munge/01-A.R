@@ -60,7 +60,7 @@ students_local_course_id_title_section_number <-
   rename(local_course_id = course_number, 
          local_course_title = course_name)
 
-# Teacher Information  -------------------------------------------------------------
+# Teacher Personal Information  -------------------------------------------------------------
 
 # Note: this section produces the following columns required for ISBE Reporting
 # Teacher IEIN (Illinois Educator Identification Number)
@@ -102,9 +102,8 @@ teacher_cc_users_zenefits_compiled <-
     teacher_last_name, 
     date_of_birth, 
     schoolid, 
-    work_location, 
     email_addr, 
-    title,
+    licensure_iein_number,
   ) %>%
   
   # Add RCDTS Code for Teacher Location 
@@ -116,9 +115,9 @@ teacher_cc_users_zenefits_compiled <-
 teacher_iein <- 
   teacher_iein_licensure_report %>%
   separate(col = name, 
-           into = c("teacher_last_name", "teacher_first_name"), 
+           into = c("last_name", "first_name"), 
            sep = ",") %>%
-  drop_na(teacher_last_name) %>%
+  drop_na(last_name) %>%
   select(-work_team) %>%
   rename("teacher_iein" = "iein")
 
@@ -126,7 +125,7 @@ teacher_iein <-
 teacher_personal_info <- 
   teacher_iein %>%
   left_join(teacher_cc_users_zenefits_compiled, 
-            by = c("teacher_first_name")
+            by = c("first_name" = "teacher_first_name")
             )
 
 # Student Enrollment Information ------------------------------------------
