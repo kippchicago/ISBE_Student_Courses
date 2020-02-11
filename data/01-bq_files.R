@@ -97,12 +97,12 @@ membership <-
 
 ps_enrollment <- 
   get_powerschool("ps_enrollment_all") %>%
-  filter(yearid == 28) %>%
   select(
     ps_stud_id = studentid,
     schoolid,
     entrydate,
-    exitdate
+    exitdate, 
+    yearid
   ) %>%
   collect()
 
@@ -113,5 +113,3 @@ schoolstaff <-
     id, 
   ) %>%
   collect()
-
-
