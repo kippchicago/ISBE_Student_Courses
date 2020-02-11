@@ -63,6 +63,20 @@ local_course_id_title_section_number <-
 # Teacher Birth Date
 # Teacher IEIN  (Illinois Educator Identification Number)
 
+# Create list of all files in "staff_directory" folder
+files_staff_directory <- dir(path = here::here("data", 
+                                               "flatfiles", 
+                                               "staff_directory"), 
+                             pattern = "*.csv")
+
+staff_directory_path <- here::here("data", "flatfiles", "staff_directory")
+
+all_current_kipp_staff <- 
+  files_staff_directory %>% 
+  map(~ read_csv(file.path(staff_directory_path, .))) %>%
+  reduce(rbind) 
+
+
 teacher_info <- 
   cc %>%
 
