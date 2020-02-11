@@ -11,7 +11,7 @@
 
 first_day_of_school <- ymd("2019-08-19")
 
-students_current <- 
+students_current_demographics <- 
   students %>% 
   filter(entrydate >= first_day_of_school) %>% 
   
@@ -31,6 +31,10 @@ students_current <-
     schoolid,
     cps_student_id = student_number, 
     enroll_status,
+  ) %>%
+  left_join(
+    cps_school_rcdts_ids, 
+    by = "schoolid"
   )
 
 # Student Course Information ----------------------------------------------------------------
@@ -39,7 +43,7 @@ students_current <-
 # Local Course ID
 # Local Course Title
 
-local_course_id_title_section_number <- 
+students_local_course_id_title_section_number <- 
   cc %>%
   filter(dateenrolled >= first_day_of_school) %>%
   select(
@@ -58,29 +62,19 @@ local_course_id_title_section_number <-
 
 # Teacher Information  -------------------------------------------------------------
 
+# Note: this section produces the following columns required for ISBE Reporting
+# Teacher IEIN (Illinois Educator Identification Number)
 # Teacher Last Name
 # Teacher First Name
 # Teacher Birth Date
-# Teacher IEIN  (Illinois Educator Identification Number)
+# Teacher Serving
+# Employer RCDTS
+# EIS Position Code
+# Teacher Commitment (1.00 means 100% full time commitment to the course)
+# Reason for Exit
 
-# Create list of all files in "staff_directory" folder
-files_staff_directory <- dir(path = here::here("data", 
-                                               "flatfiles", 
-                                               "staff_directory"), 
-                             pattern = "*.csv")
-
-staff_directory_path <- here::here("data", "flatfiles", "staff_directory")
-
-all_current_kipp_staff <- 
-  files_staff_directory %>% 
-  map(~ read_csv(file.path(staff_directory_path, .))) %>%
-  reduce(rbind) 
-
-
-teacher_info <- 
+teacher_cc_users_zenefits_compiled <- 
   cc %>%
-
-  # finds current courses for this school year
   left_join(schoolstaff, 
             by = c("teacherid" = "id")) %>%
   
@@ -100,11 +94,8 @@ teacher_info <-
   distinct() %>%
   left_join(zenefits_teacher_info, 
              by = c("teacher_first_name" = "first_name", 
-                    "teacher_last_name" = "last_name")) %>%
-  
-  # Find currently "active" users in Zenefits (people still working for KIPP)
-  filter(status_active_terminated == "Active" & 
-           work_location != "Shared Services Center") %>%
+                    "teacher_last_name" = "last_name", 
+                    "email_addr" = "work_email")) %>%
   select(
     teacherid, 
     teacher_first_name, 
@@ -112,8 +103,8 @@ teacher_info <-
     date_of_birth, 
     schoolid, 
     work_location, 
-    work_email, 
-    licensure_iein_number,
+    email_addr, 
+    title,
   ) %>%
   
   # Add RCDTS Code for Teacher Location 
@@ -122,6 +113,21 @@ teacher_info <-
     by = "schoolid"
     )
 
+teacher_iein <- 
+  teacher_iein_licensure_report %>%
+  separate(col = name, 
+           into = c("teacher_last_name", "teacher_first_name"), 
+           sep = ",") %>%
+  drop_na(teacher_last_name) %>%
+  select(-work_team) %>%
+  rename("teacher_iein" = "iein")
+
+
+teacher_personal_info <- 
+  teacher_iein %>%
+  left_join(teacher_cc_users_zenefits_compiled, 
+            by = c("teacher_first_name")
+            )
 
 # Student Enrollment Information ------------------------------------------
 # Student Course End Date
@@ -138,4 +144,3 @@ student_enrollment_info <-
   ) %>%
   distinct()
   
-
