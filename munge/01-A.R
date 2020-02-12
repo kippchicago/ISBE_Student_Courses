@@ -115,7 +115,12 @@ teacher_cc_users_zenefits_compiled <-
   left_join(
     cps_school_rcdts_ids, 
     by = "schoolid"
-    )
+    ) %>%
+  mutate(teacherid = as.character(teacherid)) %>%
+  
+  # NOTE: This line trims all white space from character columns. This 
+  # is imperitive later when we want to join datasets on teacherid column
+  mutate_if(is.character, str_trim)
 
 teacher_iein <-
   teacher_iein_licensure_report %>%
@@ -125,13 +130,19 @@ teacher_iein <-
   drop_na(last_name) %>%
   select(-work_team) %>%
   rename("teacher_iein" = "iein") %>%
-  mutate(email = trimws(email, which = c("both")))
+  mutate(email = trimws(email, which = c("both"))) %>%
+  mutate(teacherid = as.character(teacherid)) %>% 
+  
+  # NOTE: This line trims all white space from character columns. This 
+  # is imperitive later when we want to join datasets on teacherid column
+  mutate_if(is.character, str_trim)
 
-# teacher_personal_info <- 
-#   teacher_cc_users_zenefits_compiled %>%
-#   left_join(teacher_iein, 
-#             by = "work_email"
-#             )
+teacher_personal_info <-
+  teacher_iein %>%
+  # select(-c(first_name, last_name, email)) %>%
+  left_join(teacher_cc_users_zenefits_compiled,
+            by = "teacherid"
+            )
 
 # Student Enrollment Information ------------------------------------------
 
