@@ -3,7 +3,6 @@ load.project()
 
 source(here::here("munge", "01-A.R"))
 
-
 # Parameters --------------------------------------------------------------
 # Note: The below numbers are the same for everyone
 
@@ -11,27 +10,29 @@ school_year = y("2020")
 term = "Y1"
 
 # 02 = general 
-course_level = 02
+course_level = "02"
 
-course_credit = 1
-articulated_credit = 02
-dual_credit = 02
-course_setting = 01
-competency_based_education = 02
+course_credit = "1"
+articulated_credit = "02"
+dual_credit = "02"
+course_setting = "01"
+competency_based_education = "02"
 
+# NOTE: Will need to be modified for teachers that
+# arrived mid year
 teacher_course_start_date = ymd("2019-08-19")
 teacher_course_end_date = ymd("2020-06-19")
 
 # More info: https://www.isbe.net/Documents/position-codes.pdf
-eis_position_code = 200
+eis_position_code = "200"
 
 # 1.00 means 100% full time commitment to the course
-teacher_commitment = 1.00
+teacher_commitment = "1.00"
 
 # 01 = Course Ended
-reason_for_exit = 01
+reason_for_exit = "01"
 
-# Student Courses --------------------------------------------------
+# Student Courses ISBE State Codes --------------------------------------------------
 
 # State course IDs come from flat file and is joined with existing local course 
 # IDs from Powerschool enrollment Multiple courses per student
@@ -44,9 +45,9 @@ students_course_middle <-
   select(-c(first_last_teacher, school)) %>%
   mutate(teacherid = as.character(teacherid))
 
-# Completed ISBE Report Middle School -------------------------------------
+# Full ISBE Report Middle School -------------------------------------
 
-isbe_report_complete_middle <- 
+isbe_report_middle_midyear_2020_full <- 
   students_course_middle %>%
   left_join(teacher_personal_info, 
             by = "teacherid") %>%
@@ -72,8 +73,9 @@ isbe_report_complete_middle <-
          eis_position_code = eis_position_code,
          teacher_commitment = teacher_commitment, 
          reason_for_exit = reason_for_exit, 
-         
          ) %>%
+  
+  # Select all required columns in the correct order.
   select(
     cps_school_id, 
     isbe_student_id, 
@@ -107,8 +109,5 @@ isbe_report_complete_middle <-
     teacher_course_start_date, 
     teacher_course_end_date, 
     reason_for_exit, 
-    
   )
-
-
 
