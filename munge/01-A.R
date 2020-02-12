@@ -2,6 +2,7 @@
 
 # Student Personal Information ----------------------------------------------------------
 
+# Note: this section produces the following columns required for ISBE Reporting
 # Student Last Name
 # Student First Name
 # Birth Date
@@ -39,6 +40,7 @@ students_current_demographics <-
 
 # Student Course Information ----------------------------------------------------------------
 
+# Note: this section produces the following columns required for ISBE Reporting
 # Section Number
 # Local Course ID
 # Local Course Title
@@ -74,7 +76,7 @@ students_local_course_id_title_section_number <-
 # Teacher Serving
 # Employer RCDTS
 # EIS Position Code
-# Teacher Commitment (1.00 means 100% full time commitment to the course)
+# Teacher Commitment
 # Reason for Exit
 
 teacher_cc_users_zenefits_compiled <- 
@@ -107,7 +109,6 @@ teacher_cc_users_zenefits_compiled <-
     date_of_birth, 
     schoolid, 
     email_addr, 
-    licensure_iein_number,
   ) %>%
   
   # Add RCDTS Code for Teacher Location 
@@ -116,23 +117,25 @@ teacher_cc_users_zenefits_compiled <-
     by = "schoolid"
     )
 
-teacher_iein <- 
+teacher_iein <-
   teacher_iein_licensure_report %>%
-  separate(col = name, 
-           into = c("last_name", "first_name"), 
+  separate(col = name,
+           into = c("last_name", "first_name"),
            sep = ",") %>%
   drop_na(last_name) %>%
   select(-work_team) %>%
-  rename("teacher_iein" = "iein")
+  rename("teacher_iein" = "iein") %>%
+  mutate(email = trimws(email, which = c("both")))
 
-
-teacher_personal_info <- 
-  teacher_iein %>%
-  left_join(teacher_cc_users_zenefits_compiled, 
-            by = c("first_name" = "teacher_first_name")
-            )
+# teacher_personal_info <- 
+#   teacher_cc_users_zenefits_compiled %>%
+#   left_join(teacher_iein, 
+#             by = "work_email"
+#             )
 
 # Student Enrollment Information ------------------------------------------
+
+# Note: this section produces the following columns required for ISBE Reporting
 # Student Course End Date
 # Student Course Start Date
 
