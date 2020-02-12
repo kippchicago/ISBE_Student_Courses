@@ -1,3 +1,5 @@
+# This script produces the full ISBE Midyear Report for all Middle Schools
+
 library(ProjectTemplate)
 load.project()
 
@@ -6,7 +8,7 @@ source(here::here("munge", "01-A.R"))
 # Parameters --------------------------------------------------------------
 # Note: The below numbers are the same for everyone
 
-school_year = y("2020")
+school_year = "2020"
 term = "Y1"
 
 # 02 = general 

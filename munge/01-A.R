@@ -153,13 +153,13 @@ teacher_personal_info <-
 # Teacher Course Start Date
 # Teacher Course End Date
 
-teacher_enrollment_info <- 
-  teacher_cc_users_zenefits_compiled %>%
-  filter(initial_employment_start_date > first_day_of_school)
-  filter(title == "Teacher" |
-           title == "Teacher Resident" |
-           title == "Substitute Teacher" |
-           title == "Co-Teacher")
+# teacher_enrollment_info <- 
+#   teacher_cc_users_zenefits_compiled %>%
+#   filter(initial_employment_start_date > first_day_of_school)
+#   filter(title == "Teacher" |
+#            title == "Teacher Resident" |
+#            title == "Substitute Teacher" |
+#            title == "Co-Teacher")
 
 # Student Enrollment Information ------------------------------------------
 
