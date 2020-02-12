@@ -5,38 +5,38 @@ load.project()
 
 isbe_midyear_report_kap <- 
   isbe_report_primary_midyear_2020_full %>%
-  filter(grepl("kap", local_course_id))
+  filter(grepl("kap", `Local Course ID`))
 
 isbe_midyear_report_kbp <- 
   isbe_report_primary_midyear_2020_full %>%
-  filter(grepl("kbp", local_course_id))
+  filter(grepl("kbp", `Local Course ID`))
 
 isbe_midyear_report_kacp <- 
   isbe_report_primary_midyear_2020_full %>%
-  filter(grepl("kacp", local_course_id))
+  filter(grepl("kacp", `Local Course ID`))
 
 isbe_midyear_report_kop <- 
   isbe_report_primary_midyear_2020_full %>%
-  filter(grepl("kop", local_course_id))
+  filter(grepl("kop", `Local Course ID`))
 
 
 # Individual Middle School Reports ----------------------------------------
 
 isbe_midyear_report_kams <- 
   isbe_report_middle_midyear_2020_full %>%
-  filter(grepl("kams", local_course_id))
+  filter(grepl("kams", `Local Course ID`))
 
 isbe_midyear_report_kbcp <- 
   isbe_report_middle_midyear_2020_full %>%
-  filter(grepl("kbcp", local_course_id))
+  filter(grepl("kbcp", `Local Course ID`))
 
 isbe_midyear_report_kac <- 
   isbe_report_middle_midyear_2020_full %>%
-  filter(grepl("kac", local_course_id))
+  filter(grepl("kac", `Local Course ID`))
 
 isbe_midyear_report_koa <- 
   isbe_report_middle_midyear_2020_full %>%
-  filter(grepl("koa", local_course_id))
+  filter(grepl("koa", `Local Course ID`))
 
 
 # Final Combined Reports (4 Schools)  -------------------------------------
