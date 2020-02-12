@@ -34,3 +34,14 @@ gcs_get_object("ISBE_Student_Courses/19-20_files/19_20_IEIN_numbers.csv",
 teacher_iein_licensure_report <- 
   read_csv(here::here("data", "flatfiles", "19_20_IEIN_numbers.csv")) %>%
   janitor::clean_names()
+
+# KIPP Staff who started after the start of school (2019/08/19)
+# Data gathered from HR
+gcs_get_object("ISBE_Student_Courses/19-20_files/kipp_staff_member_start_after_20190819.csv", 
+               saveToDisk = "data/flatfiles/kipp_staff_member_start_after_20190819.csv", 
+               overwrite = TRUE)
+
+kipp_staff_member_start_after_20190819 <- 
+  read_csv(here::here("data", "flatfiles", "kipp_staff_member_start_after_20190819.csv")) %>%
+  janitor::clean_names()
+

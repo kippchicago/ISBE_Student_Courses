@@ -1,5 +1,10 @@
 # Pull and munge data for both primary and middle school
 
+# Parameters --------------------------------------------------------------
+
+first_day_of_school <- ymd("2019-08-19")
+teacher_course_end_date = ymd("2020-06-19")
+
 # Student Personal Information ----------------------------------------------------------
 
 # Note: this section produces the following columns required for ISBE Reporting
@@ -9,8 +14,6 @@
 # CPS Student ID
 # ISBE Student ID
 # Serving School
-
-first_day_of_school <- ymd("2019-08-19")
 
 students_current_demographics <- 
   students %>% 
@@ -56,6 +59,8 @@ students_local_course_id_title_section_number <-
     course_number, 
     section_number, 
     teacherid, 
+    dateenrolled,
+    dateleft,
   ) %>%
   
   # Join to add Local Course title
@@ -148,18 +153,29 @@ teacher_personal_info <-
             ) %>%
   mutate(teacher_serving = rcdts_code, 
          employer_rcdts = rcdts_code) %>%
-  rename("teacher_birth_date" = "date_of_birth")
+  rename("teacher_birth_date" = "date_of_birth") %>%
+  mutate_if(is.character, str_trim)
+
+
+# Teacher Enrollment Information ------------------------------------------------------
 
 # Teacher Course Start Date
 # Teacher Course End Date
 
-# teacher_enrollment_info <- 
-#   teacher_cc_users_zenefits_compiled %>%
-#   filter(initial_employment_start_date > first_day_of_school)
-#   filter(title == "Teacher" |
-#            title == "Teacher Resident" |
-#            title == "Substitute Teacher" |
-#            title == "Co-Teacher")
+teacher_enrollment <- 
+  teacher_personal_info %>%
+  left_join(kipp_staff_member_start_after_20190819, 
+            by = c("teacher_last_name" = "last_name", 
+                   "teacher_first_name" = "first_name")) %>%
+  mutate(current_employment_start_date = as.character(current_employment_start_date)) %>%
+  mutate(teacher_course_start_date = if_else(is.na(current_employment_start_date), 
+                                             "2019-08-19", 
+                                             current_employment_start_date), 
+         teacher_course_end_date = teacher_course_end_date) %>%
+  select(teacherid, 
+         teacher_course_start_date, 
+         teacher_course_end_date,) %>%
+  distinct()
 
 # Student Enrollment Information ------------------------------------------
 
@@ -172,12 +188,16 @@ student_enrollment_info <-
   filter(dateenrolled >= first_day_of_school) %>%
   select(
     student_id, 
-    dateenrolled, 
-    dateleft, 
+    student_course_start_date = dateenrolled, 
+    student_course_end_date = dateleft, 
     schoolid
-  ) %>%
-  distinct()
-
+  ) %>% 
+  distinct() %>%
+  
+  # Keeps latest student enrollment date
+  # source: https://stackoverflow.com/questions/21704207/r-subset-unique-observation-keeping-last-entry
+  group_by(student_id) %>%
+  filter(row_number(desc(student_course_start_date)) == 1)
 
 
   

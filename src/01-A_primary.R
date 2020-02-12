@@ -22,11 +22,6 @@ dual_credit = "02"
 course_setting = "01"
 competency_based_education = "02"
 
-# NOTE: Will need to be modified for teachers that
-# arrived mid year
-teacher_course_start_date = ymd("2019-08-19")
-teacher_course_end_date = ymd("2020-06-19")
-
 # More info: https://www.isbe.net/Documents/position-codes.pdf
 eis_position_code = "200"
 
@@ -47,8 +42,12 @@ reason_for_exit = "01"
 students_course_primary_core <- 
   students_local_course_id_title_section_number %>%
   
+  group_by(student_id) %>%
+  filter(row_number(desc(dateenrolled)) == 1) %>%
+  
   filter(grepl("k|1|2|3", local_course_title),
-         !grepl("Science", local_course_title)) %>%
+         !grepl("Science", local_course_title),
+         !grepl("Homework", local_course_title)) %>%
   mutate(school = str_extract(local_course_id, "kop|kbp|kap|kacp"),
          grade_level = str_replace(local_course_id, "kop|kbp|kap|kacp", "") %>%       
            str_extract("^.")) %>%
@@ -65,9 +64,13 @@ students_course_primary_core <-
   select(-first_last_teacher) %>%
   mutate(teacherid = as.character(teacherid))
 
+
 # NOTE: Multiple excellence courses per student
 students_course_primary_excellence <- 
   students_local_course_id_title_section_number %>%
+  
+  group_by(student_id) %>%
+  filter(row_number(desc(dateenrolled)) == 1) %>%
   
   filter(grepl("k|1|2|3", local_course_title),
          !grepl("Science", local_course_title)) %>%
@@ -91,19 +94,26 @@ students_course_primary_excellence <-
   # NOTE: teacherid cannot be used to join for excellence courses
   # for these courses the teacherid is incorrect. Teachers
   # will need to be joined by first and last name
-  select(-teacherid)
+  select(-teacherid) %>%
+  separate(col = first_last_teacher,
+           into = c("teacher_first_name", "teacher_last_name"),
+           sep = " ") %>%
+  mutate_if(is.character, str_trim)
   
-# Full ISBE Report Primary Core -------------------------------------
+# ISBE Report Primary Core -------------------------------------
 
 isbe_report_primary_core_midyear_2020_full <- 
   students_course_primary_core %>%
   left_join(teacher_personal_info, 
             by = "teacherid") %>%
-  select(-c(cps_school_id)) %>%
+  select(-c(schoolid, abbr, email_addr, cps_school_id)) %>%
   left_join(students_current_demographics, 
             by = "student_id") %>%
+  select(-c(schoolid)) %>%
   left_join(student_enrollment_info, 
             by = "student_id") %>%
+  left_join(teacher_enrollment, 
+            by = "teacherid") %>%
   
   # Add additional required columns that are the same for everyone
   mutate(serving_school = home_rcdts, 
@@ -116,8 +126,6 @@ isbe_report_primary_core_midyear_2020_full <-
          course_setting = course_setting, 
          student_course_final_letter_grade = NA, 
          competency_based_education = competency_based_education,
-         teacher_course_start_date = teacher_course_start_date,
-         teacher_course_end_date = teacher_course_end_date,
          eis_position_code = eis_position_code,
          teacher_commitment = teacher_commitment, 
          reason_for_exit = reason_for_exit, 
@@ -138,14 +146,14 @@ isbe_report_primary_core_midyear_2020_full <-
     isbe_state_course_code, 
     local_course_id, 
     local_course_title, 
-    student_course_start_date = dateenrolled, 
+    student_course_start_date, 
     section_number, 
     course_level, 
     course_credit, 
     articulated_credit, 
     dual_credit, 
     course_setting, 
-    student_course_end_date = dateleft, 
+    student_course_end_date, 
     student_course_final_letter_grade, 
     competency_based_education,
     teacher_iein, 
@@ -159,7 +167,74 @@ isbe_report_primary_core_midyear_2020_full <-
     reason_for_exit, 
   )
 
-# Full ISBE Report Primary Excellence -------------------------------------
+# ISBE Report Primary Excellence -------------------------------------
 
-
+isbe_report_primary_excellence_midyear_2020_full <- 
+  students_course_primary_excellence %>%
+  left_join(teacher_personal_info, 
+            by = c("teacher_last_name", 
+                   "teacher_first_name")) %>%
+  select(-c(cps_school_id)) %>%
+  left_join(students_current_demographics, 
+            by = "student_id") %>%
+  left_join(student_enrollment_info, 
+            by = "student_id") %>%
+  left_join(teacher_enrollment, 
+            by = "teacherid") %>%
   
+  # Add additional required columns that are the same for everyone
+  mutate(serving_school = home_rcdts, 
+         school_year = school_year, 
+         term = term, 
+         course_level = course_level, 
+         course_credit = course_credit, 
+         articulated_credit = articulated_credit,
+         dual_credit = dual_credit, 
+         course_setting = course_setting, 
+         student_course_final_letter_grade = NA, 
+         competency_based_education = competency_based_education,
+         eis_position_code = eis_position_code,
+         teacher_commitment = teacher_commitment, 
+         reason_for_exit = reason_for_exit, 
+  ) %>%
+  
+  # Select all required columns in the correct order.
+  select(
+    cps_school_id, 
+    isbe_student_id, 
+    cps_student_id, 
+    student_last_name, 
+    student_first_name, 
+    student_birth_date, 
+    home_rcdts, 
+    serving_school, 
+    school_year, 
+    term, 
+    isbe_state_course_code, 
+    local_course_id, 
+    local_course_title, 
+    student_course_start_date, 
+    section_number, 
+    course_level, 
+    course_credit, 
+    articulated_credit, 
+    dual_credit, 
+    course_setting, 
+    student_course_end_date, 
+    student_course_final_letter_grade, 
+    competency_based_education,
+    teacher_iein, 
+    teacher_last_name, 
+    teacher_first_name, 
+    teacher_birth_date, 
+    teacher_serving, 
+    employer_rcdts, 
+    teacher_course_start_date, 
+    teacher_course_end_date, 
+    reason_for_exit, 
+  )
+
+
+# Full ISBE Report Primary ------------------------------------------------
+
+
