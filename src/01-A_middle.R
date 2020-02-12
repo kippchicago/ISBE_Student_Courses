@@ -41,7 +41,8 @@ students_course_middle <-
   group_by(student_id, local_course_id) %>%
   filter(row_number(desc(dateenrolled)) == 1) %>%
   
-  left_join(local_number_isbe_state_course_ids, 
+  left_join(local_number_isbe_state_course_ids %>% 
+              select(-local_course_title), 
             by = "local_course_id") %>%
   select(-c(first_last_teacher, school)) %>%
   mutate(teacherid = as.character(teacherid)) %>%

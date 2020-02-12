@@ -42,20 +42,19 @@ reason_for_exit = "01"
 students_course_primary_core <- 
   students_local_course_id_title_section_number %>%
   
-  group_by(student_id) %>%
-  filter(row_number(desc(dateenrolled)) == 1) %>%
+  # group_by(student_id) %>%
+  # filter(row_number(desc(dateenrolled)) == 1) %>%
   
-  filter(grepl("k|1|2|3", local_course_title),
+  filter(grepl("k|1|2|3", local_course_id),
          !grepl("Science", local_course_title),
          !grepl("Homework", local_course_title)) %>%
-  mutate(school = str_extract(local_course_id, "kop|kbp|kap|kacp"),
-         grade_level = str_replace(local_course_id, "kop|kbp|kap|kacp", "") %>%       
+  mutate(school = str_extract(local_course_id, "kacp|kop|kbp|kap|kacp"),
+         grade_level = str_replace(local_course_id, "kacp|kop|kbp|kap|kacp", "") %>%       
            str_extract("^.")) %>%
   select(student_id, 
          teacherid, 
          school, 
          grade_level,
-         local_course_title,
          section_number,) %>%
   left_join(local_number_isbe_state_course_ids, 
             by = c("grade_level", 
@@ -83,7 +82,6 @@ students_course_primary_excellence <-
          teacherid, 
          school, 
          grade_level, 
-         local_course_title,
          section_number,) %>%
   
   left_join(local_number_isbe_state_course_ids, 
@@ -102,7 +100,7 @@ students_course_primary_excellence <-
   
 # ISBE Report Primary Core -------------------------------------
 
-isbe_report_primary_core_midyear_2020_full <- 
+isbe_report_primary_core_midyear <- 
   students_course_primary_core %>%
   left_join(teacher_personal_info, 
             by = "teacherid") %>%
@@ -169,7 +167,7 @@ isbe_report_primary_core_midyear_2020_full <-
 
 # ISBE Report Primary Excellence -------------------------------------
 
-isbe_report_primary_excellence_midyear_2020_full <- 
+isbe_report_primary_excellence_midyear <- 
   students_course_primary_excellence %>%
   left_join(teacher_personal_info, 
             by = c("teacher_last_name", 
@@ -237,4 +235,6 @@ isbe_report_primary_excellence_midyear_2020_full <-
 
 # Full ISBE Report Primary ------------------------------------------------
 
-
+isbe_report_primary_midyear_2020_full <- 
+  bind_rows(isbe_report_primary_core_midyear, 
+            isbe_report_primary_excellence_midyear)
