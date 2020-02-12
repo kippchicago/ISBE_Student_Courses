@@ -32,11 +32,13 @@ students_current_demographics <-
     schoolid,
     cps_student_id = student_number, 
     enroll_status,
+    student_id,
   ) %>%
   left_join(
     cps_school_rcdts_ids, 
     by = "schoolid"
-  )
+  ) %>%
+  rename("home_rcdts" = "rcdts_code")
 
 # Student Course Information ----------------------------------------------------------------
 
@@ -109,6 +111,7 @@ teacher_cc_users_zenefits_compiled <-
     date_of_birth, 
     schoolid, 
     email_addr, 
+    initial_employment_start_date,
   ) %>%
   
   # Add RCDTS Code for Teacher Location 
@@ -139,10 +142,24 @@ teacher_iein <-
 
 teacher_personal_info <-
   teacher_iein %>%
-  # select(-c(first_name, last_name, email)) %>%
+  select(-c(first_name, last_name, email)) %>%
   left_join(teacher_cc_users_zenefits_compiled,
             by = "teacherid"
-            )
+            ) %>%
+  mutate(teacher_serving = rcdts_code, 
+         employer_rcdts = rcdts_code) %>%
+  rename("teacher_birth_date" = "date_of_birth")
+
+# Teacher Course Start Date
+# Teacher Course End Date
+
+teacher_enrollment_info <- 
+  teacher_cc_users_zenefits_compiled %>%
+  filter(initial_employment_start_date > first_day_of_school)
+  filter(title == "Teacher" |
+           title == "Teacher Resident" |
+           title == "Substitute Teacher" |
+           title == "Co-Teacher")
 
 # Student Enrollment Information ------------------------------------------
 
