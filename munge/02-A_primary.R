@@ -2,11 +2,6 @@
 # NOTE: all primary students will appear in both students_course_primary_coure
 # and students_course_primary_excellence
 
-library(ProjectTemplate)
-load.project()
-
-source(here::here("munge", "01-A.R"))
-
 # Parameters --------------------------------------------------------------
 # Note: The below numbers are the same for everyone
 

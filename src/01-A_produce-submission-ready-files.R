@@ -1,6 +1,10 @@
 library(ProjectTemplate)
 load.project()
 
+source(here::here("munge", "01-A.R"))
+source(here::here("munge", "02-A_primary.R"))
+source(here::here("munge", "03-A_middle.R"))
+
 # Individual Primary School Reports ---------------------------------------
 
 isbe_midyear_report_kap <- 

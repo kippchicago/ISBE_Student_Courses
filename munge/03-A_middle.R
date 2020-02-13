@@ -1,10 +1,5 @@
 # This script produces the full ISBE Midyear Report for all Middle Schools
 
-library(ProjectTemplate)
-load.project()
-
-source(here::here("munge", "01-A.R"))
-
 # Parameters --------------------------------------------------------------
 # Note: The below numbers are the same for everyone
 

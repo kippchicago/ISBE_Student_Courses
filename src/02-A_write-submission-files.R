@@ -1,3 +1,6 @@
+# this file writes submission ready files to the "output" folder. 
+# NOTE: run "src/01-A_produce-submission-ready-files.R" first
+
 library(ProjectTemplate)
 load.project()
 
