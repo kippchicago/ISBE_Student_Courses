@@ -33,67 +33,9 @@ students_current_demographics <-
     student_birth_date = dob,
     isbe_student_id = state_studentnumber,
     schoolid,
-<<<<<<< HEAD
-    student_number
-  ) %>%
-  left_join(external_codes %>%
-              select(
-                schoolid,
-                abbr
-              ),
-            by = "schoolid"
-  )
-
-# Note: Contains new (2019) alg and prealg isbe codes
-isbe_local_course_codes <- 
-  isbe_report_2017 %>%
-  select(
-    isbe_state_course_code,
-    local_course_id
-  ) %>%
-  unique() %>%
-  mutate(
-    local_course_id = if_else(grepl("kccp", local_course_id),
-                              gsub("kccp", "kac", local_course_id),
-                              local_course_id
-    ),
-    local_course_id = if_else(grepl("kaps", local_course_id),
-                              gsub("kaps", "kap", local_course_id),
-                              local_course_id
-    ),
-    subject = sub("^\\D*(\\d|k)", "", local_course_id),
-    grade_level = str_extract(local_course_id, "\\d"),
-    grade_level = if_else(is.na(grade_level), "K", grade_level)
-  ) %>%
-  add_row(isbe_state_course_code = "52051A000", 
-          local_course_id = "kbcp7prealg", 
-          subject = "prealg", 
-          grade_level = "7") %>%
-  add_row(isbe_state_course_code = "52051A000", 
-          local_course_id = "koa7prealg", 
-          subject = "prealg", 
-          grade_level = "7") %>%
-  add_row(isbe_state_course_code = "52052A000", 
-          local_course_id = "kbcp8alg", 
-          subject = "alg", 
-          grade_level = "8") %>%
-  add_row(isbe_state_course_code = "52052A000", 
-          local_course_id = "koa8alg", 
-          subject = "alg", 
-          grade_level = "8")
-
-# Courses
-# One row per student per class they're enrolled in
-course_df <- 
-  course_enroll %>%
-  rename(ps_stud_id = student_id) %>%
-  left_join(courses,
-            by = "course_number"
-=======
     cps_student_id = student_number, 
     enroll_status,
     student_id,
->>>>>>> V2
   ) %>%
   left_join(
     cps_school_rcdts_ids, 
@@ -256,6 +198,3 @@ student_enrollment_info <-
   # source: https://stackoverflow.com/questions/21704207/r-subset-unique-observation-keeping-last-entry
   group_by(student_id) %>%
   filter(row_number(desc(student_course_start_date)) == 1)
-
-
-  
