@@ -60,5 +60,3 @@ isbe_midyear_report_one <-
 isbe_midyear_report_academy <- 
   bind_rows(isbe_midyear_report_kac, 
             isbe_midyear_report_kacp)
-
-
