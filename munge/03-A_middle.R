@@ -3,26 +3,26 @@
 # Parameters --------------------------------------------------------------
 # Note: The below numbers are the same for everyone
 
-school_year = "2020"
-term = "Y1"
+SCHOOL_YEAR = "2020"
+TERM = "Y1"
 
 # 02 = general 
-course_level = "02"
+COURSE_LEVEL = "02"
 
-course_credit = "1"
-articulated_credit = "02"
-dual_credit = "02"
-course_setting = "01"
-competency_based_education = "02"
+COURSE_CREDIT = "1"
+ARTICULATED_CREDIT = "02"
+DUAL_CREDIT = "02"
+COURSE_SETTING = "01"
+COMPETENCY_BASED_EDUCATION = "02"
 
 # More info: https://www.isbe.net/Documents/position-codes.pdf
-eis_position_code = "200"
+EIS_POSITION_CODE = "200"
 
 # 1.00 means 100% full time commitment to the course
-teacher_commitment = "1.00"
+TEACHER_COMMITMENT = "1.00"
 
 # 01 = Course Ended
-reason_for_exit = "01"
+REASON_FOR_EXIT = "01"
 
 # Student Courses ISBE State Codes --------------------------------------------------
 
@@ -64,18 +64,18 @@ isbe_report_middle_midyear_2020_full <-
   
   # Add additional required columns that are the same for everyone
   mutate(serving_school = home_rcdts, 
-         school_year = school_year, 
-         term = term, 
-         course_level = course_level, 
-         course_credit = course_credit, 
-         articulated_credit = articulated_credit,
-         dual_credit = dual_credit, 
-         course_setting = course_setting, 
+         school_year = SCHOOL_YEAR, 
+         term = TERM, 
+         course_level = COURSE_LEVEL, 
+         course_credit = COURSE_CREDIT, 
+         articulated_credit = ARTICULATED_CREDIT,
+         dual_credit = DUAL_CREDIT, 
+         course_setting = COURSE_SETTING, 
          student_course_final_letter_grade = NA, 
-         competency_based_education = competency_based_education,
-         eis_position_code = eis_position_code,
-         teacher_commitment = teacher_commitment, 
-         reason_for_exit = reason_for_exit, 
+         competency_based_education = COMPETENCY_BASED_EDUCATION,
+         eis_position_code = EIS_POSITION_CODE,
+         teacher_commitment = TEACHER_COMMITMENT, 
+         reason_for_exit = REASON_FOR_EXIT, 
          'Errors Detected?' = NA, 
          'Number of Errors in Record' = NA, 
          'Error Details' = NA, 

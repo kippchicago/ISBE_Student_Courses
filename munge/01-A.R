@@ -2,8 +2,8 @@
 
 # Parameters --------------------------------------------------------------
 
-first_day_of_school <- ymd("2019-08-19")
-teacher_course_end_date = ymd("2020-06-19")
+FIRST_DAY_OF_SCHOOL <- ymd("2019-08-19")
+TEACHER_COURSE_END_DATE = ymd("2020-06-19")
 
 # Student Personal Information ----------------------------------------------------------
 
@@ -17,7 +17,7 @@ teacher_course_end_date = ymd("2020-06-19")
 
 students_current_demographics <- 
   students %>% 
-  filter(entrydate >= first_day_of_school) %>% 
+  filter(entrydate >= FIRST_DAY_OF_SCHOOL) %>% 
   
   # 0 = currently enrolled | 2 = transferred
   filter(enroll_status==0 | enroll_status==2) %>%
@@ -52,7 +52,7 @@ students_current_demographics <-
 
 students_local_course_id_title_section_number <- 
   cc %>%
-  filter(dateenrolled >= first_day_of_school) %>%
+  filter(dateenrolled >= FIRST_DAY_OF_SCHOOL) %>%
   select(
     student_id, 
     schoolid, 
@@ -171,7 +171,7 @@ teacher_enrollment <-
   mutate(teacher_course_start_date = if_else(is.na(current_employment_start_date), 
                                              "2019-08-19", 
                                              current_employment_start_date), 
-         teacher_course_end_date = teacher_course_end_date) %>%
+         teacher_course_end_date = TEACHER_COURSE_END_DATE) %>%
   select(teacherid, 
          teacher_course_start_date, 
          teacher_course_end_date,) %>%
@@ -185,7 +185,7 @@ teacher_enrollment <-
 
 student_enrollment_info <- 
   cc %>%
-  filter(dateenrolled >= first_day_of_school) %>%
+  filter(dateenrolled >= FIRST_DAY_OF_SCHOOL) %>%
   select(
     student_id, 
     student_course_start_date = dateenrolled, 
