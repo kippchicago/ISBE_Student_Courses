@@ -1,0 +1,5 @@
+Connect teacher info:
+
+users.user_dcid = schoolstaff.user_dcid
+THEN
+schoolstaff.id = cc.teacherid

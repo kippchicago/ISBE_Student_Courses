@@ -7,48 +7,22 @@ library(janitor)
 
 gcs_global_bucket("raw_data_storage")
 
-
-# Pull Files from GCS Bucket ----------------------------------------------
-
-# pull middle school grades
-all_grade_files <- gcs_list_objects()
-middle_school_18_18_grade_files <- all_grade_files$name[6:36]
-
-count = 1
-for (file_name in middle_school_18_18_grade_files) {
-  gcs_get_object(file_name,
-                 saveToDisk = paste("data/flatfiles/Middle school 4-8/SY18_19_", count, ".csv", sep = ""), 
-                 overwrite = TRUE)
-  count = count + 1
-}
-
-# pull primary grades
-primary_school_17_18_grade_files <- all_grade_files$name[37:51]
-
-count = 1
-for (file_name in primary_school_17_18_grade_files) {
-  gcs_get_object(file_name,
-                 saveToDisk = paste("data/flatfiles/Primary school K-3/SY17_18_", count, ".csv", sep = ""), 
-                 overwrite = TRUE)
-  count = count + 1
-}
-
-gcs_get_object("ISBE_Student_Courses/18-18_files/190628_Days_Absent.csv", 
-               saveToDisk = "data/flatfiles/190628_Days_Absent.csv", 
+# ISBE State Course Code & Local Course ID
+gcs_get_object("ISBE_Student_Courses/19-20_files/course_local_number_state_ids.csv", 
+               saveToDisk = "data/flatfiles/course_local_number_state_ids.csv", 
                overwrite = TRUE)
 
-gcs_get_object("ISBE_Student_Courses/18-18_files/IEINs & DOBs (18-19) rev.csv",
-               saveToDisk = "data/flatfiles/IEINs & DOBs (18-19) rev.csv", 
+local_number_isbe_state_course_ids <-
+  read_csv(here::here("data", "flatfiles", "course_local_number_state_ids.csv")) %>%
+  janitor::clean_names()
+# created by hand. Primary based on report card fields and hard coded Excellence teachers
+
+# ISBE Teacher Info
+gcs_get_object("ISBE_Student_Courses/19-20_files/zenefits_teacher_data_isbe_midyear_reporting.csv", 
+               saveToDisk = "data/flatfiles/zenefits_teacher_data_isbe_midyear_reporting.csv", 
                overwrite = TRUE)
 
-gcs_get_object("ISBE_Student_Courses/18-18_files/IEINs & DOBs.csv",
-               saveToDisk = "data/flatfiles/IEINs & DOBs.csv", 
-               overwrite = TRUE)
-
-gcs_get_object("ISBE_Student_Courses/18-18_files/isbe_report_courses_2017.csv",
-               saveToDisk = "data/flatfiles/isbe_report_courses_2017.csv", 
-               overwrite = TRUE)
-
+<<<<<<< HEAD
 # added course number state ID file
 gcs_get_object("ISBE_Student_Courses/18-18_files/isbe_report_courses_2017.csv",
                saveToDisk = "data/flatfiles/isbe_report_courses_2017.csv", 
@@ -107,23 +81,28 @@ missing_iein_dob <-
 isbe_report_2017 <- 
   read_csv(here::here("data", "flatfiles", "isbe_report_courses_2017.csv")) %>%
   as_tibble() %>%
+=======
+zenefits_teacher_info <- 
+  read_csv(here::here("data", "flatfiles", "zenefits_teacher_data_isbe_midyear_reporting.csv")) %>%
+>>>>>>> V2
   janitor::clean_names()
 
-file_list_middle <- 
-  dir(path = here::here("data", "flatfiles", "Middle school 4-8/"), 
-      pattern = "SY18_19", full.names = TRUE)
+# 19/20 IEIN Teacher Data (Collected from talent team)
+gcs_get_object("ISBE_Student_Courses/19-20_files/19_20_IEIN_numbers.csv", 
+               saveToDisk = "data/flatfiles/19_20_IEIN_numbers.csv", 
+               overwrite = TRUE)
 
-grade_df_list_middle <- 
-  file_list_middle %>%
-  map(read_csv) %>%
-  map(clean_names)
+teacher_iein_licensure_report <- 
+  read_csv(here::here("data", "flatfiles", "19_20_IEIN_numbers.csv")) %>%
+  janitor::clean_names()
 
-file_list_primary <- 
-  dir(path = here::here("data", "flatfiles", "Primary school K-3/"), 
-      pattern = "SY17_18", full.names = TRUE)
+# KIPP Staff who started after the start of school (2019/08/19)
+# Data gathered from HR
+gcs_get_object("ISBE_Student_Courses/19-20_files/kipp_staff_member_start_after_20190819.csv", 
+               saveToDisk = "data/flatfiles/kipp_staff_member_start_after_20190819.csv", 
+               overwrite = TRUE)
 
-grade_df_list_prim <- 
-  file_list_primary %>%
-  map(read_csv) %>%
-  map(clean_names)
+kipp_staff_member_start_after_20190819 <- 
+  read_csv(here::here("data", "flatfiles", "kipp_staff_member_start_after_20190819.csv")) %>%
+  janitor::clean_names()
 

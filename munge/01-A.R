@@ -1,22 +1,39 @@
-# preprocessing script.
+# Pull and munge data for both primary and middle school
 
-# NOTE: Filters to Current Course enrollment
-# FOR ALL SCHOOLS
-course_enroll <- 
-  cc %>%
-  filter(termid %in% c(2900, -2900)) %>% # remove hardcoding
-  group_by(
-    student_id,
-    course_number
-  ) %>%
-  filter(dateleft == max(dateleft))
+# Parameters --------------------------------------------------------------
 
-# Note: Filters down to student_id, schoolid, abbr for all past and present students
-# FOR ALL SCHOOLS
-student_schools <-
-  students %>%
+first_day_of_school <- ymd("2019-08-19")
+teacher_course_end_date = ymd("2020-06-19")
+
+# Student Personal Information ----------------------------------------------------------
+
+# Note: this section produces the following columns required for ISBE Reporting
+# Student Last Name
+# Student First Name
+# Birth Date
+# CPS Student ID
+# ISBE Student ID
+# Serving School
+
+students_current_demographics <- 
+  students %>% 
+  filter(entrydate >= first_day_of_school) %>% 
+  
+  # 0 = currently enrolled | 2 = transferred
+  filter(enroll_status==0 | enroll_status==2) %>%
+  
+  # NOTE: if student_number is NA it means that the student 
+  # already exists under a different student ID
+  mutate(student_number = na_if(student_number, ""),
+         state_studentnumber = na_if(state_studentnumber, "")) %>%
+  drop_na(student_number) %>%
   select(
+    student_last_name = last_name,
+    student_first_name = first_name,
+    student_birth_date = dob,
+    isbe_student_id = state_studentnumber,
     schoolid,
+<<<<<<< HEAD
     student_number
   ) %>%
   left_join(external_codes %>%
@@ -72,138 +89,173 @@ course_df <-
   rename(ps_stud_id = student_id) %>%
   left_join(courses,
             by = "course_number"
+=======
+    cps_student_id = student_number, 
+    enroll_status,
+    student_id,
+>>>>>>> V2
   ) %>%
-  mutate(
-    course_name = if_else(str_detect(course_name, "\\dth Math") &
-                            !grepl("Mathematics|Centers", course_name),
-                          str_replace(course_name, "Math", "Mathematics"),
-                          course_name
-    ),
-    course_name = if_else(grepl("ELA", course_name) &
-                            !grepl("KAP", course_name),
-                          str_replace(course_name, "ELA", "English Language Arts"),
-                          course_name
-    ),
-    course_name = if_else(grepl("Literacy Center", course_name) & !grepl("Centers", course_name),
-                          str_replace(course_name, "Center", "Centers"),
-                          course_name
-    )
-  )
-
-# PRIMARY NEEDS -----------------------------------------------------------
-# new state course codes (i.e. not in Michael's previous EOY submission)
-missing_st_code <- 
-  course_enroll %>%
-  ungroup() %>%
-  select(course_number) %>%
-  filter(!grepl("att", course_number)) %>%
-  unique() %>%
-  anti_join(
-    isbe_local_course_codes,
-    by = c("course_number" = "local_course_id")
+  left_join(
+    cps_school_rcdts_ids, 
+    by = "schoolid"
   ) %>%
-  filter(!grepl("ell|behav|hw|cread|swela|swmath", course_number))
+  rename("home_rcdts" = "rcdts_code")
 
-# Attendance --------------------------------------------------------------
+# Student Course Information ----------------------------------------------------------------
 
-# sy<-silounloadr::calc_academic_year(today(), format = 'firstyear')
-sy <- silounloadr::calc_academic_year(ymd("2020-06-07"), format = "firstyear") # hard coded, fix
+# Note: this section produces the following columns required for ISBE Reporting
+# Section Number
+# Local Course ID
+# Local Course Title
 
-ps_sy_termid <- 
-  silounloadr::calc_ps_termid(sy) %>%
-  str_extract("\\d{2}") %>%
-  as.integer()
-
-attendance_complete <- 
-  attendance %>%
-  right_join(attendance_code %>%
-               select(
-                 attendance_codeid = id,
-                 att_code
-               ),
-             by = "attendance_codeid"
-  )
-
-member_att <- 
-  membership %>%
-  left_join(attendance_complete %>%
-              select(
-                studentid,
-                att_date,
-                att_code
-                # presence_status_cd
-              ),
-            by = c("studentid",
-                   "date" = "att_date"
-            )
-  )
-
-attend_student <- 
-  member_att %>%
-  # mutate(date = lubridate::ymd_hms(date)) %>%
-  filter(date >= lubridate::ymd("2019-08-20")) %>% # hard coded, fix
-  mutate(
-    enrolled0 = 1,
-    enrolled = if_else(att_code == "D" & !is.na(att_code), 0, enrolled0),
-    present0 = ifelse(is.na(att_code), 1, 0),
-    present1 = ifelse(att_code %in% c("A", "S"), 0, present0),
-    present2 = ifelse(att_code == "H", 0.5, present1),
-    present3 = ifelse(att_code %in% c("T", "E"), 1, present2),
-    present = ifelse(is.na(present2), 1, present3),
-    absent = (1 - present) * enrolled,
-    tardy = ifelse(att_code %in% "T", 1, 0)
-  ) %>%
-  left_join(students %>%
-              select(
-                student_id,
-                student_number,
-                first_name,
-                last_name
-              ),
-            # home_room),
-            by = c("studentid" = "student_id")
-  ) %>%
-  # inner_join(schools, by=c("schoolid")) %>%
+students_local_course_id_title_section_number <- 
+  cc %>%
+  filter(dateenrolled >= first_day_of_school) %>%
   select(
-    studentid,
-    student_number,
-    first_name,
-    last_name,
-    grade_level,
-    schoolid,
-    # schoolname,
-    # schoolabbreviation,
-    # home_room,
-    date,
-    att_code,
-    enrolled,
-    present,
-    absent,
-    tardy
-  )
-
-# agg attendance 
-attend_school_grade_student <- 
-  attend_student %>%
-  dplyr::filter(date <= lubridate::ymd("2020-06-07")) %>% # CHANGE DATE    # hard coded, fix
-  group_by(schoolid, grade_level, student_number, first_name, last_name) %>%
-  summarize(
-    enrolled = sum(enrolled),
-    present = sum(present),
-    absent = sum(absent),
-    tardy = sum(tardy)
+    student_id, 
+    schoolid, 
+    course_number, 
+    section_number, 
+    teacherid, 
+    dateenrolled,
+    dateleft,
   ) %>%
-  arrange(
-    schoolid,
-    grade_level
-  )
+  
+  # Join to add Local Course title
+  left_join(courses, 
+            by = "course_number") %>%
+  rename(local_course_id = course_number, 
+         local_course_title = course_name) %>%
+  
+  # remove Attendance (homeroom) and ELL (used for sorting but not an actual course) sections
+  filter(!grepl("Attendance| ELL", local_course_title))
 
-full_attendance <- 
-  attend_school_grade_student %>%
-  ungroup() %>%
+
+# Teacher Personal Information  -------------------------------------------------------------
+
+# Note: this section produces the following columns required for ISBE Reporting
+# Teacher IEIN (Illinois Educator Identification Number)
+# Teacher Last Name
+# Teacher First Name
+# Teacher Birth Date
+# Teacher Serving
+# Employer RCDTS
+# EIS Position Code
+# Teacher Commitment
+# Reason for Exit
+
+teacher_cc_users_zenefits_compiled <- 
+  cc %>%
+  left_join(schoolstaff, 
+            by = c("teacherid" = "id")) %>%
+  
+  # Join users to obtain teacher names and email addresses
+  left_join(users,
+            by = "users_dcid"
+            ) %>%
+  select (
+    teacherid, 
+    teacher_first_name, 
+    teacher_last_name, 
+    email_addr,
+    schoolid, 
+  ) %>%
+  
+  # Filter down to single row per teacher
+  distinct() %>%
+  left_join(zenefits_teacher_info, 
+             by = c("teacher_first_name" = "first_name", 
+                    "teacher_last_name" = "last_name", 
+                    "email_addr" = "work_email")) %>%
   select(
-    schoolid,
-    student_number,
-    enrolled,
-    present
-  )
+    teacherid, 
+    teacher_first_name, 
+    teacher_last_name, 
+    date_of_birth, 
+    schoolid, 
+    email_addr, 
+    initial_employment_start_date,
+  ) %>%
+  
+  # Add RCDTS Code for Teacher Location 
+  left_join(
+    cps_school_rcdts_ids, 
+    by = "schoolid"
+    ) %>%
+  mutate(teacherid = as.character(teacherid)) %>%
+  
+  # NOTE: This line trims all white space from character columns. This 
+  # is imperitive later when we want to join datasets on teacherid column
+  mutate_if(is.character, str_trim)
+
+teacher_iein <-
+  teacher_iein_licensure_report %>%
+  separate(col = name,
+           into = c("last_name", "first_name"),
+           sep = ",") %>%
+  drop_na(last_name) %>%
+  select(-work_team) %>%
+  rename("teacher_iein" = "iein") %>%
+  mutate(email = trimws(email, which = c("both"))) %>%
+  mutate(teacherid = as.character(teacherid)) %>% 
+  
+  # NOTE: This line trims all white space from character columns. This 
+  # is imperitive later when we want to join datasets on teacherid column
+  mutate_if(is.character, str_trim)
+
+teacher_personal_info <-
+  teacher_iein %>%
+  select(-c(first_name, last_name, email)) %>%
+  left_join(teacher_cc_users_zenefits_compiled,
+            by = "teacherid"
+            ) %>%
+  mutate(teacher_serving = rcdts_code, 
+         employer_rcdts = rcdts_code) %>%
+  rename("teacher_birth_date" = "date_of_birth") %>%
+  mutate_if(is.character, str_trim)
+
+
+# Teacher Enrollment Information ------------------------------------------------------
+
+# Teacher Course Start Date
+# Teacher Course End Date
+
+teacher_enrollment <- 
+  teacher_personal_info %>%
+  left_join(kipp_staff_member_start_after_20190819, 
+            by = c("teacher_last_name" = "last_name", 
+                   "teacher_first_name" = "first_name")) %>%
+  mutate(current_employment_start_date = as.character(current_employment_start_date)) %>%
+  mutate(teacher_course_start_date = if_else(is.na(current_employment_start_date), 
+                                             "2019-08-19", 
+                                             current_employment_start_date), 
+         teacher_course_end_date = teacher_course_end_date) %>%
+  select(teacherid, 
+         teacher_course_start_date, 
+         teacher_course_end_date,) %>%
+  distinct()
+
+# Student Enrollment Information ------------------------------------------
+
+# Note: this section produces the following columns required for ISBE Reporting
+# Student Course End Date
+# Student Course Start Date
+
+student_enrollment_info <- 
+  cc %>%
+  filter(dateenrolled >= first_day_of_school) %>%
+  select(
+    student_id, 
+    student_course_start_date = dateenrolled, 
+    student_course_end_date = dateleft, 
+    schoolid
+  ) %>% 
+  distinct() %>%
+  
+  # Keeps latest student enrollment date
+  # source: https://stackoverflow.com/questions/21704207/r-subset-unique-observation-keeping-last-entry
+  group_by(student_id) %>%
+  filter(row_number(desc(student_course_start_date)) == 1)
+
+
+  
