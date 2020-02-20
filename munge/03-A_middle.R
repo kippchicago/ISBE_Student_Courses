@@ -53,7 +53,7 @@ isbe_report_middle_midyear_2020_full <-
   students_course_middle %>%
   left_join(teacher_personal_info, 
             by = "teacherid") %>%
-  select(-c(schoolid.x, schoolid.y, cps_school_id)) %>%
+  select(-c(schoolid.x, schoolid.y,)) %>%
   left_join(students_current_demographics, 
             by = "student_id") %>%
   left_join(student_enrollment_info, 

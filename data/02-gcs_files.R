@@ -33,7 +33,18 @@ gcs_get_object("ISBE_Student_Courses/19-20_files/19_20_IEIN_numbers.csv",
 
 teacher_iein_licensure_report <- 
   read_csv(here::here("data", "flatfiles", "19_20_IEIN_numbers.csv")) %>%
-  janitor::clean_names()
+  janitor::clean_names() %>%
+  rename("teacher_iein" = "iein") %>%
+  mutate(email = trimws(email, which = c("both")), 
+         last_name = trimws(last_name, which = c("both")), 
+         first_name = trimws(first_name, which = c("both"))) %>%
+  mutate(teacherid = as.character(teacherid), 
+         birthday = mdy(birthday)
+         ) %>% 
+  mutate(birthday = format(as.Date(birthday), "%m/%d/%Y")) %>%
+  # NOTE: This line trims all white space from character columns. This 
+  # is imperitive later when we want to join datasets on teacherid column
+  mutate_if(is.character, str_trim)
 
 # KIPP Staff who started after the start of school (2019/08/19)
 # Data gathered from HR
@@ -44,4 +55,3 @@ gcs_get_object("ISBE_Student_Courses/19-20_files/kipp_staff_member_start_after_2
 kipp_staff_member_start_after_20190819 <- 
   read_csv(here::here("data", "flatfiles", "kipp_staff_member_start_after_20190819.csv")) %>%
   janitor::clean_names()
-

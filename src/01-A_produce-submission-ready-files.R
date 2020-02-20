@@ -23,7 +23,6 @@ isbe_midyear_report_kop <-
   isbe_report_primary_midyear_2020_full %>%
   filter(grepl("kop", `Local Course ID`))
 
-
 # Individual Middle School Reports ----------------------------------------
 
 isbe_midyear_report_kams <- 

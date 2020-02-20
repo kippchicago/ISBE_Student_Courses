@@ -37,6 +37,7 @@ students_current_demographics <-
     enroll_status,
     student_id,
   ) %>%
+  
   mutate(student_birth_date = format(as.Date(student_birth_date),'%m/%d/%Y')
          ) %>%
   left_join(
@@ -84,9 +85,6 @@ students_local_course_id_title_section_number <-
 # Teacher Birth Date
 # Teacher Serving
 # Employer RCDTS
-# EIS Position Code
-# Teacher Commitment
-# Reason for Exit
 
 teacher_cc_users_zenefits_compiled <- 
   cc %>%
@@ -122,7 +120,7 @@ teacher_cc_users_zenefits_compiled <-
     email_addr,
     initial_employment_start_date,
   ) %>%
-  
+  mutate(date_of_birth = format(as.Date(date_of_birth), "%m/%d/%Y")) %>%
   # Add RCDTS Code for Teacher Location 
   left_join(
     cps_school_rcdts_ids,
@@ -134,30 +132,20 @@ teacher_cc_users_zenefits_compiled <-
   # is imperitive later when we want to join datasets on teacherid column
   mutate_if(is.character, str_trim)
 
-teacher_iein <-
-  teacher_iein_licensure_report %>%
-  separate(col = name,
-           into = c("last_name", "first_name"),
-           sep = ",") %>%
-  drop_na(last_name) %>%
-  select(-work_team) %>%
-  rename("teacher_iein" = "iein") %>%
-  mutate(email = trimws(email, which = c("both"))) %>%
-  mutate(teacherid = as.character(teacherid)) %>% 
-  
-  # NOTE: This line trims all white space from character columns. This 
-  # is imperitive later when we want to join datasets on teacherid column
-  mutate_if(is.character, str_trim)
-
 teacher_personal_info <-
-  teacher_iein %>%
-  select(-c(first_name, last_name, email)) %>%
+  teacher_iein_licensure_report %>%
   left_join(teacher_cc_users_zenefits_compiled,
             by = "teacherid"
             ) %>%
+  select(-c(name, preffered_name, suffix, email_addr,
+            teacher_first_name, teacher_last_name, 
+            date_of_birth, initial_employment_start_date, 
+            abbr, cps_school_id, work_team,)) %>%
   mutate(teacher_serving = rcdts_code, 
          employer_rcdts = rcdts_code) %>%
-  rename("teacher_birth_date" = "date_of_birth") %>%
+  rename("teacher_birth_date" = "birthday", 
+         "teacher_last_name" = "last_name", 
+         "teacher_first_name" = "first_name",) %>%
   mutate_if(is.character, str_trim)
 
 

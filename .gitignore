@@ -11,3 +11,4 @@
 .Ruserdata
 .DS_Store
 cache
+.httr-oauth

@@ -98,7 +98,7 @@ isbe_report_primary_core_midyear <-
   students_course_primary_core %>%
   left_join(teacher_personal_info, 
             by = "teacherid") %>%
-  select(-c(schoolid, abbr, email_addr, cps_school_id)) %>%
+  select(-c(schoolid)) %>%
   left_join(students_current_demographics, 
             by = "student_id") %>%
   select(-c(schoolid)) %>%
@@ -209,7 +209,7 @@ isbe_report_primary_excellence_midyear <-
   left_join(teacher_personal_info, 
             by = c("teacher_last_name", 
                    "teacher_first_name")) %>%
-  select(-c(cps_school_id)) %>%
+  # select(-c(cps_school_id)) %>%
   left_join(students_current_demographics, 
             by = "student_id") %>%
   left_join(student_enrollment_info, 
