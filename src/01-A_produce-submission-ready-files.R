@@ -42,7 +42,6 @@ isbe_midyear_report_koa <-
   isbe_report_middle_midyear_2020_full %>%
   filter(grepl("koa", `Local Course ID`))
 
-
 # Final Combined Reports (4 Schools)  -------------------------------------
 
 isbe_midyear_report_ascend <- 

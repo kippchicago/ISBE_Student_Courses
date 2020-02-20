@@ -96,7 +96,6 @@ isbe_report_middle_midyear_2020_full <-
          'Local Teacher ID' = NA,
          'Actual Attendance (Classes)' = NA, 
          'Total Attendance (Classes)' = NA, 
-         
          ) %>%
   
   # Select all required columns in the correct order.

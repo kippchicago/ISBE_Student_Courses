@@ -37,6 +37,8 @@ students_current_demographics <-
     enroll_status,
     student_id,
   ) %>%
+  mutate(student_birth_date = format(as.Date(student_birth_date),'%m/%d/%Y')
+         ) %>%
   left_join(
     cps_school_rcdts_ids, 
     by = "schoolid"
@@ -97,31 +99,33 @@ teacher_cc_users_zenefits_compiled <-
             ) %>%
   select (
     teacherid, 
-    teacher_first_name, 
-    teacher_last_name, 
+    teacher_first_name,
+    teacher_last_name,
     email_addr,
     schoolid, 
   ) %>%
   
   # Filter down to single row per teacher
   distinct() %>%
-  left_join(zenefits_teacher_info, 
+  left_join(zenefits_teacher_info,
              by = c("teacher_first_name" = "first_name", 
-                    "teacher_last_name" = "last_name", 
-                    "email_addr" = "work_email")) %>%
+                    "teacher_last_name" = "last_name",
+                    "email_addr" = "work_email"
+                    )
+            ) %>%
   select(
-    teacherid, 
-    teacher_first_name, 
-    teacher_last_name, 
-    date_of_birth, 
-    schoolid, 
-    email_addr, 
+    teacherid,
+    teacher_first_name,
+    teacher_last_name,
+    date_of_birth,
+    schoolid,
+    email_addr,
     initial_employment_start_date,
   ) %>%
   
   # Add RCDTS Code for Teacher Location 
   left_join(
-    cps_school_rcdts_ids, 
+    cps_school_rcdts_ids,
     by = "schoolid"
     ) %>%
   mutate(teacherid = as.character(teacherid)) %>%
@@ -166,12 +170,20 @@ teacher_enrollment <-
   teacher_personal_info %>%
   left_join(kipp_staff_member_start_after_20190819, 
             by = c("teacher_last_name" = "last_name", 
-                   "teacher_first_name" = "first_name")) %>%
+                   "teacher_first_name" = "first_name")
+            ) %>%
   mutate(current_employment_start_date = as.character(current_employment_start_date)) %>%
   mutate(teacher_course_start_date = if_else(is.na(current_employment_start_date), 
                                              "2019-08-19", 
                                              current_employment_start_date), 
          teacher_course_end_date = TEACHER_COURSE_END_DATE) %>%
+  
+  # change date format
+  mutate(teacher_course_start_date = format(as.Date(teacher_course_start_date),'%m/%d/%Y')
+         ) %>%
+  mutate(teacher_course_end_date = format(as.Date(teacher_course_end_date),'%m/%d/%Y')
+         ) %>%
+
   select(teacherid, 
          teacher_course_start_date, 
          teacher_course_end_date,) %>%
@@ -193,6 +205,10 @@ student_enrollment_info <-
     schoolid
   ) %>% 
   distinct() %>%
+  mutate(student_course_start_date = format(as.Date(student_course_start_date),'%m/%d/%Y')
+         ) %>%
+  mutate(student_course_end_date = format(as.Date(student_course_end_date),'%m/%d/%Y') 
+         ) %>%
   
   # Keeps latest student enrollment date
   # source: https://stackoverflow.com/questions/21704207/r-subset-unique-observation-keeping-last-entry
