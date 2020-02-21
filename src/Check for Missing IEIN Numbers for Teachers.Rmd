@@ -63,6 +63,13 @@ write.csv(missing_birthday_teacher_full,
 List of teachers that work in multiple schools
 
 ```{r}
+incorrect_names_4044 <- 
+  report_400044_w_errors %>%
+  filter(grepl("does not match ASPEN", Error.Details)) %>% 
+  select(CPS.Student.ID, Student.Last.Name, Student.First.Name)
+  
+
+write_csv(incorrect_names_4044, here::here("incorrect_names_4044.csv"))
 
 ```
 
