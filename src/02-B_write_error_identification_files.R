@@ -17,7 +17,8 @@ write_csv(final_errors_400163,
                      paste("final_errors_400163", today(), ".csv", sep="_")))
 
 write_csv(final_errors_400180, 
-          here::here("output", "errors", "distinct_errors", paste("final_errors_400180", today(), ".csv", sep="_")))
+          here::here("output", "errors", "distinct_errors", 
+                     paste("final_errors_400180", today(), ".csv", sep="_")))
 
 
 # Write Name Errors -------------------------------------------------------
@@ -36,3 +37,22 @@ write_csv(incorrect_names_400163,
 write_csv(incorrect_names_400180, 
           here::here("output", "errors", "distinct_errors",
                      paste("incorrect_names_400180", today(), ".csv", sep = "_")))
+
+
+# Write DOB Errors --------------------------------------------------------
+
+write_csv(incorrect_dob_400044, 
+          here::here("output", "errors", "distinct_errors", 
+                     paste("incorrect_dob_400044", today(), ".csv", sep = "_")))
+
+write_csv(incorrect_dob_400146, 
+          here::here("output", "errors", "distinct_errors",
+                     paste("incorrect_dob_400146", today(), ".csv", sep = "_")))
+write_csv(incorrect_dob_400163, 
+          here::here("output", "errors", "distinct_errors",
+                     paste("incorrect_dob_400163", today(), ".csv", sep = "_")))
+
+write_csv(incorrect_dob_400180, 
+          here::here("output", "errors", "distinct_errors",
+                     paste("incorrect_dob_400180", today(), ".csv", sep = "_")))
+
