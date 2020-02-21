@@ -27,5 +27,5 @@ This repo contains scripts that ingest data that is stored in KIPP Chicago's dat
 5. Error file processing scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/src)
 6. Helper scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/lib)
 5. Data Documentation scripts (data dictionaries) are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/documentation)
-8. Deliverables would be output [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/output) Note: Deliverables are not included in this repo. 
-9. [Getting Started instructions](#)
+8. Deliverables would be output [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/output). **Note**: Deliverables are not included in this repo. 
+9. Instructions for using the Repo are [here](#)
