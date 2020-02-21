@@ -1,0 +1,187 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Identify all teachers missing IEIN 
+```{r}
+primary_missing_iein <- 
+  isbe_report_primary_midyear_2020_full %>%
+  select(`Teacher Last Name`, 
+         `Teacher First Name`, 
+         `Teacher Birth Date`, 
+         `Teacher IEIN  (Illinois Educator Identification Number)`) %>%
+  filter(is.na(`Teacher IEIN  (Illinois Educator Identification Number)`)) %>%
+  distinct()
+
+middle_missing_iein <- 
+  isbe_report_middle_midyear_2020_full %>%
+  select(`Teacher Last Name`, 
+         `Teacher First Name`, 
+         `Teacher Birth Date`, 
+         `Teacher IEIN  (Illinois Educator Identification Number)`) %>%
+  filter(is.na(`Teacher IEIN  (Illinois Educator Identification Number)`)) %>%
+  distinct()
+
+missing_iein_full <- 
+  bind_rows(primary_missing_iein, 
+            middle_missing_iein) %>%
+  distinct()
+
+```
+
+```{r eval=FALSE, include=FALSE}
+write.csv(missing_iein_full, "missing_iein_19-20_midyear_report.csv")
+```
+
+
+Missing Teacher Birthdays: ALL
+```{r}
+primary_missing_teacher_birthday <- 
+  isbe_report_primary_midyear_2020_full %>%
+  select(`Teacher Last Name`, 
+         `Teacher First Name`, 
+         `Teacher Birth Date`) %>%
+  distinct() %>%
+  filter(is.na(`Teacher Birth Date`))
+
+middle_missing_teacher_birthday <- 
+  isbe_report_middle_midyear_2020_full %>%
+  select(`Teacher Last Name`, 
+         `Teacher First Name`, 
+         `Teacher Birth Date`) %>%
+  distinct() %>%
+  filter(is.na(`Teacher Birth Date`))
+
+missing_birthday_teacher_full <- 
+  bind_rows(middle_missing_teacher_birthday, 
+            primary_missing_teacher_birthday) %>%
+  distinct()
+
+```
+
+```{r eval=FALSE, include=FALSE}
+write.csv(missing_birthday_teacher_full,
+          "missing_teacher_birthday_19-20_midyear_report.csv",
+          row.names = FALSE)
+```
+
+Identify Names that are Different in ASPEN and PowerSchools
+```{r}
+incorrect_names_400044 <- 
+  report_400044_w_errors %>%
+  group_by(CPS.Student.ID) %>%
+  filter(row_number(desc(Student.Course.Start.Date)) == 1) %>%
+  filter(grepl("does not match ASPEN", Error.Details)) %>% 
+  select(CPS.Student.ID, Student.Last.Name, Student.First.Name, Error.Details) %>%
+  separate("Error.Details", 
+             into = c("E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", 
+                      "E9", "E10", "E11"), 
+             sep = ";") %>%
+  pivot_longer(cols = c(E1, E2, E3, E4, E5, E6, E7, E8, E9, E10, E11), 
+               names_to = "errors") %>%
+  filter(str_detect(value, "Name")) %>%
+  select(CPS.Student.ID, Student.Last.Name, Student.First.Name, ASPEN_name = value) %>%
+  ungroup(CPS.Student.ID) %>%
+  mutate(CPS.Student.ID = as.integer(CPS.Student.ID)) %>%
+  left_join(students, 
+            by = c("CPS.Student.ID" = "student_number")) %>%
+  left_join(cps_school_rcdts_ids, 
+            by = "schoolid") %>%
+  select(CPS.Student.ID, dob, school = abbr, grade_level, 
+         Student.Last.Name, Student.First.Name, ASPEN_name) %>%
+  mutate(correct_name = "")
+
+incorrect_names_400146 <-
+  report_400146_w_errors %>%
+  group_by(CPS.Student.ID) %>%
+  filter(row_number(desc(Student.Course.Start.Date)) == 1) %>%
+  filter(grepl("does not match ASPEN", Error.Details)) %>% 
+  select(CPS.Student.ID, Student.Last.Name, Student.First.Name, Error.Details) %>%
+  separate("Error.Details", 
+             into = c("E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", 
+                      "E9", "E10", "E11"), 
+             sep = ";") %>%
+  pivot_longer(cols = c(E1, E2, E3, E4, E5, E6, E7, E8, E9, E10, E11), 
+               names_to = "errors") %>%
+  filter(str_detect(value, "Name")) %>%
+  select(CPS.Student.ID, Student.Last.Name, Student.First.Name, ASPEN_name = value) %>%
+  ungroup(CPS.Student.ID) %>%
+  mutate(CPS.Student.ID = as.integer(CPS.Student.ID)) %>%
+  left_join(students, 
+            by = c("CPS.Student.ID" = "student_number")) %>%
+  left_join(cps_school_rcdts_ids, 
+            by = "schoolid") %>%
+  select(CPS.Student.ID, dob, school = abbr, grade_level, 
+         Student.Last.Name, Student.First.Name, ASPEN_name) %>%
+  mutate(correct_name = "")
+  
+incorrect_names_400163 <-
+  report_400163_w_errors %>%
+  group_by(CPS.Student.ID) %>%
+  filter(row_number(desc(Student.Course.Start.Date)) == 1) %>%
+  filter(grepl("does not match ASPEN", Error.Details)) %>% 
+  select(CPS.Student.ID, Student.Last.Name, Student.First.Name, Error.Details) %>%
+  separate("Error.Details", 
+             into = c("E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", 
+                      "E9", "E10", "E11"), 
+             sep = ";") %>%
+  pivot_longer(cols = c(E1, E2, E3, E4, E5, E6, E7, E8, E9, E10, E11), 
+               names_to = "errors") %>%
+  filter(str_detect(value, "Name")) %>%
+  select(CPS.Student.ID, Student.Last.Name, Student.First.Name, ASPEN_name = value) %>%
+  ungroup(CPS.Student.ID) %>%
+  mutate(CPS.Student.ID = as.integer(CPS.Student.ID)) %>%
+  left_join(students, 
+            by = c("CPS.Student.ID" = "student_number")) %>%
+  left_join(cps_school_rcdts_ids, 
+            by = "schoolid") %>%
+  select(CPS.Student.ID, dob, school = abbr, grade_level, 
+         Student.Last.Name, Student.First.Name, ASPEN_name) %>%
+  mutate(correct_name = "")
+
+incorrect_names_400180 <-
+  report_400180_w_errors %>%
+  group_by(CPS.Student.ID) %>%
+  filter(row_number(desc(Student.Course.Start.Date)) == 1) %>%
+  filter(grepl("does not match ASPEN", Error.Details)) %>% 
+  select(CPS.Student.ID, Student.Last.Name, Student.First.Name, Error.Details) %>%
+  separate("Error.Details", 
+             into = c("E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", 
+                      "E9", "E10", "E11"), 
+             sep = ";") %>%
+  pivot_longer(cols = c(E1, E2, E3, E4, E5, E6, E7, E8, E9, E10, E11), 
+               names_to = "errors") %>%
+  filter(str_detect(value, "Name")) %>%
+  select(CPS.Student.ID, Student.Last.Name, Student.First.Name, ASPEN_name = value) %>%
+  ungroup(CPS.Student.ID) %>%
+  mutate(CPS.Student.ID = as.integer(CPS.Student.ID)) %>%
+  left_join(students, 
+            by = c("CPS.Student.ID" = "student_number")) %>%
+  left_join(cps_school_rcdts_ids, 
+            by = "schoolid") %>%
+  select(CPS.Student.ID, dob, school = abbr, grade_level, 
+         Student.Last.Name, Student.First.Name, ASPEN_name) %>%
+  mutate(correct_name = "")
+  
+```
+
+
+```{r}
+write_csv(incorrect_names_400044, 
+          here::here("output", "errors", "distinct_errors",
+                     "incorrect_names_400044.csv"))
+
+write_csv(incorrect_names_400146, 
+          here::here("output", "errors", "distinct_errors",
+                     "incorrect_names_400146.csv"))
+
+write_csv(incorrect_names_400163, 
+          here::here("output", "errors", "distinct_errors",
+                     "incorrect_names_400163.csv"))
+
+write_csv(incorrect_names_400180, 
+          here::here("output", "errors", "distinct_errors",
+                     "incorrect_names_400180.csv"))
+```
+
