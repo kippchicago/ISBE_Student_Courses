@@ -23,7 +23,7 @@ This repo contains scripts that ingest data that is stored in KIPP Chicago's dat
 1. Clone this repo (for help see this [tutorial](https://help.github.com/articles/cloning-a-repository/)).
 2. Data scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/data) within this repo.
 3. Data processing/transformation scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/munge)
-4. Scripts that produce Middle School and Primary School reports are being kept [here}(https://github.com/kippchicago/isbe_midyear_reporting/tree/master/src)
+4. Scripts that produce Middle School and Primary School reports are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/src)
 5. Error file processing scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/src)
 6. Helper scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/lib)
 5. Data Documentation scripts (data dictionaries) are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/documentation)
