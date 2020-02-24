@@ -1,12 +1,12 @@
 # pulls datasets from Big Query Database
 sy <- silounloadr::calc_academic_year(ymd("2020-06-07"), format = "firstyear")
 
-ps_sy_termid <- 
+ps_sy_termid <-
   silounloadr::calc_ps_termid(sy) %>%
   str_extract("\\d{2}") %>%
   as.integer()
 
-students <- 
+students <-
   get_powerschool("students") %>%
   select(
     student_id = id,
@@ -19,13 +19,13 @@ students <-
     entrydate,
     exitdate,
     enroll_status,
-    enrollmentcode, 
+    enrollmentcode,
     grade_level
   ) %>%
   collect()
 
 # course/section information
-cc <- 
+cc <-
   get_powerschool("cc") %>%
   select(
     cc_id = id,
@@ -36,12 +36,12 @@ cc <-
     section_number,
     student_id = studentid,
     teacherid,
-    termid, 
+    termid,
   ) %>%
   collect()
 
 # Course Names
-courses <- 
+courses <-
   get_powerschool("courses") %>%
   select(
     course_number,
@@ -50,8 +50,8 @@ courses <-
   collect()
 
 # re-enrollments table
-reenrollment <- 
-  get_powerschool("reenrollments") %>% 
+reenrollment <-
+  get_powerschool("reenrollments") %>%
   select(
     student_id = studentid,
     enrollmentcode,
@@ -62,7 +62,7 @@ reenrollment <-
   collect()
 
 # school staff IDs to match with user information
-schoolstaff <- 
+schoolstaff <-
   get_powerschool("schoolstaff") %>%
   select(
     teacherid = id,
@@ -73,7 +73,7 @@ schoolstaff <-
   collect()
 
 # users info: full name, internal KIPP Chicago ID
-users <- 
+users <-
   get_powerschool("users") %>%
   select(
     users_dcid = dcid,
@@ -84,7 +84,7 @@ users <-
   ) %>%
   collect()
 
-membership <- 
+membership <-
   get_powerschool("ps_membership_reg") %>%
   filter(yearid >= ps_sy_termid) %>%
   select(studentid,
@@ -96,21 +96,21 @@ membership <-
   ) %>%
   collect()
 
-ps_enrollment <- 
+ps_enrollment <-
   get_powerschool("ps_enrollment_all") %>%
   select(
     ps_stud_id = studentid,
     schoolid,
     entrydate,
-    exitdate, 
+    exitdate,
     yearid
   ) %>%
   collect()
 
-schoolstaff <- 
+schoolstaff <-
   get_powerschool("schoolstaff") %>%
   select(
-    users_dcid, 
-    id, 
+    users_dcid,
+    id,
   ) %>%
   collect()

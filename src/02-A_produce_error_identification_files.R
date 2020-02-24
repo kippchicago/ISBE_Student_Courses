@@ -4,53 +4,69 @@ load.project()
 
 source(here::here("lib", "helpers.R"))
 
-# Download Error Files "output/errors/original_files" -----------------------------------------------------
+# Parameters --------------------------------------------------------------
 
-drive_download("400044_CourseAssignment2020_01.xls", 
-               path = here::here("output", "errors", "original_files", 
-                                 paste("400044_CourseAssignment2020_01", 
-                                       today(), ".xlsx", sep = "_")), 
-               overwrite = TRUE)
+ERROR_DATE <- ymd("2020-02-21")
 
-drive_download("400146_CourseAssignment2020_01.xls", 
-               path = here::here("output", "errors", "original_files", 
-                                 paste("400146_CourseAssignment2020_01", 
-                                       today(), ".xlsx", sep = "_")), 
-               overwrite = TRUE)
 
-drive_download("400163_CourseAssignment2020_01.xls", 
-               path = here::here("output", "errors", "original_files", 
-                                 paste("400163_CourseAssignment2020_01", 
-                                       today(), ".xlsx", sep = "_")), 
-               overwrite = TRUE)
+# Download Files ----------------------------------------------------------
 
-drive_download("400180_CourseAssignment2020_01.xls", 
-               path = here::here("output", "errors", "original_files", 
-                                 paste("400180_CourseAssignment2020_01", 
-                                       today(), ".xlsx", sep = "_")), 
-               overwrite = TRUE)
+# Download Error Files "output/errors/original_files" 
+
+# drive_download("400044_CourseAssignment2020_01.xls", 
+#                path = here::here("output", "errors", "original_files", 
+#                                  paste("400044_CourseAssignment2020_01", 
+#                                        today(), ".xlsx", sep = "_")), 
+#                overwrite = TRUE)
+# 
+# drive_download("400146_CourseAssignment2020_01.xls", 
+#                path = here::here("output", "errors", "original_files", 
+#                                  paste("400146_CourseAssignment2020_01", 
+#                                        today(), ".xlsx", sep = "_")), 
+#                overwrite = TRUE)
+# 
+# drive_download("400163_CourseAssignment2020_01.xls", 
+#                path = here::here("output", "errors", "original_files", 
+#                                  paste("400163_CourseAssignment2020_01", 
+#                                        today(), ".xlsx", sep = "_")), 
+#                overwrite = TRUE)
+# 
+# drive_download("400180_CourseAssignment2020_01.xls", 
+#                path = here::here("output", "errors", "original_files", 
+#                                  paste("400180_CourseAssignment2020_01", 
+#                                        today(), ".xlsx", sep = "_")), 
+#                overwrite = TRUE)
+
+# Add Aspen Birthday Information
+
+all_student_birthdays_aspen <- 
+  bind_rows(one_400180_student_dobs_aspen, 
+            academy_400146_student_dobs_aspen, 
+            ascend_400044_student_dobs_aspen, 
+            bloom_400163_student_dobs_aspen) %>%
+  rename(aspen_dob = dob)
 
 # Read in full error files ------------------------------------------------
 
 report_400044_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400044_CourseAssignment2020_01", 
-                             today(), ".xlsx", sep = "_")))
+                             ERROR_DATE, ".xlsx", sep = "_")))
 
 report_400146_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400146_CourseAssignment2020_01", 
-                             today(), ".xlsx", sep = "_")))
+                             ERROR_DATE, ".xlsx", sep = "_")))
 
 report_400163_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400163_CourseAssignment2020_01", 
-                             today(), ".xlsx", sep = "_")))
+                             ERROR_DATE, ".xlsx", sep = "_")))
 
 report_400180_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400180_CourseAssignment2020_01", 
-                             today(), ".xlsx", sep = "_")))
+                             ERROR_DATE, ".xlsx", sep = "_")))
 
 
 # Locate All Unique Errors for each School ------------------------------------
@@ -88,14 +104,7 @@ incorrect_names_400180 <- locate_distinct_name_errors(report_400180_w_errors,
 
 # Locate DOB Errors For Each School -------------------------------------------------------
 
-# Add Aspen Birthday Information
 
-all_student_birthdays_aspen <- 
-  bind_rows(one_400180_student_dobs_aspen, 
-            academy_400146_student_dobs_aspen, 
-            ascend_400044_student_dobs_aspen, 
-            bloom_400163_student_dobs_aspen) %>%
-  rename(aspen_dob = dob)
 
 # create seperate dob files
 incorrect_dob_400044 <- locate_distinct_dob_errors(report_400044_w_errors, 
@@ -142,3 +151,9 @@ incorrect_cps_id_400163 <- locate_distinct_cps_id_errors(report_400163_w_errors,
                                                          students, cps_school_rcdts_ids)
 incorrect_cps_id_400180 <- locate_distinct_cps_id_errors(report_400180_w_errors, 
                                                          students, cps_school_rcdts_ids)
+incorrect_cps_id_all_schools <- 
+  bind_rows(incorrect_cps_id_400044, 
+            incorrect_cps_id_400146, 
+            incorrect_cps_id_400163, 
+            incorrect_cps_id_400180
+            )

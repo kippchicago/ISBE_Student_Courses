@@ -1,6 +1,9 @@
 # this file writes submission ready files to the "output/final_reports" folder. 
 # NOTE: run "src/01-A_produce-submission-files.R" first
 
+library(ProjectTemplate)
+load.project()
+
 # Write Files to output folder ----------------------------------------------
 
 write_csv(isbe_midyear_report_academy, here::here("output", "final_reports", "400146_CourseAssignment2020_01.csv"))

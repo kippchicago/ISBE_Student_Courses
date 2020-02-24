@@ -1,114 +1,102 @@
-#################################
-########### Students ############
-#################################
-+ Big Query (powerschool)
+#####################################
+# course_local_number_state_ids.csv #
+#####################################
++ Google Cloud Storage `raw_data_storage/ISBE_Student_Courses/19-20_files/course_local_number_state_ids.csv`
 
-● student_id
-● student_number
-● id
-● student_number
-● state_studentnumber
-● schoolid
+● isbe_state_course_code
+● local_course_id	subject
+● grade_level
+● first_last_teacher
+● school
+● local_course_title
+
+####################################################
+# zenefits_teacher_data_isbe_midyear_reporting.csv #
+####################################################
++ Google Cloud Storage `raw_data_storage/ISBE_Student_Courses/19-20_files/zenefits_teacher_data_isbe_midyear_reporting.csv`
+
+● Zenefits ID
+● First Name
+● Last Name
+● Work Email
+● Date of Birth
+● Title
+● Current Employment Start Date
+● Initial Employment Start Date
+● Full Time Start Date
+● End Date
+● Termination Date
+● Status (Active / Terminated)
+● Department
+● Work Location
+● Termination Type (Involuntary, regretted, non-regretted)
+● Vacation used YTD (hrs)
+● Jury Duty and other leave used YTD (hrs)
+● Sick Leave used YTD (hrs)
+● Personal Leave used YTD (hrs)
+● Licensure: IEIN Number
+● Licensure: License Type
+● Licensure: Do you have a master's degree
+
+##########################
+# 19_20_IEIN_numbers.csv #
+##########################
++ Google Cloud Storage `raw_data_storage/ISBE_Student_Courses/19-20_files/19_20_IEIN_numbers.csv`
+
+● Name
 ● last_name
 ● first_name
-● dob
-● entrydate
-● exitdate
-● enroll_status
-● enrollmentcode
-
-#################################
-############## cc ###############
-#################################
-+ Big Query (powerschool)
-
-● id
-● schoolid
-● course_number
-● dateenrolled
-● dateleft
-● section_number
-● studentid
+● preffered_name
+● suffix
+● Work Team
+● IEIN
+● email
 ● teacherid
-● termid
+● birthday
 
-#################################
-########### courses #############
-#################################
-+ Big Query (powerschool)
+##############################################
+# kipp_staff_member_start_after_20190819.csv #
+##############################################
++ Google Cloud Storage `raw_data_storage/ISBE_Student_Courses/19-20_files/kipp_staff_member_start_after_20190819.csv`
 
-● course_number
-● course_name
+● First Name
+● Last Name
+● Current Employment Start Date
+● Employment Type
+● Work Location
 
-#################################
-######## re-enrollment ##########
-#################################
-+ Big Query (powerschool)
+###################################
+# academy_400146_student_dobs.csv #
+###################################
++ Google Cloud Storage `raw_data_storage/ISBE_Student_Courses/19-20_files/student_dob_aspen_record/academy_400146_student_dobs.csv`
 
-● studentid
-● enrollmentcode
-● entrydate
-● exitdate
-● schoolid
-
-#################################
-######### schoolstaff ###########
-#################################
-+ Big Query (powerschool)
-
-● teacherid = id
-● users_dcid
-● schoolid
-● status
-
-#################################
-############ users ##############
-#################################
-+ Big Query (powerschool)
-
-● users_dcid = dcid,
-● teacher_first_name = first_name,
-● teacher_last_name = last_name,
-● teachernumber,
-● email_addr
-
-#################################
-############ users ##############
-#################################
-+ Big Query (powerschool)
-
-● studentid,
-● schoolid,
-● calendardate,
-● studentmembership,
-● grade_level,
-● ATT_CalcCntPresentAbsent
-
-#################################
-######## ps_enrollment ##########
-#################################
-+ Big Query (powerschool)
-
-● studentid
-● schoolid
-● entrydate
-● exitdate
-
-#################################
-######### schoolstaff ###########
-#################################
-+ Big Query (powerschool)
-
-● users_dcid
-● id
-
-#################################
-# course_local_number_state_ids #
-#################################
-+ Google Cloud Storage ("ISBE_Student_Courses/18-18_files/")
-
+● Name
+● Student ID
+● DOB
 
 ##################################
-# teacher_info_isbe_report_19-20 #
+# ascend_400044_student_dobs.csv #
 ##################################
-+ Google Cloud Storage ("ISBE_Student_Courses/18-18_files/")
++ Google Cloud Storage `raw_data_storage/ISBE_Student_Courses/19-20_files/student_dob_aspen_record/ascend_400044_student_dobs.csv`
+
+● Name
+● Student ID
+● DOB
+
+#################################
+# bloom_400163_student_dobs.csv #
+#################################
++ Google Cloud Storage `raw_data_storage/ISBE_Student_Courses/19-20_files/student_dob_aspen_record/bloom_400163_student_dobs.csv`
+
+● Name
+● Student ID
+● DOB
+
+###############################
+# one_400180_student_dobs.csv #
+###############################
++ Google Cloud Storage `raw_data_storage/ISBE_Student_Courses/19-20_files/student_dob_aspen_record/one_400180_student_dobs.csv`
+
+● Name
+● Student ID
+● DOB

@@ -1,0 +1,95 @@
+#################################
+########### Students ############
+#################################
++ Big Query (powerschool)
+
+● student_id
+● student_number
+● id
+● student_number
+● state_studentnumber
+● schoolid
+● last_name
+● first_name
+● dob
+● entrydate
+● exitdate
+● enroll_status
+● enrollmentcode
+
+#################################
+############## cc ###############
+#################################
++ Big Query (powerschool)
+
+● id
+● schoolid
+● course_number
+● dateenrolled
+● dateleft
+● section_number
+● studentid
+● teacherid
+● termid
+
+#################################
+########### courses #############
+#################################
++ Big Query (powerschool)
+
+● course_number
+● course_name
+
+#################################
+######## re-enrollment ##########
+#################################
++ Big Query (powerschool)
+
+● studentid
+● enrollmentcode
+● entrydate
+● exitdate
+● schoolid
+
+#################################
+######### schoolstaff ###########
+#################################
++ Big Query (powerschool)
+
+● teacherid = id
+● users_dcid
+● schoolid
+● status
+
+#################################
+############ users ##############
+#################################
++ Big Query (powerschool)
+
+● users_dcid = dcid,
+● teacher_first_name = first_name,
+● teacher_last_name = last_name,
+● teachernumber,
+● email_addr
+
+#################################
+############ membership ##############
+#################################
++ Big Query (powerschool)
+
+● studentid,
+● schoolid,
+● calendardate,
+● studentmembership,
+● grade_level,
+● ATT_CalcCntPresentAbsent
+
+#################################
+######## ps_enrollment ##########
+#################################
++ Big Query (powerschool)
+
+● studentid
+● schoolid
+● entrydate
+● exitdate

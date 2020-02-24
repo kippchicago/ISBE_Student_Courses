@@ -1,0 +1,47 @@
+########################
+# cps_school_rcdts_ids #
+########################
+
+● schoolid (character) - This is our local KIPP Chicago School ID
+● abbr (character) - KIPP School Abbreviations
+  - KACP: KIPP Academy Chicago Primary
+  - KAC: KIPP Academy Chicago
+  - KAP: KIPP Ascend Primary
+  - KAMS: KIPP Ascend Middle School
+  - KBP: KIPP Bloom Primary
+  - KBCP: KIPP Bloom College Prep
+  - KOP: KIPP One Primary
+  - KOA: KIPP One Academy
+
+● cps_school_id (character) - School ID used by CPS. Note: In the eyes of CPS & ISBE, we have 4 schools (Academy, Ascend, Bloom, One)
+   - 400146: Academy (KACP & KAC)
+   - 400044: Ascend (KAP & KAMS)
+   - 400163: Bloom (KBP & KBCP)
+   - 400180: One (KOP & KOA)
+
+● rcdts_code
+  - 15016299025101C: Academy (KACP & KAC)
+  - 15016299025282C: Ascend (KAP & KAMS)
+  - 15016299025103C: Bloom (KBP & KBCP)
+  - 15016299025245C: One (KOP & KOA)
+
+########################
+# course_names_primary #
+########################
+Note: Primary Students are not rostered into different classes on powerschools so their different classes don't appear there (they appear only with a
+teacher).
+
+● art
+● dance
+● reading
+● math
+● musical theater
+● physical education
+● explorations
+● writing
+● visual arts
+● science
+● math centers
+● performing arts
+● music
+● ela (English Language Arts)

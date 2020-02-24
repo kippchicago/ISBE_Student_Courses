@@ -1,12 +1,12 @@
-# Pulls flat files from GCS bucket. 
+# Pulls flat files from Google Cloud Storage bucket.
 # Location: raw_data_storage/ ISBE_Student_Courses/
 
 gcs_global_bucket("raw_data_storage")
 
 # ISBE State Course Code & Local Course ID --------------------------------
 
-gcs_get_object("ISBE_Student_Courses/19-20_files/course_local_number_state_ids.csv", 
-               saveToDisk = "data/flatfiles/course_local_number_state_ids.csv", 
+gcs_get_object("ISBE_Student_Courses/19-20_files/course_local_number_state_ids.csv",
+               saveToDisk = "data/flatfiles/course_local_number_state_ids.csv",
                overwrite = TRUE)
 
 local_number_isbe_state_course_ids <-
@@ -17,33 +17,33 @@ local_number_isbe_state_course_ids <-
 
 # ISBE Teacher Info -------------------------------------------------------
 
-gcs_get_object("ISBE_Student_Courses/19-20_files/zenefits_teacher_data_isbe_midyear_reporting.csv", 
-               saveToDisk = "data/flatfiles/zenefits_teacher_data_isbe_midyear_reporting.csv", 
+gcs_get_object("ISBE_Student_Courses/19-20_files/zenefits_teacher_data_isbe_midyear_reporting.csv",
+               saveToDisk = "data/flatfiles/zenefits_teacher_data_isbe_midyear_reporting.csv",
                overwrite = TRUE)
 
-zenefits_teacher_info <- 
+zenefits_teacher_info <-
   read_csv(here::here("data", "flatfiles", "zenefits_teacher_data_isbe_midyear_reporting.csv")) %>%
   janitor::clean_names()
 
 
 # 19/20 IEIN Teacher Data (Collected from talent team) --------------------
 
-gcs_get_object("ISBE_Student_Courses/19-20_files/19_20_IEIN_numbers.csv", 
-               saveToDisk = "data/flatfiles/19_20_IEIN_numbers.csv", 
+gcs_get_object("ISBE_Student_Courses/19-20_files/19_20_IEIN_numbers.csv",
+               saveToDisk = "data/flatfiles/19_20_IEIN_numbers.csv",
                overwrite = TRUE)
 
-teacher_iein_licensure_report <- 
+teacher_iein_licensure_report <-
   read_csv(here::here("data", "flatfiles", "19_20_IEIN_numbers.csv")) %>%
   janitor::clean_names() %>%
   rename("teacher_iein" = "iein") %>%
-  mutate(email = trimws(email, which = c("both")), 
-         last_name = trimws(last_name, which = c("both")), 
+  mutate(email = trimws(email, which = c("both")),
+         last_name = trimws(last_name, which = c("both")),
          first_name = trimws(first_name, which = c("both"))) %>%
-  mutate(teacherid = as.character(teacherid), 
+  mutate(teacherid = as.character(teacherid),
          birthday = mdy(birthday)
-         ) %>% 
+         ) %>%
   mutate(birthday = format(as.Date(birthday), "%m/%d/%Y")) %>%
-  # NOTE: This line trims all white space from character columns. This 
+  # NOTE: This line trims all white space from character columns. This
   # is imperitive later when we want to join datasets on teacherid column
   mutate_if(is.character, str_trim)
 
@@ -51,11 +51,11 @@ teacher_iein_licensure_report <-
 # KIPP Staff who started after the start of school (2019/08/19) -----------
 
 # Data gathered from HR
-gcs_get_object("ISBE_Student_Courses/19-20_files/kipp_staff_member_start_after_20190819.csv", 
-               saveToDisk = "data/flatfiles/kipp_staff_member_start_after_20190819.csv", 
+gcs_get_object("ISBE_Student_Courses/19-20_files/kipp_staff_member_start_after_20190819.csv",
+               saveToDisk = "data/flatfiles/kipp_staff_member_start_after_20190819.csv",
                overwrite = TRUE)
 
-kipp_staff_member_start_after_20190819 <- 
+kipp_staff_member_start_after_20190819 <-
   read_csv(here::here("data", "flatfiles", "kipp_staff_member_start_after_20190819.csv")) %>%
   janitor::clean_names()
 
@@ -63,55 +63,53 @@ kipp_staff_member_start_after_20190819 <-
 # ASPEN Student DOB Data --------------------------------------------------
 
 # Academy
-gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/academy_400146_student_dobs.csv", 
-               saveToDisk = "data/flatfiles/academy_400146_student_dobs_aspen.csv", 
+gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/academy_400146_student_dobs.csv",
+               saveToDisk = "data/flatfiles/academy_400146_student_dobs_aspen.csv",
                overwrite = TRUE)
 
-academy_400146_student_dobs_aspen <- 
+academy_400146_student_dobs_aspen <-
   read_csv(here::here("data", "flatfiles", "academy_400146_student_dobs_aspen.csv")) %>%
   janitor::clean_names() %>%
   mutate(dob = mdy(dob)) %>%
   separate(col = name,
            into = c("last_name", "first_name"),
-           sep = ",") 
+           sep = ",")
 
 # Ascend
-gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/ascend_400044_student_dobs.csv", 
-               saveToDisk = "data/flatfiles/ascend_400044_student_dobs_aspen.csv", 
+gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/ascend_400044_student_dobs.csv",
+               saveToDisk = "data/flatfiles/ascend_400044_student_dobs_aspen.csv",
                overwrite = TRUE)
 
-ascend_400044_student_dobs_aspen <- 
+ascend_400044_student_dobs_aspen <-
   read_csv(here::here("data", "flatfiles", "ascend_400044_student_dobs_aspen.csv")) %>%
   janitor::clean_names() %>%
   mutate(dob = mdy(dob)) %>%
   separate(col = name,
            into = c("last_name", "first_name"),
-           sep = ",") 
+           sep = ",")
 
 # Bloom
-gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/bloom_400163_student_dobs.csv", 
-               saveToDisk = "data/flatfiles/bloom_400163_student_dobs_aspen.csv", 
+gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/bloom_400163_student_dobs.csv",
+               saveToDisk = "data/flatfiles/bloom_400163_student_dobs_aspen.csv",
                overwrite = TRUE)
 
-bloom_400163_student_dobs_aspen <- 
+bloom_400163_student_dobs_aspen <-
   read_csv(here::here("data", "flatfiles", "bloom_400163_student_dobs_aspen.csv")) %>%
   janitor::clean_names() %>%
   mutate(dob = mdy(dob)) %>%
   separate(col = name,
            into = c("last_name", "first_name"),
-           sep = ",") 
+           sep = ",")
 
 # One
-gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/one_400180_student_dobs.csv", 
-               saveToDisk = "data/flatfiles/one_400180_student_dobs_aspen.csv", 
+gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/one_400180_student_dobs.csv",
+               saveToDisk = "data/flatfiles/one_400180_student_dobs_aspen.csv",
                overwrite = TRUE)
 
-one_400180_student_dobs_aspen <- 
+one_400180_student_dobs_aspen <-
   read_csv(here::here("data", "flatfiles", "one_400180_student_dobs_aspen.csv")) %>%
   janitor::clean_names() %>%
   mutate(dob = mdy(dob)) %>%
   separate(col = name,
            into = c("last_name", "first_name"),
-           sep = ",") 
-
-
+           sep = ",")
