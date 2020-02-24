@@ -1,3 +1,5 @@
+# Data Schema
+
 Connect teacher info:
 
 users.user_dcid = schoolstaff.user_dcid
