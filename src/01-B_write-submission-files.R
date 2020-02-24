@@ -2,7 +2,6 @@
 # NOTE: run "src/01-A_produce-submission-files.R" first
 
 library(ProjectTemplate)
-load.project()
 
 # Write Files to output folder ----------------------------------------------
 

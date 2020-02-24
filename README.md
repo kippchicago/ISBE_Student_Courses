@@ -3,7 +3,7 @@
 #### -- Project Status: [Active]
 
 ## Project Intro/Objective
-In Illinois, at the at the end of every semester, each school is required to submit a set of data to the Office of I&I for transmission to the Illinois State Board of Education (ISBE). The state then uses this data to produce the annual State School Report Cards. The purpose of this project is to collect student and teacher data from KIPP Chicago's different data systems and put them in a format that conforms to ISBE's reporting requirements. **Note**: no data is included in this repository.
+In Illinois, at the at the end of every semester, each school is required to submit a set of data to the Office of I&I for transmission to the Illinois State Board of Education (ISBE). The state then uses this data to produce the annual State School Report Cards. The purpose of this project is to collect student and teacher data from KIPP Chicago's different data systems and put them in a format that conforms to ISBE's reporting requirements. **Note: Because of confidentiality considerations no data is included in this repository.**
 
 ### Technologies
 * R
@@ -28,4 +28,4 @@ This repo contains scripts that ingest data that is stored in KIPP Chicago's dat
 1. Error file processing scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/src)
 1. Helper scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/lib)
 1. Data Documentation scripts (data dictionaries) are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/documentation)
-1. Deliverables would be located [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/output). **Note**: Deliverables are not included in this repo.
+1. Deliverables would be located [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/output). **Note: Deliverables are not included in this repo.**
