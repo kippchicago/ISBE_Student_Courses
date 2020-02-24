@@ -1,6 +1,6 @@
 # PROJECT USE INSTRUCTIONS
 
-## INTRO:
+## Intro:
 This document lays out a step-by-step guide for how to use this project.
 
 ## Project File Outline:
