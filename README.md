@@ -1,27 +1,31 @@
-# ISBE Midyear Reporting
+# ISBE Midyear Reporting Scripts
 
-#### -- Project Status: [Active, On-Hold, Completed]
+#### -- Project Status: [Active]
 
 ## Project Intro/Objective
-The purpose of this project is ________. (Describe the main goals of the project and potential civic impact. Limit to a short paragraph, 3-6 Sentences)
-
-### Methods Used
+In Illinois, at the at the end of every semester, each school is required to submit a set of data to the Office of I&I for transmission to the Illinois State Board of Education (ISBE). The state then uses this data to produce the annual State School Report Cards. The purpose of this project is to collect student and teacher data from KIPP Chicago's different data systems and put them in a format that conforms to ISBE's reporting standards. **Note**: no data is included in this repository. 
 
 ### Technologies
 * R
+* ProjectTemplate
+* Google Big Query
+* Google Cloud Storage
+
+### Data Systems
+* PowerSchool
+* Illuminate Education
 
 ## Project Description
-(Provide more detailed overview of the project.  Talk a bit about your data sources and what questions and hypothesis you are exploring. What specific data analysis/visualization and modelling work are you using to solve the problem? What blockers and challenges are you facing?  Feel free to number or bullet point things here)
+This repo contains scripts that ingest data that is stored in KIPP Chicago's database and file storage systems and transforms the datasets into a report. 
 
 ## Getting Started
 
 1. Clone this repo (for help see this [tutorial](https://help.github.com/articles/cloning-a-repository/)).
-2. Raw Data is being kept [here](Repo folder containing raw data) within this repo.
-3. Data processing/transformation scripts are being kept [here](Repo folder containing data processing scripts/notebooks)
-4. etc...
-5. Follow setup [instructions](Link to file)
-
-## Featured Notebooks/Analysis/Deliverables
-* [Notebook/Markdown/Slide Deck Title](#)
-* [Notebook/Markdown/Slide DeckTitle](#)
-* [Blog Post](#)
+2. Data scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/data).
+3. Data processing/transformation scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/munge)
+4. Scripts that produce Middle School and Primary School reports are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/src)
+5. Error file processing scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/src)
+6. Helper scripts are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/lib)
+5. Data Documentation scripts (data dictionaries) are being kept [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/documentation)
+8. Deliverables would be located [here](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/output). **Note**: Deliverables are not included in this repo. 
+9. Instructions for using the Repo are [here](#)
