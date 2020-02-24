@@ -27,5 +27,5 @@ This repo contains scripts that ingest data that is stored in KIPP Chicago's dat
 1. Scripts that produce Middle School and Primary School reports are being kept in the [`munge`](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/src) folder. 
 1. Error file processing scripts are being kept [`here`](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/src)
 1. Helper scripts are being kept in the [`lib`](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/lib) folder. 
-1. Data Documentation scripts (data dictionaries) are being kept [`here`](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/documentation)
+1. Data Documentation scripts (data dictionaries) are being kept in the [`documentation`](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/documentation) folder.
 1. Deliverables would be located in the [`output`](https://github.com/kippchicago/isbe_midyear_reporting/tree/master/output) folder. **Note**: Deliverables are not included in this repo.
