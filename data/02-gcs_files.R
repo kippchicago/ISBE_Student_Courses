@@ -228,4 +228,17 @@ students_aspen_info_current_former <-
                                            TRUE ~ 0)
          ) %>%
   ungroup(student_id)
+
+
+# Corrected CPS IDs -------------------------------------------------------
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/cps_id_corrections.csv",
+               saveToDisk = "data/flatfiles/cps_id_corrections.csv",
+               overwrite = TRUE)
+
+cps_id_corrections <-
+  read_csv(here::here("data", "flatfiles", "cps_id_corrections.csv")) %>%
+  janitor::clean_names() %>%
+  mutate(cps_student_id = as.character(cps_student_id), 
+         kipp_incorrect_cpsid = as.character(kipp_incorrect_cpsid))
   

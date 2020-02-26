@@ -15,8 +15,20 @@ TEACHER_COURSE_END_DATE = ymd("2020-06-19")
 # ISBE Student ID
 # Serving School
 
+student_aspen_data_w_corrections <-
+  students_aspen_info_current_former %>%
+  mutate(student_id = as.character(student_id)) %>%
+  left_join(cps_id_corrections, 
+            by = c("student_id" = "cps_student_id")) %>%
+  mutate(cps_student_id_join_kipp_data = case_when(is.na(kipp_incorrect_cpsid) ~ student_id, 
+                                                         TRUE ~ kipp_incorrect_cpsid)) %>%
+  select(-kipp_incorrect_cpsid) %>%
+  
+  # Drop students who do not appear in powerschool and so never enrolled with us. 
+  filter(cps_student_id_join_kipp_data != "no ps")
+
 students_current_demographics <- 
-  students_aspen_info_current_former %>% 
+  student_aspen_data_w_corrections %>% 
   rename(
     student_last_name = last_name,
     student_first_name = first_name,
@@ -30,25 +42,23 @@ students_current_demographics <-
          schoolid = as.double(schoolid)
          ) %>%
   left_join(
-    cps_school_rcdts_ids, 
+    cps_school_rcdts_ids %>% 
+      select(cps_school_id, rcdts_code) %>% 
+      distinct(), 
     by = c("schoolid" = "cps_school_id")
   ) %>%
-  rename("home_rcdts" = "rcdts_code")
+  rename("home_rcdts" = "rcdts_code") %>%
+  left_join(students %>% select(ps_student_id = student_id, 
+                                student_number, 
+                                grade_level), 
+            by = c("cps_student_id_join_kipp_data" = "student_number"))
 
-students_current_demographics %>%
-  filter(student_id_duplicated == 1) %>%
-  View()
-
-# current_studentid <- 
-#   students %>% 
-#   filter(entrydate >= FIRST_DAY_OF_SCHOOL) %>% 
-#   
-#   # 0 = currently enrolled | 2 = transferred
-#   filter(enroll_status == 0 | enroll_status == 2) %>%
-#   filter(exitcode != 99) %>%
-#   select(student_id, 
-#          grade_level) %>%
-#   distinct()
+current_studentid <-
+  students_current_demographics %>%
+  select("cps_student_id", 
+         "cps_student_id_join_kipp_data", 
+         "ps_student_id", 
+         "grade_level")
 
 # Student Course Information ----------------------------------------------------------------
 
@@ -60,11 +70,15 @@ students_current_demographics %>%
 students_local_course_id_title_section_number <- 
   current_studentid %>%
   left_join(cc, 
-            by = "student_id") %>%
-
+            by = c("ps_student_id" = "student_id")) %>%
+  
+  # Note: student_id includes student ids that conflict with CPS student ID, 
+  # in order to get student classes I need to use the IDs that kipp has, but
+  # the report will include the cps_student_id_correct
   filter(dateenrolled >= FIRST_DAY_OF_SCHOOL) %>%
   select(
-    student_id, 
+    cps_student_id_join_kipp_data, 
+    cps_student_id_correct = cps_student_id,
     schoolid, 
     course_number, 
     section_number, 

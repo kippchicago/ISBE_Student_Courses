@@ -23,7 +23,9 @@ students <-
     grade_level, 
     exitcode
   ) %>%
-  collect()
+  collect() %>%
+  mutate(student_id = as.character(student_id)) %>%
+  mutate(student_number = as.character(student_number))
 
 # course/section information
 cc <-
@@ -39,7 +41,8 @@ cc <-
     teacherid,
     termid,
   ) %>%
-  collect()
+  collect() %>%
+  mutate(student_id = as.character(student_id))
 
 # Course Names
 courses <-
