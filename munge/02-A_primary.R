@@ -36,20 +36,19 @@ REASON_FOR_EXIT = "01"
 students_course_primary_core <- 
   students_local_course_id_title_section_number %>%
   
-  # group_by(student_id) %>%
-  # filter(row_number(desc(dateenrolled)) == 1) %>%
-  
-  filter(grepl("k|1|2|3", local_course_id),
-         !grepl("Science", local_course_title),
-         !grepl("Homework", local_course_title)) %>%
-  mutate(school = str_extract(local_course_id, "kacp|kop|kbp|kap|kacp"),
-         grade_level = str_replace(local_course_id, "kacp|kop|kbp|kap|kacp", "") %>%       
-           str_extract("^.")) %>%
-  select(student_id, 
-         teacherid, 
-         school, 
+  filter(grade_level %in% c(0, 1, 2, 3),
+         !grepl("Science", local_course_title), 
+         !grepl("Homework", local_course_title)
+         ) %>%
+  mutate(grade_level = as.character(grade_level)) %>%
+  mutate(grade_level = str_replace(grade_level, "0", "k")) %>%
+  mutate(school = str_extract(local_course_id, "kop|kbp|kap|kacp")) %>%
+  select(student_id,
+         teacherid,
+         school,
          grade_level,
-         section_number,) %>%
+         section_number) %>%
+  mutate(grade_level = as.character(grade_level)) %>%
   left_join(local_number_isbe_state_course_ids, 
             by = c("grade_level", 
                    "school")) %>% 
@@ -65,7 +64,7 @@ students_course_primary_excellence <-
   group_by(student_id) %>%
   filter(row_number(desc(dateenrolled)) == 1) %>%
   
-  filter(grepl("k|1|2|3", local_course_title),
+  filter(grepl("kop|kacp|kap|kbp|1|2|3", local_course_title),
          !grepl("Science", local_course_title)) %>%
   
   mutate(school = str_extract(local_course_id, "kop|kbp|kap|kacp"),
@@ -88,7 +87,8 @@ students_course_primary_excellence <-
   # will need to be joined by first and last name
   select(-teacherid) %>%
   separate(col = first_last_teacher,
-           into = c("teacher_first_name", "teacher_last_name"),
+           into = c("teacher_first_name", 
+                    "teacher_last_name"),
            sep = " ") %>%
   mutate_if(is.character, str_trim)
   
@@ -116,31 +116,31 @@ isbe_report_primary_core_midyear <-
          articulated_credit = ARTICULATED_CREDIT,
          dual_credit = DUAL_CREDIT, 
          course_setting = COURSE_SETTING, 
-         student_course_final_letter_grade = NA, 
+         student_course_final_letter_grade = "", 
          competency_based_education = COMPETENCY_BASED_EDUCATION,
          eis_position_code = EIS_POSITION_CODE,
          teacher_commitment = TEACHER_COMMITMENT, 
          reason_for_exit = REASON_FOR_EXIT, 
-         'Errors Detected?' = NA, 
-         'Number of Errors in Record' = NA, 
-         'Error Details' = NA, 
-         'Other Notes' = NA, 
-         'Actual Attendance Days' = NA, 
-         'Total Attendance Days' = NA, 
-         'Single Parent including Single Pregnant Woman' = NA, 
-         'Displaced Homemaker' = NA, 
-         'Course Numeric Grade (Term)' = NA, 
-         'Maximum Numeric Grade (Term)' = NA,
-         'Course Final Letter Grade ISBE Code' = NA, 
-         'Language Course was Taught In' = NA, 
-         'Outside Course School Year(Outside Course Assignment Only)' = NA, 
-         'Outside Course Grade Level(Outside Course Assignment Only)' = NA, 
-         'Outside Course Facility Type(Outside Course Assignment Only)' = NA, 
-         'Outside Course Facility Name(Outside Course Assignment Only)' = NA,
-         'IPEDS(College Course Assignment Only)' = NA,
-         'Local Teacher ID' = NA,
-         'Actual Attendance (Classes)' = NA, 
-         'Total Attendance (Classes)' = NA, 
+         'Errors Detected?' = "", 
+         'Number of Errors in Record' = "", 
+         'Error Details' = "", 
+         'Other Notes' = "", 
+         'Actual Attendance Days' = "", 
+         'Total Attendance Days' = "", 
+         'Single Parent including Single Pregnant Woman' = "", 
+         'Displaced Homemaker' = "", 
+         'Course Numeric Grade (Term)' = "", 
+         'Maximum Numeric Grade (Term)' = "",
+         'Course Final Letter Grade ISBE Code' = "", 
+         'Language Course was Taught In' = "", 
+         'Outside Course School Year(Outside Course Assignment Only)' = "", 
+         'Outside Course Grade Level(Outside Course Assignment Only)' = "", 
+         'Outside Course Facility Type(Outside Course Assignment Only)' = "", 
+         'Outside Course Facility Name(Outside Course Assignment Only)' = "",
+         'IPEDS(College Course Assignment Only)' = "",
+         'Local Teacher ID' = "",
+         'Actual Attendance (Classes)' = "", 
+         'Total Attendance (Classes)' = "", 
          
   ) %>%
   
@@ -198,9 +198,9 @@ isbe_report_primary_core_midyear <-
     'Errors Detected?', 
     'Number of Errors in Record', 
     'Error Details', 
-    'Other Notes', 
-    -student_id, 
-  )
+    'Other Notes'
+  ) %>%
+  distinct()
 
 # ISBE Report Primary Excellence -------------------------------------
 
@@ -226,31 +226,31 @@ isbe_report_primary_excellence_midyear <-
          articulated_credit = ARTICULATED_CREDIT,
          dual_credit = DUAL_CREDIT, 
          course_setting = COURSE_SETTING, 
-         student_course_final_letter_grade = NA, 
+         student_course_final_letter_grade = "", 
          competency_based_education = COMPETENCY_BASED_EDUCATION,
          eis_position_code = EIS_POSITION_CODE,
          teacher_commitment = TEACHER_COMMITMENT, 
          reason_for_exit = REASON_FOR_EXIT, 
-         'Errors Detected?' = NA, 
-         'Number of Errors in Record' = NA, 
-         'Error Details' = NA, 
-         'Other Notes' = NA, 
-         'Actual Attendance Days' = NA, 
-         'Total Attendance Days' = NA, 
-         'Single Parent including Single Pregnant Woman' = NA, 
-         'Displaced Homemaker' = NA, 
-         'Course Numeric Grade (Term)' = NA, 
-         'Maximum Numeric Grade (Term)' = NA,
-         'Course Final Letter Grade ISBE Code' = NA, 
-         'Language Course was Taught In' = NA, 
-         'Outside Course School Year(Outside Course Assignment Only)' = NA, 
-         'Outside Course Grade Level(Outside Course Assignment Only)' = NA, 
-         'Outside Course Facility Type(Outside Course Assignment Only)' = NA, 
-         'Outside Course Facility Name(Outside Course Assignment Only)' = NA,
-         'IPEDS(College Course Assignment Only)' = NA,
-         'Local Teacher ID' = NA,
-         'Actual Attendance (Classes)' = NA, 
-         'Total Attendance (Classes)' = NA, 
+         'Errors Detected?' = "", 
+         'Number of Errors in Record' = "", 
+         'Error Details' = "", 
+         'Other Notes' = "", 
+         'Actual Attendance Days' = "", 
+         'Total Attendance Days' = "", 
+         'Single Parent including Single Pregnant Woman' = "", 
+         'Displaced Homemaker' = "", 
+         'Course Numeric Grade (Term)' = "", 
+         'Maximum Numeric Grade (Term)' = "",
+         'Course Final Letter Grade ISBE Code' = "", 
+         'Language Course was Taught In' = "", 
+         'Outside Course School Year(Outside Course Assignment Only)' = "", 
+         'Outside Course Grade Level(Outside Course Assignment Only)' = "", 
+         'Outside Course Facility Type(Outside Course Assignment Only)' = "", 
+         'Outside Course Facility Name(Outside Course Assignment Only)' = "",
+         'IPEDS(College Course Assignment Only)' = "",
+         'Local Teacher ID' = "",
+         'Actual Attendance (Classes)' = "", 
+         'Total Attendance (Classes)' = "", 
          
   ) %>%
   
@@ -308,8 +308,7 @@ isbe_report_primary_excellence_midyear <-
     'Errors Detected?', 
     'Number of Errors in Record', 
     'Error Details', 
-    'Other Notes', 
-    -student_id,
+    'Other Notes'
   )
 
 # Full ISBE Report Primary ------------------------------------------------
@@ -317,3 +316,8 @@ isbe_report_primary_excellence_midyear <-
 isbe_report_primary_midyear_2020_full <- 
   bind_rows(isbe_report_primary_core_midyear, 
             isbe_report_primary_excellence_midyear)
+
+isbe_report_primary_core_midyear %>%
+  group_by(`CPS Student ID`) %>%
+  count() %>%
+  View()

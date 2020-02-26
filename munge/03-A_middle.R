@@ -47,6 +47,7 @@ students_course_middle <-
            schoolid == "400146" | 
            schoolid == "400180")
 
+
 # Full ISBE Report Middle School -------------------------------------
 
 isbe_report_middle_midyear_2020_full <- 
@@ -71,35 +72,36 @@ isbe_report_middle_midyear_2020_full <-
          articulated_credit = ARTICULATED_CREDIT,
          dual_credit = DUAL_CREDIT, 
          course_setting = COURSE_SETTING, 
-         student_course_final_letter_grade = NA, 
+         student_course_final_letter_grade = "", 
          competency_based_education = COMPETENCY_BASED_EDUCATION,
          eis_position_code = EIS_POSITION_CODE,
          teacher_commitment = TEACHER_COMMITMENT, 
          reason_for_exit = REASON_FOR_EXIT, 
-         'Errors Detected?' = NA, 
-         'Number of Errors in Record' = NA, 
-         'Error Details' = NA, 
-         'Other Notes' = NA, 
-         'Actual Attendance Days' = NA, 
-         'Total Attendance Days' = NA, 
-         'Single Parent including Single Pregnant Woman' = NA, 
-         'Displaced Homemaker' = NA, 
-         'Course Numeric Grade (Term)' = NA, 
-         'Maximum Numeric Grade (Term)' = NA,
-         'Course Final Letter Grade ISBE Code' = NA, 
-         'Language Course was Taught In' = NA, 
-         'Outside Course School Year(Outside Course Assignment Only)' = NA, 
-         'Outside Course Grade Level(Outside Course Assignment Only)' = NA, 
-         'Outside Course Facility Type(Outside Course Assignment Only)' = NA, 
-         'Outside Course Facility Name(Outside Course Assignment Only)' = NA,
-         'IPEDS(College Course Assignment Only)' = NA,
-         'Local Teacher ID' = NA,
-         'Actual Attendance (Classes)' = NA, 
-         'Total Attendance (Classes)' = NA, 
+         'Errors Detected?' = "", 
+         'Number of Errors in Record' = "", 
+         'Error Details' = "", 
+         'Other Notes' = "", 
+         'Actual Attendance Days' = "", 
+         'Total Attendance Days' = "", 
+         'Single Parent including Single Pregnant Woman' = "", 
+         'Displaced Homemaker' = "", 
+         'Course Numeric Grade (Term)' = "", 
+         'Maximum Numeric Grade (Term)' = "",
+         'Course Final Letter Grade ISBE Code' = "", 
+         'Language Course was Taught In' = "", 
+         'Outside Course School Year(Outside Course Assignment Only)' = "", 
+         'Outside Course Grade Level(Outside Course Assignment Only)' = "", 
+         'Outside Course Facility Type(Outside Course Assignment Only)' = "", 
+         'Outside Course Facility Name(Outside Course Assignment Only)' = "",
+         'IPEDS(College Course Assignment Only)' = "",
+         'Local Teacher ID' = "",
+         'Actual Attendance (Classes)' = "", 
+         'Total Attendance (Classes)' = "", 
          ) %>%
   
   # Select all required columns in the correct order.
   select(
+    student_id, 
     'CPS School ID' = cps_school_id, 
     'ISBE Student ID' = isbe_student_id, 
     'CPS Student ID' = cps_student_id, 
@@ -155,3 +157,7 @@ isbe_report_middle_midyear_2020_full <-
     'Other Notes',
   )
 
+isbe_report_middle_midyear_2020_full %>%
+  group_by(`CPS Student ID`) %>%
+  count() %>%
+  View()

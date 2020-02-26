@@ -113,3 +113,13 @@ one_400180_student_dobs_aspen <-
   separate(col = name,
            into = c("last_name", "first_name"),
            sep = ",")
+
+# Combine Aspen Birthday Info
+
+all_student_birthdays_aspen <- 
+  bind_rows(one_400180_student_dobs_aspen, 
+            academy_400146_student_dobs_aspen, 
+            ascend_400044_student_dobs_aspen, 
+            bloom_400163_student_dobs_aspen) %>%
+  rename(aspen_dob = dob)
+

@@ -20,7 +20,8 @@ students_current_demographics <-
   filter(entrydate >= FIRST_DAY_OF_SCHOOL) %>% 
   
   # 0 = currently enrolled | 2 = transferred
-  filter(enroll_status==0 | enroll_status==2) %>%
+  filter(enroll_status == 0 | enroll_status == 2) %>%
+  filter(exitcode != 99) %>%
   
   # NOTE: if student_number is NA it means that the student 
   # already exists under a different student ID
@@ -46,6 +47,17 @@ students_current_demographics <-
   ) %>%
   rename("home_rcdts" = "rcdts_code")
 
+current_studentid <- 
+  students %>% 
+  filter(entrydate >= FIRST_DAY_OF_SCHOOL) %>% 
+  
+  # 0 = currently enrolled | 2 = transferred
+  filter(enroll_status == 0 | enroll_status == 2) %>%
+  filter(exitcode != 99) %>%
+  select(student_id, 
+         grade_level) %>%
+  distinct()
+
 # Student Course Information ----------------------------------------------------------------
 
 # Note: this section produces the following columns required for ISBE Reporting
@@ -54,7 +66,10 @@ students_current_demographics <-
 # Local Course Title
 
 students_local_course_id_title_section_number <- 
-  cc %>%
+  current_studentid %>%
+  left_join(cc, 
+            by = "student_id") %>%
+
   filter(dateenrolled >= FIRST_DAY_OF_SCHOOL) %>%
   select(
     student_id, 
@@ -64,6 +79,7 @@ students_local_course_id_title_section_number <-
     teacherid, 
     dateenrolled,
     dateleft,
+    grade_level
   ) %>%
   
   # Join to add Local Course title

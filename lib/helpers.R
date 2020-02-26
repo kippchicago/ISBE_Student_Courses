@@ -55,8 +55,8 @@ locate_distinct_name_errors <- function(full_error_report, ps_students_table, sc
   return(incorrect_name_df)
 }
 
-locate_distinct_dob_errors <- function(full_error_report, ps_students_table, school_ids)  {
-  incorrect_name_df <- 
+locate_distinct_dob_errors <- function(full_error_report, ps_students_table, school_ids, aspen_birthdays)  {
+  incorrect_dob_df <- 
     full_error_report %>%
     group_by(CPS.Student.ID) %>%
     filter(row_number(desc(Student.Course.Start.Date)) == 1) %>%
@@ -78,9 +78,14 @@ locate_distinct_dob_errors <- function(full_error_report, ps_students_table, sch
               by = "schoolid") %>%
     select(CPS.Student.ID, school = abbr, grade_level, Student.Last.Name, 
            Student.First.Name, powerschool_dob = dob) %>%
-    mutate(correct_dob = "")
+    mutate(correct_dob = "") %>%
+    left_join(aspen_birthdays, 
+              by = c("CPS.Student.ID" = "student_id")) %>%
+    select(CPS.Student.ID, school, grade_level, Student.Last.Name, 
+           Student.First.Name, powerschool_dob, aspen_dob, correct_dob) %>%
+    drop_na(aspen_dob)
   
-  return(incorrect_name_df)
+  return(incorrect_dob_df)
 }
 
 locate_distinct_cps_id_errors <- function(full_error_report, ps_students_table, school_ids)  {
@@ -106,7 +111,8 @@ locate_distinct_cps_id_errors <- function(full_error_report, ps_students_table, 
               by = "schoolid") %>%
     select(cps_school_id, rcdts_code, Student.Last.Name,
            Student.First.Name, powerschool_dob = dob,
-           kipp_cps_student_id = CPS.Student.ID) %>%
+           kipp_cps_student_id = CPS.Student.ID, 
+           ISBE.Student.ID) %>%
     mutate(powerschool_dob = ymd(powerschool_dob)) %>%
     left_join(all_student_birthdays_aspen, 
               by = c("powerschool_dob" = "aspen_dob", 
@@ -115,4 +121,17 @@ locate_distinct_cps_id_errors <- function(full_error_report, ps_students_table, 
     rename(aspen_cps_student_id = student_id)
   
   return(incorrect_cps_id_df)
+}
+
+replace_with_aspen_name <- function(isbe_report_single_school, name_replacement_df) {
+  isbe_report_update_name <- 
+    isbe_report_single_school %>%
+    left_join(name_replacement_df, 
+              by = c("CPS Student ID" = "CPS.Student.ID")) %>%
+    mutate(`Student First Name` = case_when(name_location == "First" ~ replacement_name,
+                                            TRUE ~ `Student First Name`)) %>%
+    mutate(`Student Last Name` = case_when(name_location == "Last" ~ replacement_name, 
+                                           TRUE ~ `Student Last Name`)) 
+  
+  return(isbe_report_update_name)
 }

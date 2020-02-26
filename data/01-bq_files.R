@@ -20,7 +20,8 @@ students <-
     exitdate,
     enroll_status,
     enrollmentcode,
-    grade_level
+    grade_level, 
+    exitcode
   ) %>%
   collect()
 
