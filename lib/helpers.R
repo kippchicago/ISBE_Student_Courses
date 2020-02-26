@@ -94,7 +94,11 @@ locate_distinct_cps_id_errors <- function(full_error_report, ps_students_table, 
     group_by(CPS.Student.ID) %>%
     filter(row_number(desc(Student.Course.Start.Date)) == 1) %>%
     filter(grepl("CPS Student ID must be enrolled in SY20", Error.Details)) %>% 
-    select(CPS.Student.ID, Student.Last.Name, Student.First.Name, Error.Details) %>%
+    select(CPS.Student.ID, 
+           ISBE.Student.ID,
+           Student.Last.Name, 
+           Student.First.Name, 
+           Error.Details) %>%
     separate("Error.Details",
              into = c("E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8",
                       "E9", "E10", "E11", "E12", "E13", "E14", "E15", "E16"),
@@ -102,15 +106,18 @@ locate_distinct_cps_id_errors <- function(full_error_report, ps_students_table, 
     pivot_longer(cols = c(E1, E2, E3, E4, E5, E6, E7, E8, E9, E10, E11),
                  names_to = "errors")  %>%
     filter(str_detect(value, "CPS Student ID must be enrolled in SY20")) %>%
-    select(CPS.Student.ID, Student.Last.Name, Student.First.Name) %>%
+    select(CPS.Student.ID, Student.Last.Name, Student.First.Name, ISBE.Student.ID) %>%
     ungroup(CPS.Student.ID) %>%
     mutate(CPS.Student.ID = as.integer(CPS.Student.ID)) %>%
     left_join(ps_students_table,
               by = c("CPS.Student.ID" = "student_number")) %>%
     left_join(school_ids,
               by = "schoolid") %>%
-    select(cps_school_id, rcdts_code, Student.Last.Name,
-           Student.First.Name, powerschool_dob = dob,
+    select(cps_school_id, 
+           rcdts_code, 
+           Student.Last.Name,
+           Student.First.Name, 
+           powerschool_dob = dob,
            kipp_cps_student_id = CPS.Student.ID, 
            ISBE.Student.ID) %>%
     mutate(powerschool_dob = ymd(powerschool_dob)) %>%
@@ -131,7 +138,47 @@ replace_with_aspen_name <- function(isbe_report_single_school, name_replacement_
     mutate(`Student First Name` = case_when(name_location == "First" ~ replacement_name,
                                             TRUE ~ `Student First Name`)) %>%
     mutate(`Student Last Name` = case_when(name_location == "Last" ~ replacement_name, 
-                                           TRUE ~ `Student Last Name`)) 
+                                           TRUE ~ `Student Last Name`)) %>%
+    select(-c("name_location", "replacement_name"))
   
   return(isbe_report_update_name)
+}
+
+replace_with_aspen_cps_id <- function(isbe_report_single_school, conflicting_cps_id_df) {
+  corrected_report <-
+    isbe_report_single_school %>%
+    mutate(`Birth Date` = mdy(`Birth Date`)) %>%
+    left_join(conflicting_cps_id_df, 
+              by = c(`Birth Date` = "powerschool_dob", 
+                     `Student Last Name` = "Student.Last.Name")) %>%
+    mutate(`CPS Student ID` = as.character(`CPS Student ID`), 
+           aspen_cps_student_id = as.character(aspen_cps_student_id)) %>%
+    mutate(`CPS Student ID` = case_when(!is.na(aspen_cps_student_id) ~ aspen_cps_student_id,
+                                        TRUE ~ `CPS Student ID`)) %>%
+    select(-c("cps_school_id", "rcdts_code", "Student.First.Name", "kipp_cps_student_id", 
+              "ISBE.Student.ID", "aspen_cps_student_id"))
+  
+  return(corrected_report)
+}
+
+replace_with_aspen_dob <- function(isbe_report_single_school, aspen_dob_df) {
+  corrected_report <-
+    isbe_report_single_school %>%
+    left_join(aspen_dob_df, 
+              by = c("CPS Student ID" = "CPS.Student.ID")) %>%
+    mutate(`Birth Date` = mdy(`Birth Date`)) %>%
+    mutate(`Birth Date` = case_when(!is.na(aspen_dob) ~ aspen_dob, 
+                                    TRUE ~ `Birth Date`)) %>%
+    select(-c("Student.Last.Name", "Student.First.Name", 
+              "powerschool_dob", "aspen_dob"))
+  
+  return(corrected_report)
+}
+
+fix_name_dob_cps_errors <- function(isbe_report_single_school, name_replacement_df, conflicting_cps_id_df, aspen_dob_df) {
+  corrected_dob <- replace_with_aspen_dob(isbe_report_single_school, aspen_dob_df)
+  corrected_name <- replace_with_aspen_name(isbe_report_single_school, name_replacement_df)
+  corrected_cps_id <- replace_with_aspen_cps_id(isbe_report_single_school, conflicting_cps_id_df)
+  
+  return(corrected_cps_id)
 }

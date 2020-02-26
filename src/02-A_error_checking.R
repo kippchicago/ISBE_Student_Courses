@@ -6,7 +6,7 @@ source(here::here("lib", "helpers.R"))
 
 # Parameters --------------------------------------------------------------
 
-ERROR_DATE <- ymd("2020-02-25")
+ERROR_DATE <- ymd("2020-02-21")
 
 # Download Files ----------------------------------------------------------
 
@@ -90,29 +90,23 @@ incorrect_dob_400044 <- locate_distinct_dob_errors(full_error_report = report_40
                                                    ) 
   
 
-incorrect_dob_400146 <- locate_distinct_dob_errors(report_400146_w_errors, 
-                                                      students, cps_school_rcdts_ids) %>%
-  left_join(all_student_birthdays_aspen, 
-            by = c("CPS.Student.ID" = "student_id")) %>%
-  select(CPS.Student.ID, school, grade_level, Student.Last.Name, 
-         Student.First.Name, powerschool_dob, aspen_dob, correct_dob) %>%
-  drop_na(aspen_dob)
+incorrect_dob_400146 <- locate_distinct_dob_errors(full_error_report = report_400146_w_errors,
+                                                   ps_students_table = students, 
+                                                   school_ids = cps_school_rcdts_ids,
+                                                   aspen_birthdays = all_student_birthdays_aspen
+                                                   ) 
 
-incorrect_dob_400163 <- locate_distinct_dob_errors(report_400163_w_errors, 
-                                                      students, cps_school_rcdts_ids) %>%
-  left_join(all_student_birthdays_aspen, 
-            by = c("CPS.Student.ID" = "student_id")) %>%
-  select(CPS.Student.ID, school, grade_level, Student.Last.Name, 
-         Student.First.Name, powerschool_dob, aspen_dob, correct_dob) %>%
-  drop_na(aspen_dob)
+incorrect_dob_400163 <- locate_distinct_dob_errors(full_error_report = report_400163_w_errors,
+                                                   ps_students_table = students, 
+                                                   school_ids = cps_school_rcdts_ids,
+                                                   aspen_birthdays = all_student_birthdays_aspen
+                                                   ) 
 
-incorrect_dob_400180 <- locate_distinct_dob_errors(report_400180_w_errors, 
-                                                      students, cps_school_rcdts_ids) %>%
-  left_join(all_student_birthdays_aspen, 
-            by = c("CPS.Student.ID" = "student_id")) %>%
-  select(CPS.Student.ID, school, grade_level, Student.Last.Name, 
-         Student.First.Name, powerschool_dob, aspen_dob, correct_dob) %>%
-  drop_na(aspen_dob)
+incorrect_dob_400180 <- locate_distinct_dob_errors(full_error_report = report_400180_w_errors,
+                                                   ps_students_table = students, 
+                                                   school_ids = cps_school_rcdts_ids,
+                                                   aspen_birthdays = all_student_birthdays_aspen
+                                                   ) 
 
 
 # Locate CPS ID Errors For Each School -------------------------------------------------------
@@ -126,22 +120,6 @@ incorrect_cps_id_400163 <- locate_distinct_cps_id_errors(report_400163_w_errors,
 incorrect_cps_id_400180 <- locate_distinct_cps_id_errors(report_400180_w_errors, 
                                                          students, cps_school_rcdts_ids)
 
-missing_cps_id_aspen_all_schools <- 
-  bind_rows(incorrect_cps_id_400044, 
-            incorrect_cps_id_400146, 
-            incorrect_cps_id_400163, 
-            incorrect_cps_id_400180
-            ) %>%
-  filter(is.na(aspen_cps_student_id))
-
-conflicting_cps_id_aspen_all_schools <- 
-  bind_rows(incorrect_cps_id_400044, 
-            incorrect_cps_id_400146, 
-            incorrect_cps_id_400163, 
-            incorrect_cps_id_400180
-  ) %>%
-  filter(!is.na(aspen_cps_student_id))
-
 missing_isbe_stateid_all <- 
   isbe_report_all_schools %>%
   filter(is.na(`ISBE Student ID`)) %>%
@@ -150,7 +128,8 @@ missing_isbe_stateid_all <-
          `Student Last Name`, 
          `Student First Name`, 
          `Birth Date`, 
-         `CPS School ID`) %>%
+         `CPS School ID`, 
+         `ISBE Student ID`) %>%
   distinct()
 
 write.csv(missing_isbe_stateid_all, 
