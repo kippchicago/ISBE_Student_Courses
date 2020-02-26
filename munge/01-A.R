@@ -16,47 +16,39 @@ TEACHER_COURSE_END_DATE = ymd("2020-06-19")
 # Serving School
 
 students_current_demographics <- 
-  students %>% 
-  filter(entrydate >= FIRST_DAY_OF_SCHOOL) %>% 
-  
-  # 0 = currently enrolled | 2 = transferred
-  filter(enroll_status == 0 | enroll_status == 2) %>%
-  filter(exitcode != 99) %>%
-  
-  # NOTE: if student_number is NA it means that the student 
-  # already exists under a different student ID
-  mutate(student_number = na_if(student_number, ""),
-         state_studentnumber = na_if(state_studentnumber, "")) %>%
-  drop_na(student_number) %>%
-  select(
+  students_aspen_info_current_former %>% 
+  rename(
     student_last_name = last_name,
     student_first_name = first_name,
     student_birth_date = dob,
-    isbe_student_id = state_studentnumber,
-    schoolid,
-    cps_student_id = student_number, 
-    enroll_status,
-    student_id,
+    isbe_student_id = sasid,
+    schoolid = school_assigned_to,
+    cps_student_id = student_id, 
   ) %>%
   
-  mutate(student_birth_date = format(as.Date(student_birth_date),'%m/%d/%Y')
+  mutate(student_birth_date = format(as.Date(student_birth_date),'%m/%d/%Y'),
+         schoolid = as.double(schoolid)
          ) %>%
   left_join(
     cps_school_rcdts_ids, 
-    by = "schoolid"
+    by = c("schoolid" = "cps_school_id")
   ) %>%
   rename("home_rcdts" = "rcdts_code")
 
-current_studentid <- 
-  students %>% 
-  filter(entrydate >= FIRST_DAY_OF_SCHOOL) %>% 
-  
-  # 0 = currently enrolled | 2 = transferred
-  filter(enroll_status == 0 | enroll_status == 2) %>%
-  filter(exitcode != 99) %>%
-  select(student_id, 
-         grade_level) %>%
-  distinct()
+students_current_demographics %>%
+  filter(student_id_duplicated == 1) %>%
+  View()
+
+# current_studentid <- 
+#   students %>% 
+#   filter(entrydate >= FIRST_DAY_OF_SCHOOL) %>% 
+#   
+#   # 0 = currently enrolled | 2 = transferred
+#   filter(enroll_status == 0 | enroll_status == 2) %>%
+#   filter(exitcode != 99) %>%
+#   select(student_id, 
+#          grade_level) %>%
+#   distinct()
 
 # Student Course Information ----------------------------------------------------------------
 
