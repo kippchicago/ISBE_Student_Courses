@@ -101,7 +101,6 @@ isbe_report_middle_midyear_2020_full <-
   
   # Select all required columns in the correct order.
   select(
-    student_id, 
     'CPS School ID' = cps_school_id, 
     'ISBE Student ID' = isbe_student_id, 
     'CPS Student ID' = cps_student_id, 
@@ -156,8 +155,3 @@ isbe_report_middle_midyear_2020_full <-
     'Error Details', 
     'Other Notes',
   )
-
-isbe_report_middle_midyear_2020_full %>%
-  group_by(`CPS Student ID`) %>%
-  count() %>%
-  View()

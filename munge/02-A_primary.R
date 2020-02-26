@@ -68,8 +68,16 @@ students_course_primary_excellence <-
          !grepl("Science", local_course_title)) %>%
   
   mutate(school = str_extract(local_course_id, "kop|kbp|kap|kacp"),
-         grade_level = str_replace(local_course_id, "kop|kbp|kap|kacp", "") %>%      
+         grade_level = str_replace(local_course_id, "kop|kbp|kap|kacp", "") %>%  
            str_extract("^.")) %>%
+  
+  filter(grade_level %in% c(0, 1, 2, 3),
+         !grepl("Science", local_course_title), 
+         !grepl("Homework", local_course_title)
+  ) %>%
+  mutate(grade_level = as.character(grade_level)) %>%
+  mutate(grade_level = str_replace(grade_level, "0", "k")) %>%
+  mutate(school = str_extract(local_course_id, "kop|kbp|kap|kacp")) %>%
   
   select(student_id, 
          teacherid, 
@@ -316,8 +324,3 @@ isbe_report_primary_excellence_midyear <-
 isbe_report_primary_midyear_2020_full <- 
   bind_rows(isbe_report_primary_core_midyear, 
             isbe_report_primary_excellence_midyear)
-
-isbe_report_primary_core_midyear %>%
-  group_by(`CPS Student ID`) %>%
-  count() %>%
-  View()
