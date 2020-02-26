@@ -123,3 +123,109 @@ all_student_birthdays_aspen <-
             bloom_400163_student_dobs_aspen) %>%
   rename(aspen_dob = dob)
 
+
+# ASPEN Student Info (Current & Former Students 19-20) --------------------
+
+# Ascend 400044
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400044_ascend_current_students_aspen.csv",
+               saveToDisk = "data/flatfiles/400044_ascend_current_students_aspen.csv",
+               overwrite = TRUE)
+
+ascend_400044_current_students_aspen <-
+  read_csv(here::here("data", "flatfiles", "400044_ascend_current_students_aspen.csv")) %>%
+  janitor::clean_names() %>%
+  rename(current_school_name = school_name) %>%
+  mutate(school_assigned_to = "400044")
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400044_ascend_former_students_aspen.csv",
+               saveToDisk = "data/flatfiles/400044_ascend_former_students_aspen.csv",
+               overwrite = TRUE)
+
+ascend_400044_former_students_aspen <-
+  read_csv(here::here("data", "flatfiles", "400044_ascend_former_students_aspen.csv")) %>%
+  janitor::clean_names() %>%
+  rename(current_school_name = school_name) %>%
+  mutate(school_assigned_to = "400044")
+
+# academy 400146
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400146_academy_current_students_aspen.csv",
+               saveToDisk = "data/flatfiles/400146_academy_current_students_aspen.csv",
+               overwrite = TRUE)
+
+academy_400146_current_students_aspen <-
+  read_csv(here::here("data", "flatfiles", "400146_academy_current_students_aspen.csv")) %>%
+  janitor::clean_names()  %>%
+  rename(current_school_name = school_name) %>%
+  mutate(school_assigned_to = "400146")
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400146_academy_former_students_aspen.csv",
+               saveToDisk = "data/flatfiles/400146_academy_former_students_aspen.csv",
+               overwrite = TRUE)
+
+academy_400146_former_students_aspen <-
+  read_csv(here::here("data", "flatfiles", "400146_academy_former_students_aspen.csv")) %>%
+  janitor::clean_names() %>%
+  rename(current_school_name = school_name) %>%
+  mutate(school_assigned_to = "400146")
+
+# bloom 400163
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400163_bloom_current_students_aspen.csv",
+               saveToDisk = "data/flatfiles/400163_bloom_current_students_aspen.csv",
+               overwrite = TRUE) 
+
+bloom_400163_current_students_aspen <-
+  read_csv(here::here("data", "flatfiles", "400163_bloom_current_students_aspen.csv")) %>%
+  janitor::clean_names() %>%
+  rename(current_school_name = school_name) %>%
+  mutate(school_assigned_to = "400163")
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400163_bloom_former_students_aspen.csv",
+               saveToDisk = "data/flatfiles/400163_bloom_former_students_aspen.csv",
+               overwrite = TRUE)
+
+bloom_400163_former_students_aspen <-
+  read_csv(here::here("data", "flatfiles", "400163_bloom_former_students_aspen.csv")) %>%
+  janitor::clean_names() %>%
+  rename(current_school_name = school_name) %>%
+  mutate(school_assigned_to = "400163")
+
+# one 400180
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400180_one_current_students_aspen.csv",
+               saveToDisk = "data/flatfiles/400180_one_current_students_aspen.csv",
+               overwrite = TRUE)
+
+one_400180_current_students_aspen <-
+  read_csv(here::here("data", "flatfiles", "400180_one_current_students_aspen.csv")) %>%
+  janitor::clean_names() %>%
+  rename(current_school_name = school_name) %>%
+  mutate(school_assigned_to = "400180")
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400180_one_former_students_aspen.csv",
+               saveToDisk = "data/flatfiles/400180_one_former_students_aspen.csv",
+               overwrite = TRUE)
+
+one_400180_former_students_aspen <-
+  read_csv(here::here("data", "flatfiles", "400180_one_former_students_aspen.csv")) %>%
+  janitor::clean_names() %>%
+  rename(current_school_name = school_name) %>%
+  mutate(school_assigned_to = "400180")
+
+students_aspen_info_current_former <-
+  bind_rows(ascend_400044_current_students_aspen, 
+            ascend_400044_former_students_aspen, 
+            academy_400146_current_students_aspen, 
+            academy_400146_former_students_aspen, 
+            bloom_400163_current_students_aspen, 
+            bloom_400163_former_students_aspen, 
+            one_400180_current_students_aspen, 
+            one_400180_former_students_aspen
+            ) %>%
+  mutate(dob = mdy(dob)) %>%
+  distinct() %>%
+  group_by(student_id) %>%
+  mutate(number_of_rows_student_id_appears_in = n(), 
+         student_id_duplicated = case_when(number_of_rows_student_id_appears_in > 1 ~ 1, 
+                                           TRUE ~ 0)
+         ) %>%
+  ungroup(student_id)
+  
