@@ -34,8 +34,8 @@ REASON_FOR_EXIT = "01"
 students_course_middle <- 
   students_local_course_id_title_section_number %>%
 
-  group_by(cps_student_id_aspen, local_course_id) %>%
-  filter(row_number(desc(dateenrolled)) == 1) %>%
+  # group_by(cps_student_id_aspen, local_course_id) %>%
+  # filter(row_number(desc(dateenrolled)) == 1) %>%
   
   left_join(local_number_isbe_state_course_ids %>% 
               select(-local_course_title), 

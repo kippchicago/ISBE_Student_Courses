@@ -66,8 +66,8 @@ students_course_primary_core <-
 students_course_primary_excellence <- 
   students_local_course_id_title_section_number %>%
   
-  group_by(cps_student_id_aspen) %>%
-  filter(row_number(desc(dateenrolled)) == 1) %>%
+  # group_by(cps_student_id_aspen) %>%
+  # filter(row_number(desc(dateenrolled)) == 1) %>%
   
   filter(grepl("kop|kacp|kap|kbp|1|2|3", local_course_title),
          !grepl("Science", local_course_title)) %>%
@@ -108,8 +108,8 @@ students_course_primary_excellence <-
 students_course_primary_4th <- 
   students_local_course_id_title_section_number %>%
   
-  group_by(cps_student_id_aspen) %>%
-  filter(row_number(desc(dateenrolled)) == 1) %>%
+  # group_by(cps_student_id_aspen) %>%
+  # filter(row_number(desc(dateenrolled)) == 1) %>%
   
   filter(grade_level %in% c(4)) %>%
 

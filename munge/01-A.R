@@ -33,6 +33,7 @@ students_current_demographics <-
     isbe_student_id_aspen = sasid,
     schoolid_aspen = school_assigned_to,
     cps_student_id_aspen = student_id, 
+    enrollment_date_aspen = org_enr_date
   ) %>%
   
   mutate(student_birth_date_aspen = format(as.Date(student_birth_date_aspen),'%m/%d/%Y'),
@@ -58,7 +59,9 @@ current_studentid <-
          "ps_student_id", 
          "grade_level",
          "isbe_student_id_aspen", 
-         "schoolid_aspen")
+         "schoolid_aspen", 
+         "enrollment_date_aspen"
+         )
 
 
 # Student Course Information ----------------------------------------------------------------
@@ -220,12 +223,18 @@ student_enrollment_info <-
     student_course_end_date = dateleft, 
     schoolid, 
     cps_student_id_aspen, 
-    cps_student_id_kipp
+    cps_student_id_kipp,
+    enrollment_date_aspen
   ) %>% 
-  mutate(student_course_start_date = format(as.Date(student_course_start_date),'%m/%d/%Y')
+  mutate(student_course_start_date = ymd(student_course_start_date)
          ) %>%
-  mutate(student_course_end_date = format(as.Date(student_course_end_date),'%m/%d/%Y') 
+  mutate(student_course_end_date = ymd(student_course_end_date)
          ) %>%
+  mutate(enrollment_date_aspen = mdy(enrollment_date_aspen)) %>%
+  mutate(student_course_start_date = case_when(enrollment_date_aspen > student_course_start_date ~ enrollment_date_aspen,
+                                               TRUE ~ student_course_start_date
+                                               )
+  ) %>%
   
   # Keeps latest student enrollment date
   # source: https://stackoverflow.com/questions/21704207/r-subset-unique-observation-keeping-last-entry

@@ -241,4 +241,28 @@ cps_id_corrections <-
   janitor::clean_names() %>%
   mutate(cps_student_id = as.character(cps_student_id), 
          kipp_incorrect_cpsid = as.character(kipp_incorrect_cpsid))
+
+
+# CPS Enrollment Data ASPEN -----------------------------------------------
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/enrollment_ascend_aspen_400044.csv",
+               saveToDisk = "data/flatfiles/enrollment_ascend_aspen_400044.csv",
+               overwrite = TRUE)
+
+enrollment_ascend_aspen_400044 <-
+  read_csv(here::here("data", "flatfiles", "enrollment_ascend_aspen_400044.csv")) %>%
+  janitor::clean_names() %>%
+  rename(date = x1, 
+         type = x3, 
+         student_name = x4,
+         yog = x7,
+         school_name = x8,
+         code = x9,
+         reason = x11) %>%
+  mutate(date = na_if(date, "Date")) %>%
+  drop_na(date) %>%
+  select(-c(charter, x5, x6, yog, x10, reason)) %>%
+  separate(col = student_name, 
+           into = c("last_name", "first_name"), 
+           sep = ",")
   

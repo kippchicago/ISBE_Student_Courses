@@ -6,7 +6,7 @@ source(here::here("lib", "helpers.R"))
 
 # Parameters --------------------------------------------------------------
 
-ERROR_DATE <- ymd("2020-02-26")
+ERROR_DATE <- today()
 
 # Download Files ----------------------------------------------------------
 
@@ -41,22 +41,69 @@ drive_download("400180_CourseAssignment2020_01.xls",
 report_400044_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400044_CourseAssignment2020_01", 
-                             ERROR_DATE, ".xlsx", sep = "_")))
+                             today(), ".xlsx", sep = "_")))
 
 report_400146_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400146_CourseAssignment2020_01", 
-                             ERROR_DATE, ".xlsx", sep = "_")))
+                             today(), ".xlsx", sep = "_")))
 
 report_400163_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400163_CourseAssignment2020_01", 
-                             ERROR_DATE, ".xlsx", sep = "_")))
+                             today(), ".xlsx", sep = "_")))
 
 report_400180_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400180_CourseAssignment2020_01", 
-                             ERROR_DATE, ".xlsx", sep = "_")))
+                             today(), ".xlsx", sep = "_")))
+
+
+# Exploration of Final Report Error ---------------------------------------
+
+errors_start_end_date_400044 <- 
+  report_400044_w_errors %>%
+  filter(grepl("Student Course Start Date|Student Course End Date", Error.Details)) %>%
+  select(CPS.School.ID, 
+         CPS.Student.ID, 
+         Student.Last.Name, Student.First.Name, 
+         Student.Course.Start.Date, 
+         Student.Course.End.Date, 
+         Error.Details) %>%
+  distinct()
+
+errors_start_end_date_400146 <- 
+  report_400146_w_errors %>%
+  filter(grepl("Student Course Start Date|Student Course End Date", Error.Details)) %>%
+  select(CPS.School.ID, 
+         CPS.Student.ID, 
+         Student.Last.Name, Student.First.Name, 
+         Student.Course.Start.Date, 
+         Student.Course.End.Date, 
+         Error.Details) %>%
+  distinct()
+
+errors_start_end_date_400163 <- 
+  report_400163_w_errors %>%
+  filter(grepl("Student Course Start Date|Student Course End Date", Error.Details)) %>%
+  select(CPS.School.ID, 
+         CPS.Student.ID, 
+         Student.Last.Name, Student.First.Name, 
+         Student.Course.Start.Date, 
+         Student.Course.End.Date, 
+         Error.Details) %>%
+  distinct()
+
+errors_start_end_date_400180 <- 
+  report_400180_w_errors %>%
+  filter(grepl("Student Course Start Date|Student Course End Date", Error.Details)) %>%
+  select(CPS.School.ID, 
+         CPS.Student.ID, 
+         Student.Last.Name, Student.First.Name, 
+         Student.Course.Start.Date, 
+         Student.Course.End.Date, 
+         Error.Details) %>%
+  distinct()
 
 
 # Locate All Unique Errors for each School ------------------------------------
@@ -68,6 +115,15 @@ final_errors_400146 <- locate_distinct_errors(report_400146_w_errors)
 final_errors_400163 <- locate_distinct_errors(report_400163_w_errors)
 
 final_errors_400180 <- locate_distinct_errors(report_400180_w_errors)
+
+all_errors <- bind_rows(final_errors_400044,
+                        final_errors_400146,
+                        final_errors_400163,
+                        final_errors_400180) %>%
+  distinct() %>%
+  filter(!grepl("Last Name|First Name", errors))
+
+write.csv(all_errors, "all_remaining_errors.csv")
 
 # Locate Name Errors For Each School ------------------------------------------------------
 
