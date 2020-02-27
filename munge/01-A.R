@@ -15,50 +15,50 @@ TEACHER_COURSE_END_DATE = ymd("2020-06-19")
 # ISBE Student ID
 # Serving School
 
-student_aspen_data_w_corrections <-
+students_current_demographics <-
   students_aspen_info_current_former %>%
   mutate(student_id = as.character(student_id)) %>%
   left_join(cps_id_corrections, 
             by = c("student_id" = "cps_student_id")) %>%
-  mutate(cps_student_id_join_kipp_data = case_when(is.na(kipp_incorrect_cpsid) ~ student_id, 
+  mutate(cps_student_id_kipp = case_when(is.na(kipp_incorrect_cpsid) ~ student_id, 
                                                          TRUE ~ kipp_incorrect_cpsid)) %>%
   select(-kipp_incorrect_cpsid) %>%
   
   # Drop students who do not appear in powerschool and so never enrolled with us. 
-  filter(cps_student_id_join_kipp_data != "no ps")
-
-students_current_demographics <- 
-  student_aspen_data_w_corrections %>% 
+  filter(cps_student_id_kipp != "no ps") %>%
   rename(
-    student_last_name = last_name,
-    student_first_name = first_name,
-    student_birth_date = dob,
-    isbe_student_id = sasid,
-    schoolid = school_assigned_to,
-    cps_student_id = student_id, 
+    student_last_name_aspen = last_name,
+    student_first_name_aspen = first_name,
+    student_birth_date_aspen = dob,
+    isbe_student_id_aspen = sasid,
+    schoolid_aspen = school_assigned_to,
+    cps_student_id_aspen = student_id, 
   ) %>%
   
-  mutate(student_birth_date = format(as.Date(student_birth_date),'%m/%d/%Y'),
-         schoolid = as.double(schoolid)
-         ) %>%
+  mutate(student_birth_date_aspen = format(as.Date(student_birth_date_aspen),'%m/%d/%Y'),
+         schoolid_aspen = as.double(schoolid_aspen)
+  ) %>%
   left_join(
     cps_school_rcdts_ids %>% 
       select(cps_school_id, rcdts_code) %>% 
       distinct(), 
-    by = c("schoolid" = "cps_school_id")
+    by = c("schoolid_aspen" = "cps_school_id")
   ) %>%
   rename("home_rcdts" = "rcdts_code") %>%
   left_join(students %>% select(ps_student_id = student_id, 
                                 student_number, 
                                 grade_level), 
-            by = c("cps_student_id_join_kipp_data" = "student_number"))
+            by = c("cps_student_id_kipp" = "student_number")) %>%
+  select(-home_rcdts)
 
 current_studentid <-
   students_current_demographics %>%
-  select("cps_student_id", 
-         "cps_student_id_join_kipp_data", 
+  select("cps_student_id_aspen", 
+         "cps_student_id_kipp", 
          "ps_student_id", 
-         "grade_level")
+         "grade_level",
+         "isbe_student_id_aspen", 
+         "schoolid_aspen")
 
 # Student Course Information ----------------------------------------------------------------
 
@@ -77,15 +77,17 @@ students_local_course_id_title_section_number <-
   # the report will include the cps_student_id_correct
   filter(dateenrolled >= FIRST_DAY_OF_SCHOOL) %>%
   select(
-    cps_student_id_join_kipp_data, 
-    cps_student_id_correct = cps_student_id,
+    cps_student_id_kipp, 
+    cps_student_id_aspen,
     schoolid, 
     course_number, 
     section_number, 
     teacherid, 
     dateenrolled,
     dateleft,
-    grade_level
+    grade_level, 
+    isbe_student_id_aspen, 
+    schoolid_aspen
   ) %>%
   
   # Join to add Local Course title
@@ -206,13 +208,16 @@ teacher_enrollment <-
 # Student Course Start Date
 
 student_enrollment_info <- 
-  cc %>%
+  current_studentid %>%
+  left_join(cc, by = c("ps_student_id" = "student_id")) %>%
   filter(dateenrolled >= FIRST_DAY_OF_SCHOOL) %>%
   select(
-    student_id, 
+    ps_student_id, 
     student_course_start_date = dateenrolled, 
     student_course_end_date = dateleft, 
-    schoolid
+    schoolid, 
+    cps_student_id_aspen, 
+    cps_student_id_kipp
   ) %>% 
   distinct() %>%
   mutate(student_course_start_date = format(as.Date(student_course_start_date),'%m/%d/%Y')
@@ -222,5 +227,5 @@ student_enrollment_info <-
   
   # Keeps latest student enrollment date
   # source: https://stackoverflow.com/questions/21704207/r-subset-unique-observation-keeping-last-entry
-  group_by(student_id) %>%
+  group_by(ps_student_id) %>%
   filter(row_number(desc(student_course_start_date)) == 1)

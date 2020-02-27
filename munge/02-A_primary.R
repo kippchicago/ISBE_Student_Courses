@@ -36,6 +36,9 @@ REASON_FOR_EXIT = "01"
 students_course_primary_core <- 
   students_local_course_id_title_section_number %>%
   
+  group_by(cps_student_id_aspen) %>%
+  filter(row_number(desc(dateenrolled)) == 1) %>%
+  
   filter(grade_level %in% c(0, 1, 2, 3),
          !grepl("Science", local_course_title), 
          !grepl("Homework", local_course_title)
@@ -43,25 +46,27 @@ students_course_primary_core <-
   mutate(grade_level = as.character(grade_level)) %>%
   mutate(grade_level = str_replace(grade_level, "0", "k")) %>%
   mutate(school = str_extract(local_course_id, "kop|kbp|kap|kacp")) %>%
-  select(student_id,
+  select(cps_student_id_aspen,
          teacherid,
          school,
          grade_level,
          section_number) %>%
   mutate(grade_level = as.character(grade_level)) %>%
+  
   left_join(local_number_isbe_state_course_ids, 
             by = c("grade_level", 
                    "school")) %>% 
   filter(is.na(first_last_teacher)) %>%
   select(-first_last_teacher) %>%
-  mutate(teacherid = as.character(teacherid))
+  mutate(teacherid = as.character(teacherid)) %>%
+  distinct()
 
 
 # NOTE: Multiple excellence courses per student
 students_course_primary_excellence <- 
   students_local_course_id_title_section_number %>%
   
-  group_by(student_id) %>%
+  group_by(cps_student_id_aspen) %>%
   filter(row_number(desc(dateenrolled)) == 1) %>%
   
   filter(grepl("kop|kacp|kap|kbp|1|2|3", local_course_title),
@@ -79,11 +84,11 @@ students_course_primary_excellence <-
   mutate(grade_level = str_replace(grade_level, "0", "k")) %>%
   mutate(school = str_extract(local_course_id, "kop|kbp|kap|kacp")) %>%
   
-  select(student_id, 
-         teacherid, 
-         school, 
-         grade_level, 
-         section_number,) %>%
+  select(cps_student_id_aspen,
+         teacherid,
+         school,
+         grade_level,
+         section_number) %>%
   
   left_join(local_number_isbe_state_course_ids, 
             by = c("grade_level", "school")) %>% 
@@ -108,15 +113,19 @@ isbe_report_primary_core_midyear <-
             by = "teacherid") %>%
   select(-c(schoolid)) %>%
   left_join(students_current_demographics, 
-            by = "student_id") %>%
-  select(-c(schoolid)) %>%
+            by = "cps_student_id_aspen") %>%
   left_join(student_enrollment_info, 
-            by = "student_id") %>%
+            by = "cps_student_id_aspen") %>%
   left_join(teacher_enrollment, 
             by = "teacherid") %>%
+  select(-c("rcdts_code", "employer_rcdts", "teacher_serving")) %>%
+  left_join(cps_school_rcdts_ids, 
+            by = c("schoolid_aspen" = "cps_school_id")) %>%
+  rename(rcdts_code_aspen = rcdts_code) %>%
   ungroup() %>%
   
-  mutate(serving_school = home_rcdts, 
+  # Add additional required columns that are the same for everyone
+  mutate(serving_school = rcdts_code_aspen, 
          school_year = SCHOOL_YEAR, 
          term = TERM, 
          course_level = COURSE_LEVEL, 
@@ -149,18 +158,17 @@ isbe_report_primary_core_midyear <-
          'Local Teacher ID' = "",
          'Actual Attendance (Classes)' = "", 
          'Total Attendance (Classes)' = "", 
-         
   ) %>%
   
   # Select all required columns in the correct order.
   select(
-    'CPS School ID' = cps_school_id, 
-    'ISBE Student ID' = isbe_student_id, 
-    'CPS Student ID' = cps_student_id, 
-    'Student Last Name' = student_last_name, 
-    'Student First Name' = student_first_name, 
-    'Birth Date' = student_birth_date, 
-    'Home RCDTS' = home_rcdts, 
+    'CPS School ID' = schoolid_aspen, 
+    'ISBE Student ID' = isbe_student_id_aspen, 
+    'CPS Student ID' = cps_student_id_aspen, 
+    'Student Last Name' = student_last_name_aspen, 
+    'Student First Name' = student_first_name_aspen, 
+    'Birth Date' = student_birth_date_aspen, 
+    'Home RCDTS' = rcdts_code_aspen, 
     'Serving School' = serving_school, 
     'School Year' = school_year, 
     'Term (Semester)' = term, 
@@ -194,8 +202,8 @@ isbe_report_primary_core_midyear <-
     'Teacher Last Name' = teacher_last_name, 
     'Teacher First Name' = teacher_first_name, 
     'Teacher Birth Date' = teacher_birth_date, 
-    'Teacher Serving Location RCDTS Code' = teacher_serving, 
-    'Employer RCDTS' = employer_rcdts, 
+    'Teacher Serving Location RCDTS Code' = rcdts_code_aspen, 
+    'Employer RCDTS' = rcdts_code_aspen, 
     'Teacher Course Start Date' = teacher_course_start_date, 
     'Role of Professional' = eis_position_code,
     'Teacher Commitment (1.00 means 100% full time commitment to the course)' = teacher_commitment, 
@@ -206,7 +214,7 @@ isbe_report_primary_core_midyear <-
     'Errors Detected?', 
     'Number of Errors in Record', 
     'Error Details', 
-    'Other Notes'
+    'Other Notes',
   ) %>%
   distinct()
 
@@ -217,16 +225,20 @@ isbe_report_primary_excellence_midyear <-
   left_join(teacher_personal_info, 
             by = c("teacher_last_name", 
                    "teacher_first_name")) %>%
-  # select(-c(cps_school_id)) %>%
   left_join(students_current_demographics, 
-            by = "student_id") %>%
+            by = "cps_student_id_aspen") %>%
   left_join(student_enrollment_info, 
-            by = "student_id") %>%
+            by = "cps_student_id_aspen") %>%
   left_join(teacher_enrollment, 
             by = "teacherid") %>%
+  select(-c("rcdts_code", "employer_rcdts", "teacher_serving")) %>%
+  left_join(cps_school_rcdts_ids, 
+            by = c("schoolid_aspen" = "cps_school_id")) %>%
+  rename(rcdts_code_aspen = rcdts_code) %>%
   ungroup() %>%
   
-  mutate(serving_school = home_rcdts, 
+  # Add additional required columns that are the same for everyone
+  mutate(serving_school = rcdts_code_aspen, 
          school_year = SCHOOL_YEAR, 
          term = TERM, 
          course_level = COURSE_LEVEL, 
@@ -259,18 +271,17 @@ isbe_report_primary_excellence_midyear <-
          'Local Teacher ID' = "",
          'Actual Attendance (Classes)' = "", 
          'Total Attendance (Classes)' = "", 
-         
   ) %>%
   
   # Select all required columns in the correct order.
   select(
-    'CPS School ID' = cps_school_id, 
-    'ISBE Student ID' = isbe_student_id, 
-    'CPS Student ID' = cps_student_id, 
-    'Student Last Name' = student_last_name, 
-    'Student First Name' = student_first_name, 
-    'Birth Date' = student_birth_date, 
-    'Home RCDTS' = home_rcdts, 
+    'CPS School ID' = schoolid_aspen, 
+    'ISBE Student ID' = isbe_student_id_aspen, 
+    'CPS Student ID' = cps_student_id_aspen, 
+    'Student Last Name' = student_last_name_aspen, 
+    'Student First Name' = student_first_name_aspen, 
+    'Birth Date' = student_birth_date_aspen, 
+    'Home RCDTS' = rcdts_code_aspen, 
     'Serving School' = serving_school, 
     'School Year' = school_year, 
     'Term (Semester)' = term, 
@@ -304,8 +315,8 @@ isbe_report_primary_excellence_midyear <-
     'Teacher Last Name' = teacher_last_name, 
     'Teacher First Name' = teacher_first_name, 
     'Teacher Birth Date' = teacher_birth_date, 
-    'Teacher Serving Location RCDTS Code' = teacher_serving, 
-    'Employer RCDTS' = employer_rcdts, 
+    'Teacher Serving Location RCDTS Code' = rcdts_code_aspen, 
+    'Employer RCDTS' = rcdts_code_aspen, 
     'Teacher Course Start Date' = teacher_course_start_date, 
     'Role of Professional' = eis_position_code,
     'Teacher Commitment (1.00 means 100% full time commitment to the course)' = teacher_commitment, 
@@ -316,9 +327,9 @@ isbe_report_primary_excellence_midyear <-
     'Errors Detected?', 
     'Number of Errors in Record', 
     'Error Details', 
-    'Other Notes'
-  )
-
+    'Other Notes',
+  ) %>%
+  distinct()
 # Full ISBE Report Primary ------------------------------------------------
 
 isbe_report_primary_midyear_2020_full <- 
