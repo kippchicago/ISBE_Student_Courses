@@ -60,6 +60,7 @@ current_studentid <-
          "isbe_student_id_aspen", 
          "schoolid_aspen")
 
+
 # Student Course Information ----------------------------------------------------------------
 
 # Note: this section produces the following columns required for ISBE Reporting
@@ -75,6 +76,8 @@ students_local_course_id_title_section_number <-
   # Note: student_id includes student ids that conflict with CPS student ID, 
   # in order to get student classes I need to use the IDs that kipp has, but
   # the report will include the cps_student_id_correct
+  
+  # Lose 229 students by filtering for dateenrolled > first day of school
   filter(dateenrolled >= FIRST_DAY_OF_SCHOOL) %>%
   select(
     cps_student_id_kipp, 
@@ -219,7 +222,6 @@ student_enrollment_info <-
     cps_student_id_aspen, 
     cps_student_id_kipp
   ) %>% 
-  distinct() %>%
   mutate(student_course_start_date = format(as.Date(student_course_start_date),'%m/%d/%Y')
          ) %>%
   mutate(student_course_end_date = format(as.Date(student_course_end_date),'%m/%d/%Y') 
@@ -227,5 +229,6 @@ student_enrollment_info <-
   
   # Keeps latest student enrollment date
   # source: https://stackoverflow.com/questions/21704207/r-subset-unique-observation-keeping-last-entry
-  group_by(ps_student_id) %>%
-  filter(row_number(desc(student_course_start_date)) == 1)
+  group_by(cps_student_id_aspen) %>%
+  filter(row_number(desc(student_course_start_date)) == 1) %>%
+  ungroup()

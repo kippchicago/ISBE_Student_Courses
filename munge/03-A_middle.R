@@ -29,6 +29,7 @@ REASON_FOR_EXIT = "01"
 # State course IDs come from flat file and is joined with existing local course 
 # IDs from Powerschool enrollment Multiple courses per student
 
+
 # ISBE State Course IDs
 students_course_middle <- 
   students_local_course_id_title_section_number %>%

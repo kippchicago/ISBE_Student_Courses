@@ -9,10 +9,11 @@ source(here::here("munge", "03-A_middle.R"))
 
 # Combine Middle and Primary Reports --------------------------------------
 
+# 3,112 total students
 isbe_report_all_schools <- 
   bind_rows(isbe_report_middle_midyear_2020_full, 
             isbe_report_primary_midyear_2020_full) %>%
-  drop_na(`Student First Name`)
+  filter(!is.na(`ISBE Student ID`))
 
 # Filter Report for all 4 Schools -----------------------------------------
 
