@@ -6,7 +6,7 @@ source(here::here("lib", "helpers.R"))
 
 # Parameters --------------------------------------------------------------
 
-ERROR_DATE <- today()
+ERROR_DATE <- ymd("2020/02/27")
 
 # Download Files ----------------------------------------------------------
 
@@ -41,22 +41,22 @@ drive_download("400180_CourseAssignment2020_01.xls",
 report_400044_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400044_CourseAssignment2020_01", 
-                             today(), ".xlsx", sep = "_")))
+                             ERROR_DATE, ".xlsx", sep = "_")))
 
 report_400146_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400146_CourseAssignment2020_01", 
-                             today(), ".xlsx", sep = "_")))
+                             ERROR_DATE, ".xlsx", sep = "_")))
 
 report_400163_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400163_CourseAssignment2020_01", 
-                             today(), ".xlsx", sep = "_")))
+                             ERROR_DATE, ".xlsx", sep = "_")))
 
 report_400180_w_errors <-
   read.xlsx(here::here("output", "errors", "original_files", 
                        paste("400180_CourseAssignment2020_01", 
-                             today(), ".xlsx", sep = "_")))
+                             ERROR_DATE, ".xlsx", sep = "_")))
 
 
 # Exploration of Final Report Error ---------------------------------------
@@ -68,7 +68,8 @@ incorrect_names_400044 <-
          CPS.Student.ID,
          Student.Last.Name, Student.First.Name,
          Student.Course.Start.Date,
-         Student.Course.End.Date) %>%
+         Student.Course.End.Date, 
+         Error.Details) %>%
   distinct()
 
 incorrect_names_400146 <-
@@ -78,7 +79,8 @@ incorrect_names_400146 <-
          CPS.Student.ID,
          Student.Last.Name, Student.First.Name,
          Student.Course.Start.Date,
-         Student.Course.End.Date) %>%
+         Student.Course.End.Date, 
+         Error.Details) %>%
   distinct()
 
 incorrect_names_400163 <-
@@ -88,7 +90,8 @@ incorrect_names_400163 <-
          CPS.Student.ID,
          Student.Last.Name, Student.First.Name,
          Student.Course.Start.Date,
-         Student.Course.End.Date) %>%
+         Student.Course.End.Date, 
+         Error.Details) %>%
   distinct()
 
 incorrect_names_400180 <-
@@ -98,9 +101,17 @@ incorrect_names_400180 <-
          CPS.Student.ID,
          Student.Last.Name, Student.First.Name,
          Student.Course.Start.Date,
-         Student.Course.End.Date) %>%
+         Student.Course.End.Date, 
+         Error.Details) %>%
   distinct()
 
+incorrect_names_all <- 
+  bind_rows(incorrect_names_400044, 
+            incorrect_names_400146, 
+            incorrect_names_400163, 
+            incorrect_names_400180)
+
+write.csv(incorrect_names_all, "incorrect_names_all.csv")
 
 # Locate All Unique Errors for each School ------------------------------------
 

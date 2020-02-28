@@ -382,3 +382,14 @@ enrollment_one_aspen_400180 <-
   mutate(last_name = str_to_lower(last_name), 
          first_name = str_to_lower(first_name))
 
+
+# CPS ID Corrections ------------------------------------------------------
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/cps_name_replacement_aspen.csv",
+               saveToDisk = "data/flatfiles/cps_name_replacement_aspen.csv",
+               overwrite = TRUE)
+
+cps_name_replacement_list <-
+  read_csv(here::here("data", "flatfiles", "cps_name_replacement_aspen.csv")) %>%
+  janitor::clean_names()
+

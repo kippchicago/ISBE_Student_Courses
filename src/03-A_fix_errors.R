@@ -4,36 +4,6 @@ load.project()
 source(here::here("src", "02-A_error_checking.R"))
 
 
-# ASPEN Corrections Data Frames -------------------------------------------------------
-
-conflicting_cps_id_aspen_all_schools <- 
-  bind_rows(incorrect_cps_id_400044, 
-            incorrect_cps_id_400146, 
-            incorrect_cps_id_400163, 
-            incorrect_cps_id_400180
-  ) %>%
-  filter(!is.na(aspen_cps_student_id))
-
-name_replacements_full <- 
-  bind_rows(incorrect_names_400044, 
-            incorrect_names_400146, 
-            incorrect_names_400163, 
-            incorrect_names_400180) %>%
-  select(CPS.Student.ID, 
-         ASPEN_name) %>%
-  mutate(name_location = if_else(grepl("First", ASPEN_name) ,"First", "Last")) %>%
-  mutate(replacement_name = str_extract(ASPEN_name, "(?<=Name to match ').*")) %>%
-  mutate(replacement_name = str_sub(replacement_name, 1, -2)) %>%
-  select(-c(ASPEN_name))
-
-dob_replacement_full <- 
-  bind_rows(incorrect_dob_400044, 
-            incorrect_dob_400146, 
-            incorrect_dob_400163, 
-            incorrect_dob_400180) %>%
-  select(-c(school, grade_level, correct_dob))
-
-
 # Correct Dataframes from 01-A_Produce-submission-files.R -----------------
 
 isbe_midyear_report_400044_corrected <- fix_name_dob_cps_errors(
