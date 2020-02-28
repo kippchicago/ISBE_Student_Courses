@@ -18,7 +18,7 @@ TEACHER_COURSE_END_DATE = ymd("2020-06-19")
 students_current_demographics <-
   students_aspen_info_current_former %>%
   mutate(student_id = as.character(student_id)) %>%
-  left_join(cps_id_corrections, 
+  left_join(cps_id_corrections,
             by = c("student_id" = "cps_student_id")) %>%
   mutate(cps_student_id_kipp = case_when(is.na(kipp_incorrect_cpsid) ~ student_id, 
                                                          TRUE ~ kipp_incorrect_cpsid)) %>%
@@ -265,7 +265,6 @@ student_enrollment_info_aspen_entered <-
   rename(student_entry_date_aspen = student_enrollment_info_aspen) %>%
   select(-type) %>%
   distinct() %>%
-  
   group_by(cps_student_id_aspen) %>%
   arrange(student_entry_date_aspen) %>%
   filter(row_number(student_entry_date_aspen) == 1) %>%
@@ -277,7 +276,6 @@ student_enrollment_info_aspen_withdrew <-
   rename(student_withdraw_date_aspen = student_enrollment_info_aspen) %>%
   select(-type) %>%
   distinct() %>%
-  
   group_by(cps_student_id_aspen) %>%
   filter(row_number(desc(student_withdraw_date_aspen)) == 1) %>%
   ungroup()
@@ -298,7 +296,6 @@ student_enrollment_info_ps_entered <-
     cps_student_id_aspen, 
   ) %>% 
   distinct() %>%
-  
   group_by(cps_student_id_aspen) %>%
   arrange(student_course_start_date) %>%
   filter(row_number(student_course_start_date) == 1) %>%
@@ -313,7 +310,6 @@ student_enrollment_info_ps_withdrew <-
     cps_student_id_aspen, 
   ) %>% 
   distinct() %>%
-  
   group_by(cps_student_id_aspen) %>%
   filter(row_number(desc(student_course_end_date)) == 1) %>%
   ungroup()
@@ -329,7 +325,6 @@ student_enrollment_info_ps_no_match_in_aspen <-
             by = "cps_student_id_aspen") %>%
   mutate(student_course_start_date = ymd(student_course_start_date), 
          student_course_end_date = ymd(student_course_end_date))
-  
 
 student_enrollment_info <- 
   bind_rows(student_enrollment_info_ps_no_match_in_aspen, 

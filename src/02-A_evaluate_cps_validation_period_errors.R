@@ -8,8 +8,6 @@ source(here::here("lib", "helpers.R"))
 
 ERROR_DATE <- ymd("2020/02/27")
 
-# Download Files ----------------------------------------------------------
-
 # Download Error Files "output/errors/original_files" 
 
 drive_download("400044_CourseAssignment2020_01.xls",
@@ -130,7 +128,6 @@ all_errors <- bind_rows(final_errors_400044,
   distinct() %>%
   filter(!grepl("Last Name|First Name", errors))
 
-write.csv(all_errors, "all_remaining_errors.csv")
 
 # Locate Name Errors For Each School ------------------------------------------------------
 

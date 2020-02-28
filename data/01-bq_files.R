@@ -53,18 +53,6 @@ courses <-
   ) %>%
   collect()
 
-# re-enrollments table
-reenrollment <-
-  get_powerschool("reenrollments") %>%
-  select(
-    student_id = studentid,
-    enrollmentcode,
-    entrydate,
-    exitdate,
-    schoolid
-  ) %>%
-  collect()
-
 # school staff IDs to match with user information
 schoolstaff <-
   get_powerschool("schoolstaff") %>%
@@ -85,29 +73,6 @@ users <-
     teacher_last_name = last_name,
     teachernumber,
     email_addr
-  ) %>%
-  collect()
-
-membership <-
-  get_powerschool("ps_membership_reg") %>%
-  filter(yearid >= ps_sy_termid) %>%
-  select(studentid,
-         schoolid,
-         date = calendardate,
-         enrolled = studentmembership,
-         grade_level,
-         attendance = ATT_CalcCntPresentAbsent
-  ) %>%
-  collect()
-
-ps_enrollment <-
-  get_powerschool("ps_enrollment_all") %>%
-  select(
-    ps_stud_id = studentid,
-    schoolid,
-    entrydate,
-    exitdate,
-    yearid
   ) %>%
   collect()
 

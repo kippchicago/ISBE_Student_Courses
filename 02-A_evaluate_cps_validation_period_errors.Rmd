@@ -1,0 +1,151 @@
+---
+title: "Evaluate Report Errors Produced by CPS Validation Period"
+output: html_notebook
+params: 
+  error_date: "2020-02-27"
+---
+
+
+```{r set-up}
+source(here::here("lib", "helpers.R"))
+```
+
+
+Download error files produced by validation period. Note, "error files" are the reports with error messages in the "Error Details" column.
+
+```{r download-error-files, eval=FALSE, include=FALSE}
+
+drive_download("400044_CourseAssignment2020_01.xls",
+               path = here::here("output", "errors", "original_files",
+                                 paste("400044_CourseAssignment2020_01",
+                                       today(), ".xlsx", sep = "_")),
+               overwrite = TRUE)
+
+drive_download("400146_CourseAssignment2020_01.xls",
+               path = here::here("output", "errors", "original_files",
+                                 paste("400146_CourseAssignment2020_01",
+                                       today(), ".xlsx", sep = "_")),
+               overwrite = TRUE)
+
+drive_download("400163_CourseAssignment2020_01.xls",
+               path = here::here("output", "errors", "original_files",
+                                 paste("400163_CourseAssignment2020_01",
+                                       today(), ".xlsx", sep = "_")),
+               overwrite = TRUE)
+
+drive_download("400180_CourseAssignment2020_01.xls",
+               path = here::here("output", "errors", "original_files",
+                                 paste("400180_CourseAssignment2020_01",
+                                       today(), ".xlsx", sep = "_")),
+               overwrite = TRUE)
+```
+
+
+Read in error files from a specific day. 
+
+```{r read-in-error-files}
+
+report_400044_w_errors <-
+  read.xlsx(here::here("output", "errors", "original_files", 
+                       paste("400044_CourseAssignment2020_01", 
+                             params$error_date, ".xlsx", sep = "_")))
+
+report_400146_w_errors <-
+  read.xlsx(here::here("output", "errors", "original_files", 
+                       paste("400146_CourseAssignment2020_01", 
+                             params$error_date, ".xlsx", sep = "_")))
+
+report_400163_w_errors <-
+  read.xlsx(here::here("output", "errors", "original_files", 
+                       paste("400163_CourseAssignment2020_01", 
+                             params$error_date, ".xlsx", sep = "_")))
+
+report_400180_w_errors <-
+  read.xlsx(here::here("output", "errors", "original_files", 
+                       paste("400180_CourseAssignment2020_01", 
+                             params$error_date, ".xlsx", sep = "_")))
+```
+
+
+Locate all errors for each school. 
+
+```{r}
+final_errors_400044 <- locate_distinct_errors(report_400044_w_errors)
+
+final_errors_400146 <- locate_distinct_errors(report_400146_w_errors)
+
+final_errors_400163 <- locate_distinct_errors(report_400163_w_errors)
+
+final_errors_400180 <- locate_distinct_errors(report_400180_w_errors)
+
+all_errors <- bind_rows(final_errors_400044,
+                        final_errors_400146,
+                        final_errors_400163,
+                        final_errors_400180) %>%
+  distinct()
+```
+
+
+Locate all name errors for each school.
+
+```{r}
+incorrect_names_400044 <- locate_distinct_name_errors(report_400044_w_errors, 
+                                                      students, 
+                                                      cps_school_rcdts_ids)
+incorrect_names_400146 <- locate_distinct_name_errors(report_400146_w_errors, 
+                                                      students, 
+                                                      cps_school_rcdts_ids)
+incorrect_names_400163 <- locate_distinct_name_errors(report_400163_w_errors, 
+                                                      students, 
+                                                      cps_school_rcdts_ids)
+incorrect_names_400180 <- locate_distinct_name_errors(report_400180_w_errors, 
+                                                      students, 
+                                                      cps_school_rcdts_ids)
+```
+
+Locate all dob errors for each school
+
+```{r}
+# create seperate dob files
+incorrect_dob_400044 <- locate_distinct_dob_errors(full_error_report = report_400044_w_errors,
+                                                   ps_students_table = students, 
+                                                   school_ids = cps_school_rcdts_ids,
+                                                   aspen_birthdays = all_student_birthdays_aspen
+                                                   ) 
+  
+
+incorrect_dob_400146 <- locate_distinct_dob_errors(full_error_report = report_400146_w_errors,
+                                                   ps_students_table = students, 
+                                                   school_ids = cps_school_rcdts_ids,
+                                                   aspen_birthdays = all_student_birthdays_aspen
+                                                   ) 
+
+incorrect_dob_400163 <- locate_distinct_dob_errors(full_error_report = report_400163_w_errors,
+                                                   ps_students_table = students, 
+                                                   school_ids = cps_school_rcdts_ids,
+                                                   aspen_birthdays = all_student_birthdays_aspen
+                                                   ) 
+
+incorrect_dob_400180 <- locate_distinct_dob_errors(full_error_report = report_400180_w_errors,
+                                                   ps_students_table = students, 
+                                                   school_ids = cps_school_rcdts_ids,
+                                                   aspen_birthdays = all_student_birthdays_aspen
+                                                   ) 
+```
+
+Locate all students with missing isbe state IDs
+
+```{r}
+missing_isbe_stateid_all <- 
+  isbe_report_all_schools %>%
+  filter(is.na(`ISBE Student ID`)) %>%
+  select(`CPS Student ID`, 
+         `ISBE Student ID`, 
+         `Student Last Name`, 
+         `Student First Name`, 
+         `Birth Date`, 
+         `CPS School ID`, 
+         `ISBE Student ID`) %>%
+  distinct()
+```
+

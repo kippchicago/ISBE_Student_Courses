@@ -1,11 +1,4 @@
-# Produces the 4 files that are ready for submission 
-
-library(ProjectTemplate)
-load.project()
-
-source(here::here("munge", "01-A.R"))
-source(here::here("munge", "02-A_primary.R"))
-source(here::here("munge", "03-A_middle.R"))
+# Produces the 4 files that we need for submission (400044, 400146, 400163, 400180)
 
 # Combine Middle and Primary Reports --------------------------------------
 

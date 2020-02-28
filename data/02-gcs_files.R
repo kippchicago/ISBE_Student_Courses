@@ -59,71 +59,6 @@ kipp_staff_member_start_after_20190819 <-
   read_csv(here::here("data", "flatfiles", "kipp_staff_member_start_after_20190819.csv")) %>%
   janitor::clean_names()
 
-
-# ASPEN Student DOB Data --------------------------------------------------
-
-# Academy
-gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/academy_400146_student_dobs.csv",
-               saveToDisk = "data/flatfiles/academy_400146_student_dobs_aspen.csv",
-               overwrite = TRUE)
-
-academy_400146_student_dobs_aspen <-
-  read_csv(here::here("data", "flatfiles", "academy_400146_student_dobs_aspen.csv")) %>%
-  janitor::clean_names() %>%
-  mutate(dob = mdy(dob)) %>%
-  separate(col = name,
-           into = c("last_name", "first_name"),
-           sep = ",")
-
-# Ascend
-gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/ascend_400044_student_dobs.csv",
-               saveToDisk = "data/flatfiles/ascend_400044_student_dobs_aspen.csv",
-               overwrite = TRUE)
-
-ascend_400044_student_dobs_aspen <-
-  read_csv(here::here("data", "flatfiles", "ascend_400044_student_dobs_aspen.csv")) %>%
-  janitor::clean_names() %>%
-  mutate(dob = mdy(dob)) %>%
-  separate(col = name,
-           into = c("last_name", "first_name"),
-           sep = ",")
-
-# Bloom
-gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/bloom_400163_student_dobs.csv",
-               saveToDisk = "data/flatfiles/bloom_400163_student_dobs_aspen.csv",
-               overwrite = TRUE)
-
-bloom_400163_student_dobs_aspen <-
-  read_csv(here::here("data", "flatfiles", "bloom_400163_student_dobs_aspen.csv")) %>%
-  janitor::clean_names() %>%
-  mutate(dob = mdy(dob)) %>%
-  separate(col = name,
-           into = c("last_name", "first_name"),
-           sep = ",")
-
-# One
-gcs_get_object("ISBE_Student_Courses/19-20_files/student_dob_aspen_record/one_400180_student_dobs.csv",
-               saveToDisk = "data/flatfiles/one_400180_student_dobs_aspen.csv",
-               overwrite = TRUE)
-
-one_400180_student_dobs_aspen <-
-  read_csv(here::here("data", "flatfiles", "one_400180_student_dobs_aspen.csv")) %>%
-  janitor::clean_names() %>%
-  mutate(dob = mdy(dob)) %>%
-  separate(col = name,
-           into = c("last_name", "first_name"),
-           sep = ",")
-
-# Combine Aspen Birthday Info
-
-all_student_birthdays_aspen <- 
-  bind_rows(one_400180_student_dobs_aspen, 
-            academy_400146_student_dobs_aspen, 
-            ascend_400044_student_dobs_aspen, 
-            bloom_400163_student_dobs_aspen) %>%
-  rename(aspen_dob = dob)
-
-
 # ASPEN Student Info (Current & Former Students 19-20) --------------------
 
 # Ascend 400044
@@ -383,7 +318,7 @@ enrollment_one_aspen_400180 <-
          first_name = str_to_lower(first_name))
 
 
-# CPS ID Corrections ------------------------------------------------------
+# CPS Name Corrections ------------------------------------------------------
 
 gcs_get_object("ISBE_Student_Courses/19-20_files/cps_name_replacement_aspen.csv",
                saveToDisk = "data/flatfiles/cps_name_replacement_aspen.csv",
