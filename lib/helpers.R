@@ -43,7 +43,7 @@ locate_distinct_name_errors <- function(full_error_report, ps_students_table, sc
     filter(str_detect(value, "Name")) %>%
     select(CPS.Student.ID, Student.Last.Name, Student.First.Name, ASPEN_name = value) %>%
     ungroup(CPS.Student.ID) %>%
-    mutate(CPS.Student.ID = as.integer(CPS.Student.ID)) %>%
+    mutate(CPS.Student.ID = as.character(CPS.Student.ID)) %>%
     left_join(ps_students_table, 
               by = c("CPS.Student.ID" = "student_number")) %>%
     left_join(school_ids, 
@@ -71,18 +71,19 @@ locate_distinct_dob_errors <- function(full_error_report, ps_students_table, sch
     filter(str_detect(value, "Birth Date must match")) %>%
     select(CPS.Student.ID, Student.Last.Name, Student.First.Name, value) %>%
     ungroup(CPS.Student.ID) %>%
-    mutate(CPS.Student.ID = as.integer(CPS.Student.ID)) %>%
+    mutate(CPS.Student.ID = as.character(CPS.Student.ID)) %>%
     left_join(ps_students_table, 
               by = c("CPS.Student.ID" = "student_number")) %>%
     left_join(school_ids, 
               by = "schoolid") %>%
+    mutate(CPS.Student.ID = as.numeric(CPS.Student.ID)) %>%
     select(CPS.Student.ID, school = abbr, grade_level, Student.Last.Name, 
            Student.First.Name, powerschool_dob = dob) %>%
     mutate(correct_dob = "") %>%
     left_join(aspen_birthdays, 
               by = c("CPS.Student.ID" = "student_id")) %>%
     select(CPS.Student.ID, school, grade_level, Student.Last.Name, 
-           Student.First.Name, powerschool_dob, aspen_dob, correct_dob) %>%
+           Student.First.Name, powerschool_dob, aspen_dob = dob, correct_dob) %>%
     drop_na(aspen_dob)
   
   return(incorrect_dob_df)

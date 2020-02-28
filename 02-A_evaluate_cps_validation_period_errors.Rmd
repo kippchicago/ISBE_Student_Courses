@@ -85,6 +85,12 @@ all_errors <- bind_rows(final_errors_400044,
   distinct()
 ```
 
+Write final_errr_files
+
+```{r}
+
+```
+
 
 Locate all name errors for each school.
 
@@ -110,26 +116,26 @@ Locate all dob errors for each school
 incorrect_dob_400044 <- locate_distinct_dob_errors(full_error_report = report_400044_w_errors,
                                                    ps_students_table = students, 
                                                    school_ids = cps_school_rcdts_ids,
-                                                   aspen_birthdays = all_student_birthdays_aspen
+                                                   aspen_birthdays = students_aspen_info_current_former
                                                    ) 
   
 
 incorrect_dob_400146 <- locate_distinct_dob_errors(full_error_report = report_400146_w_errors,
                                                    ps_students_table = students, 
                                                    school_ids = cps_school_rcdts_ids,
-                                                   aspen_birthdays = all_student_birthdays_aspen
+                                                   aspen_birthdays = students_aspen_info_current_former
                                                    ) 
 
 incorrect_dob_400163 <- locate_distinct_dob_errors(full_error_report = report_400163_w_errors,
                                                    ps_students_table = students, 
                                                    school_ids = cps_school_rcdts_ids,
-                                                   aspen_birthdays = all_student_birthdays_aspen
+                                                   aspen_birthdays = students_aspen_info_current_former
                                                    ) 
 
 incorrect_dob_400180 <- locate_distinct_dob_errors(full_error_report = report_400180_w_errors,
                                                    ps_students_table = students, 
                                                    school_ids = cps_school_rcdts_ids,
-                                                   aspen_birthdays = all_student_birthdays_aspen
+                                                   aspen_birthdays = students_aspen_info_current_former
                                                    ) 
 ```
 
