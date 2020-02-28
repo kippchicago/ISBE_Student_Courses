@@ -391,5 +391,13 @@ gcs_get_object("ISBE_Student_Courses/19-20_files/cps_name_replacement_aspen.csv"
 
 cps_name_replacement_list <-
   read_csv(here::here("data", "flatfiles", "cps_name_replacement_aspen.csv")) %>%
-  janitor::clean_names()
+  janitor::clean_names() %>%
+  rename(ASPEN_name = error_details) %>%
+  select(cps_student_id, 
+         ASPEN_name) %>%
+  mutate(name_location = if_else(grepl("First", ASPEN_name) ,"First", "Last")) %>%
+  mutate(replacement_name = str_extract(ASPEN_name, "(?<=Name to match ').*")) %>%
+  mutate(replacement_name = str_sub(replacement_name, 1, -2), 
+         cps_student_id = as.character(cps_student_id)) %>%
+  select(-c(ASPEN_name))
 

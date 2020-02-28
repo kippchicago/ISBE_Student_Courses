@@ -134,7 +134,7 @@ replace_with_aspen_name <- function(isbe_report_single_school, name_replacement_
   isbe_report_update_name <- 
     isbe_report_single_school %>%
     left_join(name_replacement_df, 
-              by = c("CPS Student ID" = "CPS.Student.ID")) %>%
+              by = c("CPS Student ID" = "cps_student_id")) %>%
     mutate(`Student First Name` = case_when(name_location == "First" ~ replacement_name,
                                             TRUE ~ `Student First Name`)) %>%
     mutate(`Student Last Name` = case_when(name_location == "Last" ~ replacement_name, 
