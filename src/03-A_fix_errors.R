@@ -12,19 +12,20 @@ isbe_midyear_report_400044_corrected <- replace_with_aspen_name(
   )
 
 isbe_midyear_report_400146_corrected <- replace_with_aspen_name(
-  isbe_report_single_school = isbe_midyear_report_400044, 
+  isbe_report_single_school = isbe_midyear_report_400146, 
   name_replacement_df = cps_name_replacement_list
 )
 
 isbe_midyear_report_400163_corrected <- replace_with_aspen_name(
-  isbe_report_single_school = isbe_midyear_report_400044, 
+  isbe_report_single_school = isbe_midyear_report_400163, 
   name_replacement_df = cps_name_replacement_list
 )
 
 isbe_midyear_report_400180_corrected <- replace_with_aspen_name(
-  isbe_report_single_school = isbe_midyear_report_400044, 
+  isbe_report_single_school = isbe_midyear_report_400180, 
   name_replacement_df = cps_name_replacement_list
-)
+) %>%
+  distinct()
 
 
 # Write Updated Files -----------------------------------------------------

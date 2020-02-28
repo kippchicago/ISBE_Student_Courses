@@ -337,5 +337,7 @@ student_enrollment_info <-
   mutate(student_course_end_date = replace_na(student_course_end_date, ymd("2020/06/20")), 
          student_course_start_date = replace_na(student_course_start_date, ymd("2019/08/19")), 
          student_course_end_date = case_when(student_course_end_date < student_course_start_date ~ ymd("2020/06/20"), 
-                                             TRUE ~ student_course_end_date))
+                                             TRUE ~ student_course_end_date), 
+         student_course_start_date = case_when(student_course_start_date < ymd("2019/08/19") ~ ymd("2019/08/19"), 
+                                               TRUE ~ student_course_start_date))
   

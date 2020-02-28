@@ -130,10 +130,11 @@ locate_distinct_cps_id_errors <- function(full_error_report, ps_students_table, 
   return(incorrect_cps_id_df)
 }
 
-replace_with_aspen_name <- function(isbe_report_single_school, name_replacement_df) {
+replace_with_aspen_first_name <- function(isbe_report_single_school, name_replacement_df) {
   isbe_report_update_name <- 
     isbe_report_single_school %>%
-    left_join(name_replacement_df, 
+    left_join(name_replacement_df %>% 
+                filter(name_location == "First"), 
               by = c("CPS Student ID" = "cps_student_id")) %>%
     mutate(`Student First Name` = case_when(name_location == "First" ~ replacement_name,
                                             TRUE ~ `Student First Name`)) %>%
@@ -144,21 +145,26 @@ replace_with_aspen_name <- function(isbe_report_single_school, name_replacement_
   return(isbe_report_update_name)
 }
 
-replace_with_aspen_cps_id <- function(isbe_report_single_school, conflicting_cps_id_df) {
-  corrected_report <-
+replace_with_aspen_last_name <- function(isbe_report_single_school, name_replacement_df) {
+  isbe_report_update_name <- 
     isbe_report_single_school %>%
-    mutate(`Birth Date` = mdy(`Birth Date`)) %>%
-    left_join(conflicting_cps_id_df, 
-              by = c(`Birth Date` = "powerschool_dob", 
-                     `Student Last Name` = "Student.Last.Name")) %>%
-    mutate(`CPS Student ID` = as.character(`CPS Student ID`), 
-           aspen_cps_student_id = as.character(aspen_cps_student_id)) %>%
-    mutate(`CPS Student ID` = case_when(!is.na(aspen_cps_student_id) ~ aspen_cps_student_id,
-                                        TRUE ~ `CPS Student ID`)) %>%
-    select(-c("cps_school_id", "rcdts_code", "Student.First.Name", "kipp_cps_student_id", 
-              "ISBE.Student.ID", "aspen_cps_student_id"))
+    left_join(name_replacement_df %>% 
+                filter(name_location == "Last"), 
+              by = c("CPS Student ID" = "cps_student_id")) %>%
+    mutate(`Student First Name` = case_when(name_location == "First" ~ replacement_name,
+                                            TRUE ~ `Student First Name`)) %>%
+    mutate(`Student Last Name` = case_when(name_location == "Last" ~ replacement_name, 
+                                           TRUE ~ `Student Last Name`)) %>%
+    select(-c("name_location", "replacement_name"))
   
-  return(corrected_report)
+  return(isbe_report_update_name)
+}
+
+replace_with_aspen_name <- function(isbe_report_single_school, name_replacement_df) {
+  corrected_first_name <- replace_with_aspen_first_name(isbe_report_single_school, name_replacement_df)
+  corrected_name_full <- replace_with_aspen_last_name(corrected_first_name, name_replacement_df)
+  
+  return(corrected_name_full)
 }
 
 replace_with_aspen_dob <- function(isbe_report_single_school, aspen_dob_df) {
