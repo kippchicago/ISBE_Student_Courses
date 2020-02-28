@@ -36,9 +36,9 @@ This document lays out a step-by-step guide for how to use this project.
     |                                `02-A_produce_error_identification_files.R`
     |
     ├── src
-    |   ├── 01-A_produce-submission-files.R <- produces all 4 school reports
-    |   ├── 01-B_write-submission-files.R <- writes ISBE Reports to csv
-    |   ├── 02-A_produce_error_identification_files.R <- Identifies CPS Errors
+    |   ├── 01-A_write_submission_files.R <- writes ISBE Reports to csv
+    |   ├── 02-A_evaluate_cps_validation_period_errors <- Identify cps errors
+    |   ├── 03-A_produce_write_submission_files_with_error_fixes.R <- fix errors
     |   ├── 02-B_write_error_identification_files.R <- writes error file to csv
     |   └── README.md
     |
@@ -59,7 +59,7 @@ This document lays out a step-by-step guide for how to use this project.
     ├── ISBE_Student_Courses.Rproject
     |
     └── .gitignore                   <- contains files that should not be
-                                        uploaded to github. 
+                                        uploaded to github.
 ```
 ## Step-by-Step Guide
 
