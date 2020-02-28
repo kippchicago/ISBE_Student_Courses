@@ -60,8 +60,12 @@ current_studentid <-
          "grade_level",
          "isbe_student_id_aspen", 
          "schoolid_aspen", 
-         "enrollment_date_aspen"
-         )
+         "student_last_name_aspen",
+         "student_first_name_aspen"
+         ) %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(student_first_name_aspen = str_to_lower(student_first_name_aspen), 
+         student_last_name_aspen = str_to_lower(student_last_name_aspen))
 
 
 # Student Course Information ----------------------------------------------------------------
@@ -210,34 +214,128 @@ teacher_enrollment <-
 # Student Enrollment Information ------------------------------------------
 
 # Note: this section produces the following columns required for ISBE Reporting
-# Student Course End Date
 # Student Course Start Date
+# Student Course End Date
 
-student_enrollment_info <- 
+student_enrollment_info_aspen_400044 <- 
+  enrollment_ascend_aspen_400044 %>%
+  left_join(current_studentid, 
+            by = c("last_name" = "student_last_name_aspen",
+                   "first_name" = "student_first_name_aspen")
+            ) %>%
+  drop_na(isbe_student_id_aspen)
+
+student_enrollment_info_aspen_400146 <- 
+  enrollment_academy_aspen_400146 %>%
+  left_join(current_studentid, 
+            by = c("last_name" = "student_last_name_aspen",
+                   "first_name" = "student_first_name_aspen")
+  ) %>%
+  drop_na(isbe_student_id_aspen)
+
+student_enrollment_info_aspen_400163 <- 
+  enrollment_bloom_aspen_400163 %>%
+  left_join(current_studentid, 
+            by = c("last_name" = "student_last_name_aspen",
+                   "first_name" = "student_first_name_aspen")
+  ) %>%
+  drop_na(isbe_student_id_aspen)
+
+student_enrollment_info_aspen_400180 <- 
+  enrollment_one_aspen_400180 %>%
+  left_join(current_studentid, 
+            by = c("last_name" = "student_last_name_aspen",
+                   "first_name" = "student_first_name_aspen")
+  ) %>%
+  drop_na(isbe_student_id_aspen)
+
+student_enrollment_info_aspen_full <- 
+  bind_rows(student_enrollment_info_aspen_400044,
+            student_enrollment_info_aspen_400146,
+            student_enrollment_info_aspen_400163,
+            student_enrollment_info_aspen_400180) %>%
+  select(student_enrollment_info_aspen = date, 
+         cps_student_id_aspen, 
+         type
+         )
+
+student_enrollment_info_aspen_entered <- 
+  student_enrollment_info_aspen_full %>%
+  filter(type == "E") %>%
+  rename(student_entry_date_aspen = student_enrollment_info_aspen) %>%
+  select(-type) %>%
+  distinct() %>%
+  
+  group_by(cps_student_id_aspen) %>%
+  arrange(student_entry_date_aspen) %>%
+  filter(row_number(student_entry_date_aspen) == 1) %>%
+  ungroup()
+
+student_enrollment_info_aspen_withdrew <- 
+  student_enrollment_info_aspen_full %>%
+  filter(type == "W") %>%
+  rename(student_withdraw_date_aspen = student_enrollment_info_aspen) %>%
+  select(-type) %>%
+  distinct() %>%
+  
+  group_by(cps_student_id_aspen) %>%
+  filter(row_number(desc(student_withdraw_date_aspen)) == 1) %>%
+  ungroup()
+
+student_enrollment_info_aspen_wide <- 
+  student_enrollment_info_aspen_entered %>%
+  full_join(student_enrollment_info_aspen_withdrew, 
+            by = "cps_student_id_aspen") %>%
+  rename(student_course_start_date = student_entry_date_aspen, 
+         student_course_end_date = student_withdraw_date_aspen)
+
+student_enrollment_info_ps_entered <- 
   current_studentid %>%
   left_join(cc, by = c("ps_student_id" = "student_id")) %>%
   filter(dateenrolled >= FIRST_DAY_OF_SCHOOL) %>%
   select(
-    ps_student_id, 
     student_course_start_date = dateenrolled, 
-    student_course_end_date = dateleft, 
-    schoolid, 
     cps_student_id_aspen, 
-    cps_student_id_kipp,
-    enrollment_date_aspen
   ) %>% 
-  mutate(student_course_start_date = ymd(student_course_start_date)
-         ) %>%
-  mutate(student_course_end_date = ymd(student_course_end_date)
-         ) %>%
-  mutate(enrollment_date_aspen = mdy(enrollment_date_aspen)) %>%
-  mutate(student_course_start_date = case_when(enrollment_date_aspen > student_course_start_date ~ enrollment_date_aspen,
-                                               TRUE ~ student_course_start_date
-                                               )
-  ) %>%
+  distinct() %>%
   
-  # Keeps latest student enrollment date
-  # source: https://stackoverflow.com/questions/21704207/r-subset-unique-observation-keeping-last-entry
   group_by(cps_student_id_aspen) %>%
-  filter(row_number(desc(student_course_start_date)) == 1) %>%
+  arrange(student_course_start_date) %>%
+  filter(row_number(student_course_start_date) == 1) %>%
   ungroup()
+
+student_enrollment_info_ps_withdrew <- 
+  current_studentid %>%
+  left_join(cc, by = c("ps_student_id" = "student_id")) %>%
+  filter(dateenrolled >= FIRST_DAY_OF_SCHOOL) %>%
+  select(
+    student_course_end_date = dateleft, 
+    cps_student_id_aspen, 
+  ) %>% 
+  distinct() %>%
+  
+  group_by(cps_student_id_aspen) %>%
+  filter(row_number(desc(student_course_end_date)) == 1) %>%
+  ungroup()
+
+student_enrollment_info_ps_wide <- 
+  student_enrollment_info_ps_entered %>%
+  full_join(student_enrollment_info_ps_withdrew, 
+            by = "cps_student_id_aspen") 
+
+student_enrollment_info_ps_no_match_in_aspen <-
+  student_enrollment_info_ps_wide %>%
+  anti_join(student_enrollment_info_aspen_wide, 
+            by = "cps_student_id_aspen") %>%
+  mutate(student_course_start_date = ymd(student_course_start_date), 
+         student_course_end_date = ymd(student_course_end_date))
+  
+
+student_enrollment_info <- 
+  bind_rows(student_enrollment_info_ps_no_match_in_aspen, 
+            student_enrollment_info_aspen_wide) %>%
+  mutate(student_course_end_date = replace_na(student_course_end_date, ymd("2020/06/20")), 
+         student_course_start_date = replace_na(student_course_start_date, ymd("2019/08/19")), 
+         student_course_end_date = case_when(student_course_end_date < student_course_start_date ~ ymd("2020/06/20"), 
+                                             TRUE ~ student_course_end_date))
+  

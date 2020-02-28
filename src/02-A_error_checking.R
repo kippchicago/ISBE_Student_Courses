@@ -61,48 +61,44 @@ report_400180_w_errors <-
 
 # Exploration of Final Report Error ---------------------------------------
 
-errors_start_end_date_400044 <- 
+incorrect_names_400044 <-
   report_400044_w_errors %>%
-  filter(grepl("Student Course Start Date|Student Course End Date", Error.Details)) %>%
-  select(CPS.School.ID, 
-         CPS.Student.ID, 
-         Student.Last.Name, Student.First.Name, 
-         Student.Course.Start.Date, 
-         Student.Course.End.Date, 
-         Error.Details) %>%
+  filter(grepl("First Name|Last Name", Error.Details)) %>%
+  select(CPS.School.ID,
+         CPS.Student.ID,
+         Student.Last.Name, Student.First.Name,
+         Student.Course.Start.Date,
+         Student.Course.End.Date) %>%
   distinct()
 
-errors_start_end_date_400146 <- 
+incorrect_names_400146 <-
   report_400146_w_errors %>%
-  filter(grepl("Student Course Start Date|Student Course End Date", Error.Details)) %>%
-  select(CPS.School.ID, 
-         CPS.Student.ID, 
-         Student.Last.Name, Student.First.Name, 
-         Student.Course.Start.Date, 
-         Student.Course.End.Date, 
-         Error.Details) %>%
+  filter(grepl("First Name|Last Name", Error.Details)) %>%
+  select(CPS.School.ID,
+         CPS.Student.ID,
+         Student.Last.Name, Student.First.Name,
+         Student.Course.Start.Date,
+         Student.Course.End.Date) %>%
   distinct()
 
-errors_start_end_date_400163 <- 
+incorrect_names_400163 <-
   report_400163_w_errors %>%
-  filter(grepl("Student Course Start Date|Student Course End Date", Error.Details)) %>%
-  select(CPS.School.ID, 
-         CPS.Student.ID, 
-         Student.Last.Name, Student.First.Name, 
-         Student.Course.Start.Date, 
-         Student.Course.End.Date, 
-         Error.Details) %>%
+  filter(grepl("First Name|Last Name", Error.Details)) %>%
+  select(CPS.School.ID,
+         CPS.Student.ID,
+         Student.Last.Name, Student.First.Name,
+         Student.Course.Start.Date,
+         Student.Course.End.Date) %>%
   distinct()
 
-errors_start_end_date_400180 <- 
+incorrect_names_400180 <-
   report_400180_w_errors %>%
-  filter(grepl("Student Course Start Date|Student Course End Date", Error.Details)) %>%
-  select(CPS.School.ID, 
-         CPS.Student.ID, 
-         Student.Last.Name, Student.First.Name, 
-         Student.Course.Start.Date, 
-         Student.Course.End.Date, 
-         Error.Details) %>%
+  filter(grepl("First Name|Last Name", Error.Details)) %>%
+  select(CPS.School.ID,
+         CPS.Student.ID,
+         Student.Last.Name, Student.First.Name,
+         Student.Course.Start.Date,
+         Student.Course.End.Date) %>%
   distinct()
 
 

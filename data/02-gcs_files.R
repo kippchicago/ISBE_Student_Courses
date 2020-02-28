@@ -135,7 +135,10 @@ ascend_400044_current_students_aspen <-
   read_csv(here::here("data", "flatfiles", "400044_ascend_current_students_aspen.csv")) %>%
   janitor::clean_names() %>%
   rename(current_school_name = school_name) %>%
-  mutate(school_assigned_to = "400044")
+  mutate(school_assigned_to = "400044") %>%
+  # mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
 
 gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400044_ascend_former_students_aspen.csv",
                saveToDisk = "data/flatfiles/400044_ascend_former_students_aspen.csv",
@@ -145,7 +148,10 @@ ascend_400044_former_students_aspen <-
   read_csv(here::here("data", "flatfiles", "400044_ascend_former_students_aspen.csv")) %>%
   janitor::clean_names() %>%
   rename(current_school_name = school_name) %>%
-  mutate(school_assigned_to = "400044")
+  mutate(school_assigned_to = "400044") %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
 
 # academy 400146
 gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400146_academy_current_students_aspen.csv",
@@ -156,7 +162,10 @@ academy_400146_current_students_aspen <-
   read_csv(here::here("data", "flatfiles", "400146_academy_current_students_aspen.csv")) %>%
   janitor::clean_names()  %>%
   rename(current_school_name = school_name) %>%
-  mutate(school_assigned_to = "400146")
+  mutate(school_assigned_to = "400146") %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
 
 gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400146_academy_former_students_aspen.csv",
                saveToDisk = "data/flatfiles/400146_academy_former_students_aspen.csv",
@@ -166,7 +175,10 @@ academy_400146_former_students_aspen <-
   read_csv(here::here("data", "flatfiles", "400146_academy_former_students_aspen.csv")) %>%
   janitor::clean_names() %>%
   rename(current_school_name = school_name) %>%
-  mutate(school_assigned_to = "400146")
+  mutate(school_assigned_to = "400146") %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
 
 # bloom 400163
 gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400163_bloom_current_students_aspen.csv",
@@ -177,7 +189,10 @@ bloom_400163_current_students_aspen <-
   read_csv(here::here("data", "flatfiles", "400163_bloom_current_students_aspen.csv")) %>%
   janitor::clean_names() %>%
   rename(current_school_name = school_name) %>%
-  mutate(school_assigned_to = "400163")
+  mutate(school_assigned_to = "400163") %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
 
 gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400163_bloom_former_students_aspen.csv",
                saveToDisk = "data/flatfiles/400163_bloom_former_students_aspen.csv",
@@ -187,7 +202,10 @@ bloom_400163_former_students_aspen <-
   read_csv(here::here("data", "flatfiles", "400163_bloom_former_students_aspen.csv")) %>%
   janitor::clean_names() %>%
   rename(current_school_name = school_name) %>%
-  mutate(school_assigned_to = "400163")
+  mutate(school_assigned_to = "400163") %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
 
 # one 400180
 gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400180_one_current_students_aspen.csv",
@@ -198,7 +216,10 @@ one_400180_current_students_aspen <-
   read_csv(here::here("data", "flatfiles", "400180_one_current_students_aspen.csv")) %>%
   janitor::clean_names() %>%
   rename(current_school_name = school_name) %>%
-  mutate(school_assigned_to = "400180")
+  mutate(school_assigned_to = "400180") %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
 
 gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400180_one_former_students_aspen.csv",
                saveToDisk = "data/flatfiles/400180_one_former_students_aspen.csv",
@@ -208,7 +229,10 @@ one_400180_former_students_aspen <-
   read_csv(here::here("data", "flatfiles", "400180_one_former_students_aspen.csv")) %>%
   janitor::clean_names() %>%
   rename(current_school_name = school_name) %>%
-  mutate(school_assigned_to = "400180")
+  mutate(school_assigned_to = "400180") %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
 
 students_aspen_info_current_former <-
   bind_rows(ascend_400044_current_students_aspen, 
@@ -245,6 +269,8 @@ cps_id_corrections <-
 
 # CPS Enrollment Data ASPEN -----------------------------------------------
 
+# Ascend 400044
+
 gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/enrollment_ascend_aspen_400044.csv",
                saveToDisk = "data/flatfiles/enrollment_ascend_aspen_400044.csv",
                overwrite = TRUE)
@@ -261,8 +287,98 @@ enrollment_ascend_aspen_400044 <-
          reason = x11) %>%
   mutate(date = na_if(date, "Date")) %>%
   drop_na(date) %>%
-  select(-c(charter, x5, x6, yog, x10, reason)) %>%
+  select(-c(charter, x5, x6, yog, x10, reason, code)) %>%
   separate(col = student_name, 
            into = c("last_name", "first_name"), 
-           sep = ",")
+           sep = ",") %>%
+  filter(school_name == "KIPP - ASCEND") %>%
+  mutate(date = mdy(date), 
+         cps_school_id = "400044") %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
   
+# Academy 400146
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/enrollment_academy_aspen_400146.csv",
+               saveToDisk = "data/flatfiles/enrollment_academy_aspen_400146.csv",
+               overwrite = TRUE)
+
+enrollment_academy_aspen_400146 <-
+  read_csv(here::here("data", "flatfiles", "enrollment_academy_aspen_400146.csv")) %>%
+  janitor::clean_names() %>%
+  rename(date = x1, 
+         type = x3, 
+         student_name = x4,
+         yog = x7,
+         school_name = x8,
+         code = x9,
+         reason = x11) %>%
+  mutate(date = na_if(date, "Date")) %>%
+  drop_na(date) %>%
+  select(-c(charter, x5, x6, yog, x10, reason, code)) %>%
+  separate(col = student_name,
+           into = c("last_name", "first_name"),
+           sep = ",") %>%
+  filter(school_name == "KIPP - ACADEMY") %>%
+  mutate(date = mdy(date)) %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
+
+# bloom 400163
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/enrollment_bloom_aspen_400163.csv",
+               saveToDisk = "data/flatfiles/enrollment_bloom_aspen_400163.csv",
+               overwrite = TRUE)
+
+enrollment_bloom_aspen_400163 <-
+  read_csv(here::here("data", "flatfiles", "enrollment_bloom_aspen_400163.csv")) %>%
+  janitor::clean_names() %>%
+  rename(date = x1, 
+         type = x3, 
+         student_name = x4,
+         yog = x7,
+         school_name = x8,
+         code = x9,
+         reason = x11) %>%
+  mutate(date = na_if(date, "Date")) %>%
+  drop_na(date) %>%
+  select(-c(charter, x5, x6, yog, x10, reason, code)) %>%
+  separate(col = student_name,
+           into = c("last_name", "first_name"),
+           sep = ",") %>%
+  filter(school_name == "KIPP - BLOOM") %>%
+  mutate(date = mdy(date)) %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
+
+# ONE 400180
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/enrollment_one_aspen_400180.csv",
+               saveToDisk = "data/flatfiles/enrollment_one_aspen_400180.csv",
+               overwrite = TRUE)
+
+enrollment_one_aspen_400180 <-
+  read_csv(here::here("data", "flatfiles", "enrollment_one_aspen_400180.csv")) %>%
+  janitor::clean_names() %>%
+  rename(date = x1, 
+         type = x3, 
+         student_name = x4,
+         yog = x7,
+         school_name = x8,
+         code = x9,
+         reason = x11) %>%
+  mutate(date = na_if(date, "Date")) %>%
+  drop_na(date) %>%
+  select(-c(charter, x5, x6, yog, x10, reason, code)) %>%
+  separate(col = student_name,
+           into = c("last_name", "first_name"),
+           sep = ",") %>%
+  filter(school_name == "KIPP - ONE") %>%
+  mutate(date = mdy(date)) %>%
+  mutate_if(is.character, str_trim) %>%
+  mutate(last_name = str_to_lower(last_name), 
+         first_name = str_to_lower(first_name))
+
