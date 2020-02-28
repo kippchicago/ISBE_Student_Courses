@@ -87,7 +87,7 @@ all_errors <- bind_rows(final_errors_400044,
 
 Locate all name errors for each school.
 
-```{r}
+```{r incorrect-name-report}
 incorrect_names_400044 <- locate_distinct_name_errors(report_400044_w_errors, 
                                                       students, 
                                                       cps_school_rcdts_ids)
@@ -104,7 +104,7 @@ incorrect_names_400180 <- locate_distinct_name_errors(report_400180_w_errors,
 
 Locate all dob errors for each school
 
-```{r}
+```{r incorrect-dob-report}
 # create seperate dob files
 incorrect_dob_400044 <- locate_distinct_dob_errors(full_error_report = report_400044_w_errors,
                                                    ps_students_table = students, 
@@ -134,7 +134,7 @@ incorrect_dob_400180 <- locate_distinct_dob_errors(full_error_report = report_40
 
 Locate all students with missing isbe state IDs
 
-```{r}
+```{r missing-student-isbe-id-report}
 missing_isbe_stateid_all <- 
   isbe_report_all_schools %>%
   filter(is.na(`ISBE Student ID`)) %>%
