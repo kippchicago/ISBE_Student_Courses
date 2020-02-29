@@ -36,9 +36,8 @@ REASON_FOR_EXIT <- "01"
 students_course_primary_core <-
   student_course_info %>%
 
-  # group_by(cps_student_id_aspen) %>%
-  # filter(row_number(desc(dateenrolled)) == 1) %>%
-
+  # Note: Filter out homework because not an actual course. Filter out science because
+  # that is a special class specific to only one school
   filter(
     grade_level %in% c(0, 1, 2, 3),
     !grepl("Science", local_course_title),
@@ -71,9 +70,8 @@ students_course_primary_core <-
 students_course_primary_excellence <-
   student_course_info %>%
 
-  # group_by(cps_student_id_aspen) %>%
-  # filter(row_number(desc(dateenrolled)) == 1) %>%
-
+  # Note: Filter out homework because not an actual course. Filter out science because
+  # that is a special class specific to only one school
   filter(
     grepl("kop|kacp|kap|kbp|1|2|3", local_course_title),
     !grepl("Science", local_course_title)
@@ -120,9 +118,8 @@ students_course_primary_excellence <-
 students_course_primary_4th <-
   student_course_info %>%
 
-  # group_by(cps_student_id_aspen) %>%
-  # filter(row_number(desc(dateenrolled)) == 1) %>%
-
+  # Note: Filter out homework because not an actual course. Filter out science because
+  # that is a special class specific to only one school
   filter(grade_level %in% c(4)) %>%
   left_join(local_number_isbe_state_course_ids %>%
     select(-local_course_title),
@@ -151,8 +148,8 @@ isbe_report_primary_core_midyear <-
   left_join(teacher_identifying_info_complete,
     by = "teacherid"
   ) %>%
-  select(-c(schoolid)) %>%
-  left_join(students_current_demographics,
+  # select(-c(schoolid, )) %>%
+  left_join(student_identifying_info,
     by = "cps_student_id_aspen"
   ) %>%
   left_join(student_enrollment_info,
@@ -161,7 +158,7 @@ isbe_report_primary_core_midyear <-
   left_join(teacher_enrollment_info,
     by = "teacherid"
   ) %>%
-  select(-c("rcdts_code", "employer_rcdts", "teacher_serving")) %>%
+  select(-c("rcdts_code")) %>%
   left_join(cps_school_rcdts_ids,
     by = c("schoolid_aspen" = "cps_school_id")
   ) %>%
@@ -262,6 +259,7 @@ isbe_report_primary_core_midyear <-
     "Other Notes",
   ) %>%
   distinct()
+
 
 # ISBE Report Primary Excellence -------------------------------------
 
@@ -273,7 +271,7 @@ isbe_report_primary_excellence_midyear <-
       "teacher_first_name"
     )
   ) %>%
-  left_join(students_current_demographics,
+  left_join(student_identifying_info,
     by = "cps_student_id_aspen"
   ) %>%
   left_join(student_enrollment_info,
@@ -282,7 +280,7 @@ isbe_report_primary_excellence_midyear <-
   left_join(teacher_enrollment_info,
     by = "teacherid"
   ) %>%
-  select(-c("rcdts_code", "employer_rcdts", "teacher_serving")) %>%
+  select(-c("rcdts_code")) %>%
   left_join(cps_school_rcdts_ids,
     by = c("schoolid_aspen" = "cps_school_id")
   ) %>%
@@ -384,7 +382,6 @@ isbe_report_primary_excellence_midyear <-
   ) %>%
   distinct()
 
-
 # ISBE Report Primary 4th Graders -------------------------------------------------------------
 
 isbe_report_primary_4th_grade_midyear <-
@@ -392,8 +389,8 @@ isbe_report_primary_4th_grade_midyear <-
   left_join(teacher_identifying_info_complete,
     by = "teacherid"
   ) %>%
-  select(-c(schoolid.x, schoolid.y, )) %>%
-  left_join(students_current_demographics,
+  # select(-c(schoolid, )) %>%
+  left_join(student_identifying_info,
     by = "cps_student_id_aspen"
   ) %>%
   left_join(student_enrollment_info,
@@ -402,7 +399,7 @@ isbe_report_primary_4th_grade_midyear <-
   left_join(teacher_enrollment_info,
     by = "teacherid"
   ) %>%
-  select(-c("rcdts_code", "employer_rcdts", "teacher_serving")) %>%
+  select(-c("rcdts_code")) %>%
   left_join(cps_school_rcdts_ids,
     by = c("schoolid_aspen" = "cps_school_id")
   ) %>%

@@ -1,5 +1,4 @@
-# contains all functions used throughout project
-
+# This script contains all functions used throughout the project
 
 locate_distinct_errors <- function(full_error_report) {
   errors_col_df <- 
@@ -180,12 +179,4 @@ replace_with_aspen_dob <- function(isbe_report_single_school, aspen_dob_df) {
               "powerschool_dob", "aspen_dob"))
   
   return(corrected_report)
-}
-
-fix_name_dob_cps_errors <- function(isbe_report_single_school, name_replacement_df, conflicting_cps_id_df, aspen_dob_df) {
-  corrected_dob <- replace_with_aspen_dob(isbe_report_single_school, aspen_dob_df)
-  corrected_name <- replace_with_aspen_name(isbe_report_single_school, name_replacement_df)
-  corrected_cps_id <- replace_with_aspen_cps_id(isbe_report_single_school, conflicting_cps_id_df)
-  
-  return(corrected_cps_id)
 }

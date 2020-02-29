@@ -173,14 +173,14 @@ student_enrollment_info <-
     student_enrollment_info_aspen_wide
   ) %>%
   mutate(
-    student_course_end_date = replace_na(student_course_end_date, ymd("2020/06/20")),
-    student_course_start_date = replace_na(student_course_start_date, ymd("2019/08/19")),
+    student_course_end_date = replace_na(student_course_end_date, LAST_DAY_OF_SCHOOL),
+    student_course_start_date = replace_na(student_course_start_date, FIRST_DAY_OF_SCHOOL),
     student_course_end_date = case_when(
-      student_course_end_date < student_course_start_date ~ ymd("2020/06/20"),
+      student_course_end_date < student_course_start_date ~ LAST_DAY_OF_SCHOOL,
       TRUE ~ student_course_end_date
     ),
     student_course_start_date = case_when(
-      student_course_start_date < ymd("2019/08/19") ~ ymd("2019/08/19"),
+      student_course_start_date < FIRST_DAY_OF_SCHOOL ~ FIRST_DAY_OF_SCHOOL,
       TRUE ~ student_course_start_date
     )
   )

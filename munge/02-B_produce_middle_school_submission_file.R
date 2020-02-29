@@ -63,8 +63,8 @@ isbe_report_middle_midyear_2020_full <-
   left_join(teacher_identifying_info_complete,
     by = "teacherid"
   ) %>%
-  select(-c(schoolid.x, schoolid.y, )) %>%
-  left_join(students_current_demographics,
+  select(-c(schoolid, )) %>%
+  left_join(student_identifying_info,
     by = "cps_student_id_aspen"
   ) %>%
   left_join(student_enrollment_info,
@@ -73,7 +73,7 @@ isbe_report_middle_midyear_2020_full <-
   left_join(teacher_enrollment_info,
     by = "teacherid"
   ) %>%
-  select(-c("rcdts_code", "employer_rcdts", "teacher_serving")) %>%
+  select(-c("rcdts_code")) %>%
   left_join(cps_school_rcdts_ids,
     by = c("schoolid_aspen" = "cps_school_id")
   ) %>%

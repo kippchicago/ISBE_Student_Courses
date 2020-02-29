@@ -46,13 +46,9 @@ student_identifying_info <-
     schoolid_aspen = school_assigned_to,
     cps_student_id_aspen = `Student ID`,
   ) %>%
-  mutate(
-    student_birth_date_aspen = format(as.Date(student_birth_date_aspen), "%m/%d/%Y"),
-    schoolid_aspen = as.double(schoolid_aspen)
-  ) %>%
   left_join(
     cps_school_rcdts_ids %>%
-      select(cps_school_id) %>%
+      select(cps_school_id, rcdts_code) %>%
       distinct(),
     by = c("schoolid_aspen" = "cps_school_id")
   ) %>%
