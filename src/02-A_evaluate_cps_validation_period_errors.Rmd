@@ -2,18 +2,22 @@
 title: "Evaluate Report Errors Produced by CPS Validation Period"
 output: html_notebook
 params: 
-  error_date: "2020-02-27"
+  error_date: "2020-02-28"
 ---
 
 
 ```{r set-up}
+# must load library and load.project() in the console
+# library(ProjectTemplate)
+# load.project()
+
 source(here::here("lib", "helpers.R"))
 ```
 
 
 Download error files produced by validation period. Note, "error files" are the reports with error messages in the "Error Details" column.
 
-```{r download-error-files, eval=FALSE, include=FALSE}
+```{r download-error-files}
 
 drive_download("400044_CourseAssignment2020_01.xls",
                path = here::here("output", "errors", "original_files",
@@ -84,6 +88,36 @@ all_errors <- bind_rows(final_errors_400044,
                         final_errors_400180) %>%
   distinct()
 ```
+
+
+```{r}
+
+students_w_errors_400044 <-
+  report_400044_w_errors %>%
+  filter(`Errors.Detected?` == "Yes") %>%
+  select(`CPS.Student.ID`, `Student.Last.Name`, `Student.First.Name`, Error.Details) %>%
+  distinct()
+
+students_w_errors_400146 <-
+  report_400146_w_errors %>%
+  filter(`Errors.Detected?` == "Yes") %>%
+  select(`CPS.Student.ID`, `Student.Last.Name`, `Student.First.Name`, Error.Details) %>%
+  distinct()
+
+students_w_errors_400163 <-
+  report_400163_w_errors %>%
+  filter(`Errors.Detected?` == "Yes") %>%
+  select(`CPS.Student.ID`, `Student.Last.Name`, `Student.First.Name`, Error.Details) %>%
+  distinct()
+
+students_w_errors_400180 <-
+  report_400180_w_errors %>%
+  filter(`Errors.Detected?` == "Yes") %>%
+  select(`CPS.Student.ID`, `Student.Last.Name`, `Student.First.Name`, Error.Details) %>%
+  distinct()
+
+```
+
 
 Locate all name errors for each school.
 
