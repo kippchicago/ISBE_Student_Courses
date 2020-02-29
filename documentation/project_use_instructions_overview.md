@@ -5,8 +5,30 @@ This document lays out a step-by-step overview for how to use this repository.
 For more detailed information check out the ISBE Midyear Report Process Documentation file located at the top level of this repo (Note: This file Contains
 private information and is not available for people outside of the organization).
 
-## Project File Outline:
+## Step-by-Step Guide
 
+### Initial Report Generation
+1. Ensure that you have the `ProjectTemplate` package installed in R.
+1. Ensure that you have All required R Packages (check the `config/global.dcf`
+file for all required libraries).
+1. Ensure that you have required permissions for KIPP Chicago Google Cloud Platform
+account (Big Query and Google Cloud Storage used for this project).
+1. Navigate to the `src` folder and run `01-A_write_submission_files.R` file.
+This will produce the report files in the required format for ISBE and write them
+to the `output\final_reports` folder. Note: if you'd like to see the final Files
+in R look at the `isbe_midyear_report_400146`, `isbe_midyear_report_400044`,
+`isbe_midyear_report_400163`, and `isbe_midyear_report_400180` dataframes.
+
+### Error Handling
+1. After you receive your first error report from CPS navigate to the `src`
+folder and run the `02-A_evaluate_cps_validation_period_errors.Rmd` file. This file
+will produce dataframes that show all unique errors by school. This file
+will also produce dataframes that list all unique name errors and date of birth
+errors.
+1. Use the `03-A_produce_write_submission_files_with_error_fixes.R` file to fix problems with the final reports that cannot be corrected in original code (use this
+file cautiously).
+
+### Project File Outline:
 ```
 .
 └── ISBE_Student_Courses
@@ -59,25 +81,3 @@ private information and is not available for people outside of the organization)
     └── .gitignore                   <- contains files that should not be
                                         uploaded to github.
 ```
-## Step-by-Step Guide
-
-### Initial Report Generation
-1. Ensure that you have the `ProjectTemplate` package installed in R.
-1. Ensure that you have All required R Packages (check the `config/global.dcf`
-file for all required libraries).
-1. Ensure that you have required permissions for KIPP Chicago Google Cloud Platform
-account (Big Query and Google Cloud Storage used for this project).
-1. Navigate to the `src` folder and run `01-A_write_submission_files.R` file.
-This will produce the report files in the required format for ISBE and write them
-to the `output\final_reports` folder. Note: if you'd like to see the final Files
-in R look at the `isbe_midyear_report_400146`, `isbe_midyear_report_400044`,
-`isbe_midyear_report_400163`, and `isbe_midyear_report_400180` dataframes.
-
-### Error Handling
-1. After you receive your first error report from CPS navigate to the `src`
-folder and run the `02-A_evaluate_cps_validation_period_errors.Rmd` file. This file
-will produce dataframes that show all unique errors by school. This file
-will also produce dataframes that list all unique name errors and date of birth
-errors.
-1. Use the `03-A_produce_write_submission_files_with_error_fixes.R` file to fix problems with the final reports that cannot be corrected in original code (use this
-file cautiously).
