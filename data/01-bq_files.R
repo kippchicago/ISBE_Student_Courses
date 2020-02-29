@@ -20,12 +20,20 @@ students <-
     exitdate,
     enroll_status,
     enrollmentcode,
-    grade_level, 
+    grade_level,
     exitcode
   ) %>%
   collect() %>%
-  mutate(student_id = as.character(student_id)) %>%
-  mutate(student_number = as.character(student_number))
+  
+  # set column types
+  mutate(student_id = as.character(student_id), 
+         student_number = as.character(student_number), 
+         state_studentnumber = as.character(state_studentnumber), 
+         schoolid = as.character(schoolid), 
+         dob = ymd(dob), 
+         entrydate = ymd(entrydate), 
+         exitdate = ymd(exitdate))
+  
 
 # course/section information
 cc <-
@@ -42,7 +50,16 @@ cc <-
     termid,
   ) %>%
   collect() %>%
-  mutate(student_id = as.character(student_id))
+  
+  # set column types
+  mutate(cc_id = as.character(cc_id), 
+         schoolid = as.character(schoolid), 
+         course_number = as.character(course_number), 
+         dateenrolled = ymd(dateenrolled), 
+         dateleft = ymd(dateleft), 
+         student_id = as.character(student_id), 
+         teacherid = as.character(teacherid), 
+         termid = as.character(termid))
 
 # Course Names
 courses <-
@@ -51,7 +68,11 @@ courses <-
     course_number,
     course_name
   ) %>%
-  collect()
+  collect() %>%
+
+  # set column types
+  mutate(course_number = as.character(course_number), 
+         course_name = as.character(course_name))
 
 # school staff IDs to match with user information
 schoolstaff <-
@@ -62,7 +83,13 @@ schoolstaff <-
     schoolid,
     status
   ) %>%
-  collect()
+  collect() %>%
+  
+  # set column type
+  mutate(teacherid = as.character(teacherid), 
+         users_dcid = as.character(users_dcid), 
+         schoolid = as.character(schoolid), 
+         status = as.character(status))
 
 # users info: full name, internal KIPP Chicago ID
 users <-
@@ -74,7 +101,11 @@ users <-
     teachernumber,
     email_addr
   ) %>%
-  collect()
+  collect() %>%
+  
+  # set column type
+  mutate(users_dcid = as.character(users_dcid), 
+         teachernumber = as.character(teachernumber))
 
 schoolstaff <-
   get_powerschool("schoolstaff") %>%
@@ -82,4 +113,8 @@ schoolstaff <-
     users_dcid,
     id,
   ) %>%
-  collect()
+  collect() %>%
+  
+  # set column type
+  mutate(users_dcid = as.character(users_dcid), 
+         id = as.character(id))
