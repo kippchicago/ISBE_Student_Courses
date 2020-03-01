@@ -7,35 +7,38 @@ output:
     fig_width: 5
     toc: yes
     toc_depth: 2
+    extra_dependencies: ["xcolor"]
 ---
 
 # 1. Introduction
 
 In Illinois, at the at the end of every semester, each school is required to submit a set of data to the Office of I&I for transmission to the Illinois State Board of Education (ISBE). The state then uses this data to produce the annual State School Report Cards. The purpose of this project is to collect student and teacher data from KIPP Chicago's different data systems and put them in a format that conforms to ISBE's reporting requirements.
 
+This document provides a detailed description of each data file and how to find it. The document also points out possible shortcomings and issues with 1) the code, and 2) the report submission process. There are also tips on how and when to begin preparing for the process. 
+
 # 2. Preparation
 
-CPS will send detailed documentation on what is required for the report (documentation for 2020 can be found in the `documentation` folder). Once you find out what pieces of information you need, it is important to begin collecting data as soon as possible. You may need to collect information from the COO, Chief of Staff, Talent Department and HR, so you need to put in your requests early. For more information on the required data read the "3B. Google Cloud Storage Files" section below.  
+CPS will send detailed documentation on what is required for the report to whoever is designated as the "data liason". \textcolor{red}{Once you find out what pieces of information you need, it is important to begin collecting data as soon as possible.} You may need to collect information from the COO, Chief of Staff, Talent Department and HR, so you need to put in your requests early. For more information on required data read the "3B. Google Cloud Storage Files" section below. Note: Some data requirements may change from year to year. 
 
-Store any collected data within a Google cloud storage bucket. For example, all collected data for the 19-20 midyear report was saved in the `raw_data_storage` bucket under `ISBE_Student_Courses/19-20_files`.
+Store all data collected from outside KIPP Chicago's database within a Google cloud storage bucket. For example, all collected data for the 19-20 midyear report was saved in the `raw_data_storage` bucket under `ISBE_Student_Courses/19-20_files`.
 
-You can find previous instructions on the Midyear ISBE Reporting Process from CPS in Google cloud storage within the `raw storage bucket` under `ISBE_Student_Courses/19-20_files/cps_report_instructions`. 
+You can find previous instructions on the Midyear ISBE Reporting Process from CPS in Google cloud storage within the `raw storage bucket` under `ISBE_Student_Courses/19-20_files/cps_report_instructions`. These files will be downloaded to the documentation folder after running the `02-gcs_files.R` script in the `data` folder.
 
 # 3. Data Sources and How to Access them
 
-Some files that are needed for this report can be accessed directly from our database, but other files need to be collected from different departments within KIPP. Below is a list of the files that were required for the 2020 Midyear report. 
+Some files that are needed for this report can be accessed directly from our database, but other files need to be collected from different departments within KIPP Chicago. Below is a list of the files that were required for the 2020 Midyear report. 
 
 ## 3A. Google Big Query 
-All data sources listed in the `01-bq_files.R` script are stored in KIPP Chicago's Big Query Database. In order to access these datasets you will need the credentials to gain access to KIPP Chicago's Google Cloud Platform.
+All data sources listed in the `01-bq_files.R` script are stored in KIPP Chicago's Big Query Database. In order to access these data sets you will need the credentials to gain access to KIPP Chicago's Google Cloud Platform. For more information please checkout the `01-bq_files.R` script.
 
 ## 3B. Google Cloud Storage Files: 
-All data sources listed in the `0s-gcs_files.R` script were collected from different departments within KIPP Chicago as well as other outside sources. Below is a list of all files and where to find them. The files listed in this section can be found in KIPP Chicago's Google Cloud Storage in the `raw_data_storage` bucket under `ISBE_Student_Courses/19-20_files` 
+All data sources listed in the `0s-gcs_files.R` script were collected from different departments within KIPP Chicago as well as other outside sources. Below is a list of all files and where to find them. The specific files for 2020 listed in this section can be found in KIPP Chicago's Google Cloud Storage in the `raw_data_storage` bucket under `ISBE_Student_Courses/19-20_files`. \textcolor{red}{Please make sure to read the descriptions below as well as note all required columns (by looking directly at each .csv) before making requests of other departments.}
 
 ### I) Mapping of State Course IDs to Local Course IDs and Titles
 
 **File Description**\
 File Name: `course_local_number_state_ids.csv`\
-This csv matches ISBE State Course Codes with the local course IDs and local course titles for all KIPP Chicago classes. For more information, see the "ISBE State Course Codes" tab in the "Instructions - 2020 Course Assignment" file located in the documentation folder. 
+This csv matches ISBE State Course Codes with local course IDs and local course titles for all KIPP Chicago classes. For more information, see the "ISBE State Course Codes" tab in the "Instructions - 2020 Course Assignment" file located in the documentation folder. 
 
 **File Location**\
 This file was created manually and should be downloaded from the Google cloud storage `raw_data_storage` bucket under `ISBE_Student_Courses/19-20_files`. As schools add or drop classes (or change course names), this file will need to be manually updated.  
@@ -54,7 +57,7 @@ File Name: `19_20_IEIN_numbers.csv`\
 This csv contains identifying information for teachers. Information includes name, date of birth, IEIN number and serving school. 
 
 **File Location**\
-This file can be collected from Head of talent, COO or HR. Note, ask both HR and the COO if they have an existing report first with this information before putting in a request to talent. The teacher id column is required to match the information in the cc table and will need to be input by hand. 
+This file can be collected from the head of talent, COO or HR. Note, first ask both HR and the COO if they have an existing report with this information before putting in a request to talent. The teacherid column is required to match the information in the cc table and will need to be input by hand. 
 
 Note: The users table will need to be connected to the schoolstaff table in order to find the correct teacher id for each teacher. The teacher id column is the id column in the schoolstaff table (users and schoolstaff tables are located on big query).
 
@@ -108,7 +111,7 @@ These files (8 in total) are downloaded from [ASPEN](https://aspen.cps.edu/aspen
 
 #### 6. Ensure that "Student" is selected in the drop down menu then add all variables included in the "Selected Fields" box pictured below. Afterwards click next.
 
-![an image caption Source]../(data/photos/11.JPEG)
+![an image caption Source](../data/photos/11.JPEG)
 
 \newpage
 
