@@ -1,6 +1,9 @@
 # Pulls flat files from Google Cloud Storage bucket.
 # Location: raw_data_storage/ ISBE_Student_Courses/
 
+# Below is a list of all documents contained in this file
+# 
+
 gcs_global_bucket("raw_data_storage")
 
 # ISBE State Course Code & Local Course ID --------------------------------
