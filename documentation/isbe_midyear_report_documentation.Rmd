@@ -1,5 +1,5 @@
 ---
-title: “ISBE Midyear Report 2020 Process Documentation”
+title: “ISBE Midyear Report 2020 - Process Documentation”
 output:
   pdf_document:
     fig_caption: no
@@ -178,11 +178,12 @@ errors.
 1. Use the `03-A_produce_write_submission_files_with_error_fixes.R` file to fix problems with the final reports that cannot be corrected in the original code (Note: use this
 file cautiously or not at all).
 
-# 6. Issues and things to be aware of 
+# 6. Issues and areas that need improvement
 
 ## 6A. Code
 i) As of now, there is no clear way to connect teacher personal information with their course information. The solution used was to add each teachers teacherid to the personal information file by hand (explained in the Google Cloud Storage Section).
 ii) The student enrollment information downloaded from ASPEN Appears to have a number of issues. Many students are marked as enrolled, withdrawn and then enrolled again in the same school over the course of a couple of days. This makes choosing the correct enrollment date tricky. Because of this, it is likely that after you make your first submission and receive an error report you will need to hand-correct a number of students enrollment dates in order for them to be accepted by ISBE. 
+iii) The process for matching elementary school students (specifically K - 3 because 4th grade is rostered in powerschool like middle school students) needs improvement. Even after running the final code some students are rostered to the same class twice within the same school. This problem needs to be examined before the start of the next reporting cycle. 
 
 ## 6B. File Submission
 i) If the data validation process is conducted in Google drive do not erase the original file. Instead, copy and paste the data into the files provided. 

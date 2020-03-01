@@ -6,7 +6,8 @@
 isbe_report_all_schools <- 
   bind_rows(isbe_report_middle_midyear_2020_full, 
             isbe_report_primary_midyear_2020_full) %>%
-  filter(!is.na(`ISBE Student ID`))
+  filter(!is.na(`ISBE Student ID`)) %>%
+  distinct()
   
 # Filter Report for all 4 Schools -----------------------------------------
 
