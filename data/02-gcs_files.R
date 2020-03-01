@@ -603,3 +603,18 @@ cps_name_replacement_list <-
     CPS.Student.ID = as.character(CPS.Student.ID)
   ) %>%
   select(-c(ASPEN_name))
+
+
+# CPS Documentation for 2020 ----------------------------------------------
+# Note: This is not data. These files are instructions for how to complete the project
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/cps_report_instructions/Instructions - 2020 Course Assignment.xlsx",
+               saveToDisk = "documentation/cps_report_instructions/Instructions - 2020 Course Assignment.xlsx",
+               overwrite = TRUE
+               )
+
+gcs_get_object("ISBE_Student_Courses/19-20_files/cps_report_instructions/Mid-Year Data Collection FAQs.pdf",
+               saveToDisk = "documentation/cps_report_instructions/Mid-Year Data Collection FAQs.pdf",
+               overwrite = TRUE
+               )
+
