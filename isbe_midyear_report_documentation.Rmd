@@ -1,5 +1,5 @@
 ---
-title: "ISBE Midyear Report 2020 Process Documentation"
+title: “ISBE Midyear Report 2020 Process Documentation”
 output:
   pdf_document:
     fig_caption: no
@@ -7,9 +7,6 @@ output:
     fig_width: 5
     toc: yes
     toc_depth: 2
-  word_document:
-    toc: yes
-    toc_depth: '2'
 ---
 
 # 1. Introduction
@@ -109,7 +106,7 @@ These files (8 in total) are downloaded from [ASPEN](https://aspen.cps.edu/aspen
 
 #### 5. Select "New Report" then click "Next. On the next screen select "Simple" then click Next.
 
-#### 6. Ensure that "Student" is selected in the drop down menu then add all variables included in the "Selected Fields" box below (pictured_. Afterwards click next.
+#### 6. Ensure that "Student" is selected in the drop down menu then add all variables included in the "Selected Fields" box pictured below. Afterwards click next.
 
 ![an image caption Source](data/photos/11.JPEG)
 
