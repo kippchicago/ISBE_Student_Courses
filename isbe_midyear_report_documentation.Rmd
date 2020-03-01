@@ -101,6 +101,8 @@ These files (8 in total) are downloaded from [ASPEN](https://aspen.cps.edu/aspen
 
 ![an image caption Source](data/photos/11.JPEG)
 
+\newpage
+
 #### 7. The next screen shows an almost identical display. No need to add variables to the "Selected Fields" box. Click next. 
 
 ![an image caption Source](data/photos/12.JPEG)
