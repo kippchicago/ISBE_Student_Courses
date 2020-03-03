@@ -1,7 +1,6 @@
 *.csv
 *.xls
 *.xlsx
-*.pdf
 *.html
 *.png
 .DS_store
