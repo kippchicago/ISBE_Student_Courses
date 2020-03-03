@@ -87,41 +87,41 @@ These files (8 in total) are downloaded from [ASPEN](https://aspen.cps.edu/aspen
 
 \newpage
 
-#### 1. Log into [ASPEN](https://aspen.cps.edu/aspen/logon.do) then navigate to the view tab and select school view.
-
+#### 1. Log into [ASPEN](https://aspen.cps.edu/aspen/logon.do) then navigate to the view tab and select school view.\
+\
 ![an image caption Source](../data/photos/1.JPEG)
 
-#### 2. Select a School
-
+#### 2. Select a School\
+\
 ![an image caption Source](../data/photos/2.JPEG)
 
 \newpage
 
-#### 3. Select the filter icon and choose either "All Active Students" or "Former Students". **NOTE:** You cannot pull all students at the same time and will need to go through the following steps for both filters for all 4 schools.
-
+#### 3. Select the filter icon and choose either "All Active Students" or "Former Students". **NOTE:** You cannot pull all students at the same time and will need to go through the following steps for both filters for all 4 schools.\
+\
 ![an image caption Source](../data/photos/5.JPEG)
 
 \newpage
 
-#### 4. Click on the "Report" tab and select "Quick Report" in the drop-down menu.
-
+#### 4. Click on the "Report" tab and select "Quick Report" in the drop-down menu.\
+\
 ![an image caption Source](../data/photos/7.JPEG)
 
 #### 5. Select "New Report" then click "Next. On the next screen select "Simple" then click Next.
 
-#### 6. Ensure that "Student" is selected in the drop down menu then add all variables included in the "Selected Fields" box pictured below. Afterwards click next.
-
+#### 6. Ensure that "Student" is selected in the drop down menu then add all variables included in the "Selected Fields" box pictured below. Afterwards click next.\
+\
 ![an image caption Source](../data/photos/11.JPEG)
 
 \newpage
 
-#### 7. The next screen shows an almost identical display. No need to add variables to the "Selected Fields" box. Click next. 
-
+#### 7. The next screen shows an almost identical display. No need to add variables to the "Selected Fields" box. Click next. On the next screen click next again.\
+\
 ![an image caption Source](../data/photos/12.JPEG)
 
-#### 8. Select comma-separated-values from the drop down menu. Afterwards select "Finish" This will open up a new page with all requested information. You can then copy and paste this information into a CSV and separate the column by commas (Google how to do this).
-
-![an image caption Source](../data/photos/13.JPEG)
+#### 8. Select comma-separated-values from the drop down menu. Afterwards select "Finish" This will open up a new page with all requested information. You can then copy and paste this information into a CSV and separate the column by commas (Google how to do this).\
+\
+![an image caption Source](../data/photos/14.JPEG)
 
 ------
 
@@ -144,10 +144,12 @@ The file is located in ASPEN. [ASPEN](https://aspen.cps.edu/aspen/logon.do). In 
 
 ------
 
-#### 1. Within the "School View" under the "Students" tab click the report button and select "Enrollment Activity 
+#### 1. Within the "School View" under the "Students" tab click the report button and select "Enrollment Activity\
+\
 ![an image caption Source](../data/photos/enrollment1.JPEG)
 
-#### 2. In the menu select "comma-separated-values" then click "Run". This will produce a csv file to be downloaded to your device. 
+#### 2. In the menu select "comma-separated-values" then click "Run". This will produce a csv file to be downloaded to your device.\
+\
 ![an image caption Source](../data/photos/enrollment2.JPEG)
 
 ------
