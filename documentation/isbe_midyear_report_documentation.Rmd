@@ -18,7 +18,7 @@ This document provides a detailed description of each data file and how to find 
 
 # 2. Preparation
 
-CPS will send detailed documentation on what is required for the report to whoever is designated as the "data liason". \textcolor{red}{Once you find out what pieces of information you need, it is important to begin collecting data as soon as possible.} You may need to collect information from the COO, Chief of Staff, Talent Department and HR, so you need to put in your requests early. For more information on required data read the "3B. Google Cloud Storage Files" section below. Note: Some data requirements may change from year to year. 
+CPS will send detailed documentation on what is required for the report to whoever is designated as the "data liason". \textcolor{red}{Once you find out what pieces of information you need, it is important to begin collecting data as soon as possible.} You may need to collect information from the COO, Chief of Staff, Talent Department and HR, so you need to put in your requests early. For more information on required data read section 3, "Data Sources and how to access them". Note: Some data requirements may change from year to year. 
 
 Store all data collected from outside KIPP Chicago's database within a Google cloud storage bucket. For example, all collected data for the 19-20 midyear report was saved in the `raw_data_storage` bucket under `ISBE_Student_Courses/19-20_files`.
 
@@ -32,7 +32,7 @@ Some files that are needed for this report can be accessed directly from our dat
 All data sources listed in the `01-bq_files.R` script are stored in KIPP Chicago's Big Query Database. In order to access these data sets you will need the credentials to gain access to KIPP Chicago's Google Cloud Platform. For more information please checkout the `01-bq_files.R` script.
 
 ## 3B. Google Cloud Storage Files: 
-All data sources listed in the `0s-gcs_files.R` script were collected from different departments within KIPP Chicago as well as other outside sources. Below is a list of all files and where to find them. The specific files for 2020 listed in this section can be found in KIPP Chicago's Google Cloud Storage in the `raw_data_storage` bucket under `ISBE_Student_Courses/19-20_files`. \textcolor{red}{Please make sure to read the descriptions below as well as note all required columns (by looking directly at each .csv) before making requests of other departments.}
+All data sources listed in the `02-gcs_files.R` script were collected from different departments within KIPP Chicago as well as other outside sources. Below is a list of all files and where to find them. The specific files for 2020 listed in this section can be found in KIPP Chicago's Google Cloud Storage in the `raw_data_storage` bucket under `ISBE_Student_Courses/19-20_files`. \textcolor{red}{Please make sure to read the descriptions below as well as note all required columns (by looking directly at each .csv) before making requests of other departments.}
 
 ### I) Mapping of State Course IDs to Local Course IDs and Titles
 
@@ -125,7 +125,7 @@ These files (8 in total) are downloaded from [ASPEN](https://aspen.cps.edu/aspen
 
 ------
 
-### VI) List of Students with Conflicting CPS Student IDs in Between ASPEN and Power schools
+### VI) List of Students with Conflicting CPS Student IDs Between ASPEN and Power schools
 
 **File Description**\
 File Name: `cps_id_corrections.csv`\
@@ -137,18 +137,22 @@ This file was created manually. first, I ran an anti_join in R between the stude
 ### VII) List of all Students Enrolled in KIPP Chicago in ASPEN
 **File Description**\
 File Name: _Ex._ `enrollment_academy_aspen_400146.csv`\
-This file lists enrollment information for KIPP Chicago Students. If a student starts school after the first day of class KIPP Chicago's enrollment records (the records kept in power school), then KIPP's enrollment record for that student will be different from the official ASPEN records. The report needs to list the enrollment date from ASPEN 
+This file lists enrollment information for KIPP Chicago Students. If a student starts school after the first day of class then KIPP Chicago's enrollment record (the records kept in powerschool) will likely be different from the official ASPEN records. The report needs to list the enrollment date from ASPEN in order to be accepted.
 
 **File Location**\
 The file is located in ASPEN. [ASPEN](https://aspen.cps.edu/aspen/logon.do). In order to log into ASPEN you will need your cps username and password (the same credentials that you use to log into your CPS email address). Below is a step-by-step guide for finding this information in ASPEN. 
 
 ------
 
-#### 1. Within the "School View" under the "Students" tab click the report button and select "Enrollment Activity\
+\newpage
+
+#### 1. Follow the first two steps from section 3.3B.V
+
+#### 2. Within the "School View" under the "Students" tab click the report button and select "Enrollment Activity\
 \
 ![an image caption Source](../data/photos/enrollment1.JPEG)
 
-#### 2. In the menu select "comma-separated-values" then click "Run". This will produce a csv file to be downloaded to your device.\
+#### 3. In the menu select "comma-separated-values" then click "Run". This will produce a csv file to be downloaded to your device.\
 \
 ![an image caption Source](../data/photos/enrollment2.JPEG)
 
@@ -165,6 +169,7 @@ List of names that were still incorrect the day before the submission was due. B
 file for all required libraries).
 1. Ensure that you have all required permissions for KIPP Chicago Google Cloud Platform
 account (Big Query and Google Cloud Storage used for this project).
+1. Ensure that you have all of the required files listed in the "Google Cloud Storage Files" section. Files also need to be in the correct format (check format of required files in Google Cloud Storage `raw_data_storage` bucket under `ISBE_Student_Courses/19-20_files` if you have any doubts.)
 1. Navigate to the `src` folder and run `01-A_write_submission_files.R` file.
 This will produce the report files in the required format for ISBE and write them
 to the `output\final_reports` folder. Note: if you'd like to see the final Files
@@ -180,19 +185,22 @@ errors.
 1. Use the `03-A_produce_write_submission_files_with_error_fixes.R` file to fix problems with the final reports that cannot be corrected in the original code (Note: use this
 file cautiously or not at all).
 
-# 6. Issues and areas that need improvement
+# 6. Issues and areas for improvement
 
 ## 6A. Code
 i) As of now, there is no clear way to connect teacher personal information with their course information. The solution used was to add each teachers teacherid to the personal information file by hand (explained in the Google Cloud Storage Section).
 ii) The student enrollment information downloaded from ASPEN Appears to have a number of issues. Many students are marked as enrolled, withdrawn and then enrolled again in the same school over the course of a couple of days. This makes choosing the correct enrollment date tricky. Because of this, it is likely that after you make your first submission and receive an error report you will need to hand-correct a number of students enrollment dates in order for them to be accepted by ISBE. 
-iii) The process for matching elementary school students (specifically K - 3 because 4th grade is rostered in powerschool like middle school students) needs improvement. Even after running the final code some students are rostered to the same class twice within the same school. This problem needs to be examined before the start of the next reporting cycle. 
+iii) The process for matching elementary school students (specifically K - 3) needs significant improvement. Even after running the final code some students are rostered to the same class twice within the same school. This problem needs to be examined before the start of the next reporting cycle. 
 
 ## 6B. File Submission
 i) If the data validation process is conducted in Google drive do not erase the original file. Instead, copy and paste the data into the files provided. 
-ii) The date will need to be be put in the correct format in Google sheets (mm/dd/yyyy). All dates will throw an error if this step is skipped. 
-iii) It is likely that you will run into different spellings for students names between the ASPEN and power school systems. This is why it is important to use the name and dob listed in ASPEN. 
+ii) Each date column in the file will need to be be put in the correct format in Google sheets (mm/dd/yyyy). All dates will throw an error if this step is skipped (I've tried to put it into the correct format in R to no avail). 
+iii) It is likely that you will run into different spellings for student names between the ASPEN and powerschool systems. This is why it is important to use the name and dob listed in ASPEN. 
 
-# 7. Useful Links
+# 7. Ideas for improvement
+i) Running an independent validation process on our reports (one that matches the validation process used by CPS) would be incredibly helpful in getting the reports out in a timely and painless manner. At the moment, we upload our data to google drive each day and then two hours later receive an error report. It may be worth asking CPS if we can get a copy of the scripts they use to validate the reports. If that is not possible, then we should use descriptions from both CPS and ISBE sources to write our own validation process scripts.
+
+# 8. Useful Links
 
 Below are links that lay out the exact validation information set by ISBE. 
 
