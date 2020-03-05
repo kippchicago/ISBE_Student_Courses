@@ -1,7 +1,6 @@
 *.csv
 *.xls
 *.xlsx
-*.html
 *.png
 .DS_store
 .Rproj.user
