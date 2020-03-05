@@ -7,7 +7,9 @@ output:
     fig_width: 5
     toc: yes
     toc_depth: 2
-    toc_float: yes
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
   pdf_document:
     toc: yes
     toc_depth: '2'
@@ -21,13 +23,13 @@ This document provides a detailed description of each data file and how to find 
 
 # 2. Preparation
 
-CPS will send detailed documentation on what is required for the report to whoever is designated as the "data liason". \textcolor{red}{Once you find out what pieces of information you need, it is important to begin collecting data as soon as possible.} You may need to collect information from the COO, Chief of Staff, Talent Department and HR, so you need to put in your requests early. For more information on required data read section 3, "Data Sources and how to access them". Note: Some data requirements may change from year to year. 
+CPS will send detailed documentation on what is required for the report to whoever is designated as the "data liason". \textcolor{red}{Once you find out what pieces of information you need, it is important to begin collecting data as soon as possible.} You may need to collect information from the COO, Chief of Staff, Talent Department and HR, so you need to put in your requests early. For more information on required data read section 3, "Data Sources and how to access". Note: Some data requirements may change from year to year. 
 
 Store all data collected from outside KIPP Chicago's database within a Google cloud storage bucket. For example, all collected data for the 19-20 midyear report was saved in the `raw_data_storage` bucket under `ISBE_Student_Courses/19-20_files`.
 
 You can find previous instructions on the Midyear ISBE Reporting Process from CPS in Google cloud storage within the `raw storage bucket` under `ISBE_Student_Courses/19-20_files/cps_report_instructions`. These files will be downloaded to the documentation folder after running the `02-gcs_files.R` script in the `data` folder.
 
-# 3. Data Sources and How to Access them
+# 3. Data Sources and How to Access
 
 Some files that are needed for this report can be accessed directly from our database, but other files need to be collected from different departments within KIPP Chicago. Below is a list of the files that were required for the 2020 Midyear report. 
 
