@@ -52,8 +52,7 @@ This repo contains scripts that ingest data that is stored in KIPP Chicago's dat
     ├── documentation
     |   │── data_dictionary_bq      <- For `data/01-bq_files.R`
     |   │── data_dictionary_gcs     <- For `data/02-gcs_files.R`
-    |   │── data_dictionary_manual  <- For `data/03-manual_tables.R`
-    |   └── data_schema
+    |   └── data_dictionary_manual  <- For `data/03-manual_tables.R`
     |
     ├── output
     │   ├── final_reports           <- Location for final output
