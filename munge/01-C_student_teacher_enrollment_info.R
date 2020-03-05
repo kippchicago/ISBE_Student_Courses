@@ -1,5 +1,5 @@
 # Produce Enrollment Information for both teachers and students
-
+# NOTE: WRITE DOCUMENTATION FOR EACH DATAFRAME
 # Parameters --------------------------------------------------------------
 
 FIRST_DAY_OF_SCHOOL <- ymd("2019-08-19")

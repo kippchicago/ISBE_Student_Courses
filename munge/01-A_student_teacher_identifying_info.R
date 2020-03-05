@@ -1,6 +1,7 @@
 # Produce student and teacher identifying information
 
 # Parameters --------------------------------------------------------------
+# silounloader (terms table)
 
 FIRST_DAY_OF_SCHOOL <- ymd("2019-08-19")
 LAST_DAY_OF_SCHOOL <- ymd("2020-06-20")
@@ -92,6 +93,9 @@ student_full_list_aspen <-
 # Teacher Birth Date
 # Teacher Serving
 # Employer RCDTS
+
+# NOTE: there is a table with teacher name and teacher ID numbers 
+# (need the ID from powerschools)
 
 teacher_identifying_info_partial <-
   cc %>%

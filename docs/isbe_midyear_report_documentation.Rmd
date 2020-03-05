@@ -1,13 +1,16 @@
 ---
-title: “ISBE Midyear Report 2020 - Process Documentation”
+title: "“ISBE Midyear Report 2020 - Process Documentation”"
 output:
-  pdf_document:
+  html_document:
     fig_caption: no
     fig_height: 4
     fig_width: 5
     toc: yes
     toc_depth: 2
-    extra_dependencies: ["xcolor"]
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
 ---
 
 # 1. Introduction
@@ -88,40 +91,53 @@ These files (8 in total) are downloaded from [ASPEN](https://aspen.cps.edu/aspen
 \newpage
 
 #### 1. Log into [ASPEN](https://aspen.cps.edu/aspen/logon.do) then navigate to the view tab and select school view.\
+![an image caption Source](../data/photos/1.jpg)
+
 \
-![an image caption Source](../data/photos/1.JPEG)
 
 #### 2. Select a School\
-\
-![an image caption Source](../data/photos/2.JPEG)
+
+![an image caption Source](../data/photos/2.jpg)
 
 \newpage
+
+\
 
 #### 3. Select the filter icon and choose either "All Active Students" or "Former Students". **NOTE:** You cannot pull all students at the same time and will need to go through the following steps for both filters for all 4 schools.\
-\
-![an image caption Source](../data/photos/5.JPEG)
+
+![an image caption Source](../data/photos/5.jpg)
 
 \newpage
 
-#### 4. Click on the "Report" tab and select "Quick Report" in the drop-down menu.\
 \
-![an image caption Source](../data/photos/7.JPEG)
+
+#### 4. Click on the "Report" tab and select "Quick Report" in the drop-down menu.\
+
+![an image caption Source](../data/photos/7.jpg)
+
+\
 
 #### 5. Select "New Report" then click "Next. On the next screen select "Simple" then click Next.
 
-#### 6. Ensure that "Student" is selected in the drop down menu then add all variables included in the "Selected Fields" box pictured below. Afterwards click next.\
 \
-![an image caption Source](../data/photos/11.JPEG)
+
+#### 6. Ensure that "Student" is selected in the drop down menu then add all variables included in the "Selected Fields" box pictured below. Afterwards click next.\
+
+![an image caption Source](../data/photos/11.jpg)
 
 \newpage
 
-#### 7. The next screen shows an almost identical display. No need to add variables to the "Selected Fields" box. Click next. On the next screen click next again.\
 \
-![an image caption Source](../data/photos/12.JPEG)
+
+#### 7. The next screen shows an almost identical display. No need to add variables to the "Selected Fields" box. Click next. On the next screen click next again.\
+
+![an image caption Source](../data/photos/12.jpg)
+
+\
 
 #### 8. Select comma-separated-values from the drop down menu. Afterwards select "Finish" This will open up a new page with all requested information. You can then copy and paste this information into a CSV and separate the column by commas (Google how to do this).\
-\
-![an image caption Source](../data/photos/14.JPEG)
+
+![an image caption Source](../data/photos/14.jpg)
 
 ------
 
@@ -149,12 +165,14 @@ The file is located in ASPEN. [ASPEN](https://aspen.cps.edu/aspen/logon.do). In 
 #### 1. Follow the first two steps from section 3.3B.V
 
 #### 2. Within the "School View" under the "Students" tab click the report button and select "Enrollment Activity\
+
+![an image caption Source](../data/photos/enrollment1.jpg)
+
 \
-![an image caption Source](../data/photos/enrollment1.JPEG)
 
 #### 3. In the menu select "comma-separated-values" then click "Run". This will produce a csv file to be downloaded to your device.\
-\
-![an image caption Source](../data/photos/enrollment2.JPEG)
+
+![an image caption Source](../data/photos/enrollment2.jpg)
 
 ------
 

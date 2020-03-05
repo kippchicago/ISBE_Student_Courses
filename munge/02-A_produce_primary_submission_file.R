@@ -41,6 +41,8 @@ students_course_primary_core <-
   filter(
     grade_level %in% c(0, 1, 2, 3),
     !grepl("Science", local_course_title),
+    
+    # Don't need to get rid of homework
     !grepl("Homework", local_course_title)
   ) %>%
   mutate(grade_level = as.character(grade_level)) %>%

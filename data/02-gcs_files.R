@@ -12,6 +12,8 @@ gcs_get_object("ISBE_Student_Courses/19-20_files/course_local_number_state_ids.c
   overwrite = TRUE
 )
 
+# Note: look into making student and state ID integers. Will get a warning if
+# something is not an integer. 
 local_number_isbe_state_course_ids <-
   read_csv(here::here("data", "flatfiles", "course_local_number_state_ids.csv"),
     col_types = list(
@@ -91,6 +93,8 @@ teacher_iein_licensure_report <-
   rename("teacher_iein" = "IEIN") %>%
   # NOTE: This line trims all white space from character columns. This
   # is imperitive later when we want to join datasets on teacherid column
+  
+  # Note: Check if I need this (trim_ws may do exactly the same thing)
   mutate_if(is.character, str_trim)
 
 
@@ -116,6 +120,7 @@ kipp_staff_member_start_after_20190819 <-
   mutate_if(is.character, str_trim)
 
 # ASPEN Student Info (Current & Former Students 19-20) --------------------
+# NOTE: let's turn this into a function (repeating things too many times)
 
 # Ascend 400044
 gcs_get_object("ISBE_Student_Courses/19-20_files/aspen_student_data/400044_ascend_current_students_aspen.csv",
