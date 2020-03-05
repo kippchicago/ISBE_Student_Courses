@@ -2,7 +2,6 @@
 # Location: raw_data_storage/ ISBE_Student_Courses/
 
 # Below is a list of all documents contained in this file
-# 
 
 gcs_global_bucket("raw_data_storage")
 
@@ -66,7 +65,7 @@ zenefits_teacher_info <-
   )
 
 
-# 19/20 IEIN Teacher Data (Collected from talent team) --------------------
+# 19/20 IEIN Teacher Data --------------------
 
 gcs_get_object("ISBE_Student_Courses/19-20_files/19_20_IEIN_numbers.csv",
   saveToDisk = "data/flatfiles/19_20_IEIN_numbers.csv",

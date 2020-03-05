@@ -1,4 +1,4 @@
-# Produce student and teacher identifying information for both teacher and students
+# Produce student and teacher identifying information
 
 # Parameters --------------------------------------------------------------
 
