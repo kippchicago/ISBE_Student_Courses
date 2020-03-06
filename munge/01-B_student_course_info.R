@@ -4,6 +4,7 @@
 
 FIRST_DAY_OF_SCHOOL <- ymd("2019-08-19")
 LAST_DAY_OF_SCHOOL <- ymd("2020-06-20")
+PS_TERMID <- silounloadr::calc_ps_termid(2019)
 
 # Student Course Information ----------------------------------------------------------------
 
@@ -54,3 +55,19 @@ student_course_info <-
   # remove Attendance (homeroom) and ELL sections (used for sorting but not an actual course)
   filter(!grepl("Attendance| ELL", local_course_title))
 
+
+# Teacher Course Info -----------------------------------------------------
+
+teacher_course_info <- 
+  users %>%
+  
+  # joins users and teachers
+  left_join(teachers, 
+            by = "users_dcid") %>%
+  
+  # joins users/teachers and cc
+  left_join(cc,
+            by = "teacherid") %>% 
+  filter(termid == PS_TERMID) %>%
+  left_join(courses,
+            by = "course_number")

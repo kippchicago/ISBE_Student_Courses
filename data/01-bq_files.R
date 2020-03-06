@@ -33,7 +33,6 @@ students <-
          dob = ymd(dob), 
          entrydate = ymd(entrydate), 
          exitdate = ymd(exitdate))
-  
 
 # course/section information
 cc <-
@@ -48,6 +47,7 @@ cc <-
     student_id = studentid,
     teacherid,
     termid,
+    sectionid
   ) %>%
   collect() %>%
   
@@ -99,7 +99,8 @@ users <-
     teacher_first_name = first_name,
     teacher_last_name = last_name,
     teachernumber,
-    email_addr
+    email_addr, 
+    homeschoolid,
   ) %>%
   collect() %>%
   
@@ -111,7 +112,7 @@ schoolstaff <-
   get_powerschool("schoolstaff") %>%
   select(
     users_dcid,
-    id,
+    teacherid = id,
   ) %>%
   collect() %>%
   

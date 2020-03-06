@@ -95,7 +95,8 @@ teacher_iein_licensure_report <-
   # is imperitive later when we want to join datasets on teacherid column
   
   # Note: Check if I need this (trim_ws may do exactly the same thing)
-  mutate_if(is.character, str_trim)
+  mutate_if(is.character, str_trim) %>%
+  select(-c("Name", "preffered_name", "suffix", "Work Team", "email"))
 
 
 # KIPP Staff who started after the start of school (2019/08/19) -----------

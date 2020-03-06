@@ -5,6 +5,8 @@
 
 FIRST_DAY_OF_SCHOOL <- ymd("2019-08-19")
 LAST_DAY_OF_SCHOOL <- ymd("2020-06-20")
+PS_TERMID <- silounloadr::calc_ps_termid(2019)
+
 
 # Student Identifying Information ----------------------------------------------------------
 
@@ -97,61 +99,72 @@ student_full_list_aspen <-
 # NOTE: there is a table with teacher name and teacher ID numbers 
 # (need the ID from powerschools)
 
-teacher_identifying_info_partial <-
-  cc %>%
-  left_join(schoolstaff,
-    by = c("teacherid" = "id")
-  ) %>%
+# teacher_identifying_info_partial <-
+#   cc %>%
+#   left_join(schoolstaff,
+#     by = c("teacherid" = "id")
+#   ) %>%
+# 
+#   # Join users to obtain teacher names and email addresses
+#   left_join(users,
+#     by = "users_dcid"
+#   ) %>%
+#   select(
+#     teacherid,
+#     teacher_first_name,
+#     teacher_last_name,
+#     email_addr,
+#     schoolid,
+#   ) %>%
+# 
+#   # Filter down to single row per teacher
+#   distinct() %>%
+#   left_join(zenefits_teacher_info,
+#     by = c(
+#       "teacher_first_name" = "First Name",
+#       "teacher_last_name" = "Last Name",
+#       "email_addr" = "Work Email"
+#     )
+#   ) %>%
+#   select(
+#     teacherid,
+#     teacher_first_name,
+#     teacher_last_name,
+#     schoolid,
+#     email_addr,
+#     `Initial Employment Start Date`,
+#   ) %>%
+# 
+#   # NOTE: This line trims all white space from character columns. This
+#   # is imperitive later when we want to join datasets on teacherid column
+#   mutate_if(is.character, str_trim)
 
-  # Join users to obtain teacher names and email addresses
-  left_join(users,
-    by = "users_dcid"
-  ) %>%
-  select(
-    teacherid,
-    teacher_first_name,
-    teacher_last_name,
-    email_addr,
-    schoolid,
-  ) %>%
-
-  # Filter down to single row per teacher
+teacher_names <- 
+  users %>%
+  
+  # joins users and teachers
+  left_join(teachers, 
+            by = "users_dcid") %>%
+  
+  # joins users/teachers and cc
+  left_join(cc,
+            by = "teacherid") %>% 
+  filter(termid == PS_TERMID) %>%
+  left_join(courses,
+            by = "course_number") %>%
+  select(teacher_first_name = first_name, 
+         teacher_last_name = last_name, 
+         teacherid) %>%
   distinct() %>%
-  left_join(zenefits_teacher_info,
-    by = c(
-      "teacher_first_name" = "First Name",
-      "teacher_last_name" = "Last Name",
-      "email_addr" = "Work Email"
-    )
-  ) %>%
-  select(
-    teacherid,
-    teacher_first_name,
-    teacher_last_name,
-    schoolid,
-    email_addr,
-    `Initial Employment Start Date`,
-  ) %>%
+  mutate(teacherid = as.character(teacherid))
 
-  # NOTE: This line trims all white space from character columns. This
-  # is imperitive later when we want to join datasets on teacherid column
-  mutate_if(is.character, str_trim)
-
-
-teacher_identifying_info_complete <-
-  teacher_iein_licensure_report %>%
-  left_join(teacher_identifying_info_partial,
+teacher_identifying_info <-
+  teacher_names %>%
+  left_join(teacher_iein_licensure_report,
     by = "teacherid"
   ) %>%
-  select(-c(
-    Name, preffered_name, suffix, email_addr,
-    teacher_first_name, teacher_last_name,
-    `Initial Employment Start Date`,`Work Team`, 
-    schoolid)
-    ) %>%
   rename(
     "teacher_birth_date" = "birthday",
-    "teacher_last_name" = "last_name",
-    "teacher_first_name" = "first_name",
   ) %>%
+  select(-c(last_name, first_name)) %>%
   mutate_if(is.character, str_trim)

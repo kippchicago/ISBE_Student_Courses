@@ -90,7 +90,7 @@ These files contain the legal name, date of birth, State and CPS ID and School f
 These files (8 in total) are downloaded from [ASPEN](https://aspen.cps.edu/aspen/logon.do). In order to log into ASPEN you will need your cps username and password (the same credentials that you use to log into your CPS email address). Below is a step-by-step guide for finding this information in ASPEN. 
 
 ------
-
+[here](#)
 \newpage
 
 #### 1. Log into [ASPEN](https://aspen.cps.edu/aspen/logon.do) then navigate to the view tab and select school view.\
