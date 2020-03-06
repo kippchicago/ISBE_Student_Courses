@@ -14,8 +14,9 @@ source(here::here("munge", "03-A_produce_reports_brokenup_by_official_schools.R"
 # Write Files to output folder ----------------------------------------------
 
 isbe_report_all_schools %>%
-  select(`CPS Student ID`) %>%
-  get_dupes() %>%
+  select("Teacher IEIN  (Illinois Educator Identification Number)", "Teacher Last Name", "Teacher First Name") %>%
+  filter(is.na(`Teacher IEIN  (Illinois Educator Identification Number)`)) %>%
+  distinct() %>%
   View()
 
 write_csv(isbe_midyear_report_400146, here::here("output", 

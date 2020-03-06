@@ -60,7 +60,7 @@ students_course_middle <-
 
 isbe_report_middle_midyear_2020_full <-
   students_course_middle %>%
-  left_join(teacher_identifying_info_complete,
+  left_join(teacher_identifying_info,
     by = "teacherid"
   ) %>%
   select(-c(schoolid, )) %>%

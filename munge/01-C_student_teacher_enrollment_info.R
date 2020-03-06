@@ -11,7 +11,7 @@ LAST_DAY_OF_SCHOOL <- ymd("2020-06-20")
 # Teacher Course End Date
 
 teacher_enrollment_info <-
-  teacher_identifying_info_complete %>%
+  teacher_identifying_info %>%
   
   # Note: Requested list from HR of teachers who started after the 1st day of school
   left_join(kipp_staff_member_start_after_20190819,

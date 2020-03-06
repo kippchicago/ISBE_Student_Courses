@@ -147,7 +147,7 @@ students_course_primary_4th <-
 
 isbe_report_primary_core_midyear <-
   students_course_primary_core %>%
-  left_join(teacher_identifying_info_complete,
+  left_join(teacher_identifying_info,
     by = "teacherid"
   ) %>%
   # select(-c(schoolid, )) %>%
@@ -267,7 +267,7 @@ isbe_report_primary_core_midyear <-
 
 isbe_report_primary_excellence_midyear <-
   students_course_primary_excellence %>%
-  left_join(teacher_identifying_info_complete,
+  left_join(teacher_identifying_info,
     by = c(
       "teacher_last_name",
       "teacher_first_name"
@@ -388,7 +388,7 @@ isbe_report_primary_excellence_midyear <-
 
 isbe_report_primary_4th_grade_midyear <-
   students_course_primary_4th %>%
-  left_join(teacher_identifying_info_complete,
+  left_join(teacher_identifying_info,
     by = "teacherid"
   ) %>%
   # select(-c(schoolid, )) %>%

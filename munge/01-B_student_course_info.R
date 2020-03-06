@@ -55,16 +55,15 @@ student_course_info <-
   # remove Attendance (homeroom) and ELL sections (used for sorting but not an actual course)
   filter(!grepl("Attendance| ELL", local_course_title))
 
-
 # Teacher Course Info -----------------------------------------------------
 
 teacher_course_info <- 
   users %>%
   
   # joins users and teachers
-  left_join(teachers, 
+  left_join(schoolstaff, 
             by = "users_dcid") %>%
-  
+  mutate(teacherid = as.character(teacherid)) %>%
   # joins users/teachers and cc
   left_join(cc,
             by = "teacherid") %>% 

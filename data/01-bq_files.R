@@ -117,5 +117,4 @@ schoolstaff <-
   collect() %>%
   
   # set column type
-  mutate(users_dcid = as.character(users_dcid), 
-         id = as.character(id))
+  mutate(users_dcid = as.character(users_dcid))

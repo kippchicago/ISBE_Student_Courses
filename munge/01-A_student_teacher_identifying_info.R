@@ -88,79 +88,28 @@ student_full_list_aspen <-
 
 # Teacher Identifying Information  -------------------------------------------------------------
 
-# Note: this section produces the following columns required for ISBE Reporting
-# Teacher IEIN (Illinois Educator Identification Number)
-# Teacher Last Name
-# Teacher First Name
-# Teacher Birth Date
-# Teacher Serving
-# Employer RCDTS
-
-# NOTE: there is a table with teacher name and teacher ID numbers 
-# (need the ID from powerschools)
-
-# teacher_identifying_info_partial <-
-#   cc %>%
-#   left_join(schoolstaff,
-#     by = c("teacherid" = "id")
-#   ) %>%
-# 
-#   # Join users to obtain teacher names and email addresses
-#   left_join(users,
-#     by = "users_dcid"
-#   ) %>%
-#   select(
-#     teacherid,
-#     teacher_first_name,
-#     teacher_last_name,
-#     email_addr,
-#     schoolid,
-#   ) %>%
-# 
-#   # Filter down to single row per teacher
-#   distinct() %>%
-#   left_join(zenefits_teacher_info,
-#     by = c(
-#       "teacher_first_name" = "First Name",
-#       "teacher_last_name" = "Last Name",
-#       "email_addr" = "Work Email"
-#     )
-#   ) %>%
-#   select(
-#     teacherid,
-#     teacher_first_name,
-#     teacher_last_name,
-#     schoolid,
-#     email_addr,
-#     `Initial Employment Start Date`,
-#   ) %>%
-# 
-#   # NOTE: This line trims all white space from character columns. This
-#   # is imperitive later when we want to join datasets on teacherid column
-#   mutate_if(is.character, str_trim)
-
 teacher_names <- 
   users %>%
   
   # joins users and teachers
-  left_join(teachers, 
+  left_join(schoolstaff, 
             by = "users_dcid") %>%
-  
+  mutate(teacherid = as.character(teacherid)) %>%
   # joins users/teachers and cc
   left_join(cc,
             by = "teacherid") %>% 
   filter(termid == PS_TERMID) %>%
   left_join(courses,
             by = "course_number") %>%
-  select(teacher_first_name = first_name, 
-         teacher_last_name = last_name, 
+  select(teacher_first_name, 
+         teacher_last_name, 
          teacherid) %>%
   distinct() %>%
   mutate(teacherid = as.character(teacherid))
 
 teacher_identifying_info <-
-  teacher_names %>%
-  left_join(teacher_iein_licensure_report,
+  teacher_iein_licensure_report %>%
+  left_join(teacher_names,
     by = "teacherid"
   ) %>%
   rename(
