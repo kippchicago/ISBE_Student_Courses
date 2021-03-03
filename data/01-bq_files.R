@@ -32,7 +32,8 @@ students <-
          schoolid = as.character(schoolid), 
          dob = ymd(dob), 
          entrydate = ymd(entrydate), 
-         exitdate = ymd(exitdate))
+         exitdate = ymd(exitdate)
+        )
 
 # course/section information
 cc <-
